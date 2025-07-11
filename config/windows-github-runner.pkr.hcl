@@ -60,11 +60,11 @@ build {
       
       # Configure PEM-based authentication
       "mkdir C:\\SSM",
-      "$sshConfig = @'
+      "$sshConfig = <<-EOT
 Host *
     PubkeyAuthentication yes
     IdentityFile C:\\SSM\\instance-key.pem
-'@",
+EOT",
       "Set-Content -Path 'C:\\SSM\\ssh_config' -Value $sshConfig",
       "icacls 'C:\\SSM' /inheritance:r",
       "icacls 'C:\\SSM' /grant:r 'SYSTEM:(OI)(CI)F' /grant:r 'Administrators:(OI)(CI)F'",
@@ -82,7 +82,7 @@ Host *
       "Set-ItemProperty -Path $RegPath -Name 'DefaultPassword' -Value 'PackerAdmin123!'",
       
       # Create runner configuration script
-      "$runnerScript = @'
+      "$runnerScript = <<-EOT
 param(
     [Parameter(Mandatory=$true)]
     [string]$GitHubUrl,
@@ -100,7 +100,7 @@ $labelArgs = if ($Labels.Count -gt 0) { '--labels ' + ($Labels -join ',') } else
 .\\svc.ps1 install
 Start-Service actions.runner.*
 Set-Service -Name 'actions.runner.*' -StartupType Automatic
-'@",
+EOT",
       "Set-Content -Path 'C:\\actions-runner\\configure-runner.ps1' -Value $runnerScript",
       
       # Cleanup
