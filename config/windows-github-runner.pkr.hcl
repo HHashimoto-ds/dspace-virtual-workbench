@@ -60,11 +60,7 @@ build {
       
       # Configure PEM-based authentication
       "mkdir C:\\SSM",
-      "$sshConfig = @'
-Host *
-    PubkeyAuthentication yes
-    IdentityFile C:\\SSM\\instance-key.pem
-'@",
+      "$sshConfig = @'\nHost *\n    PubkeyAuthentication yes\n    IdentityFile C:\\SSM\\instance-key.pem\n'@",
       "Set-Content -Path 'C:\\SSM\\ssh_config' -Value $sshConfig",
       "icacls 'C:\\SSM' /inheritance:r",
       "icacls 'C:\\SSM' /grant:r 'SYSTEM:(OI)(CI)F' /grant:r 'Administrators:(OI)(CI)F'",
@@ -82,25 +78,7 @@ Host *
       "Set-ItemProperty -Path $RegPath -Name 'DefaultPassword' -Value 'PackerAdmin123!'",
       
       # Create runner configuration script
-      "$runnerScript = @'
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$GitHubUrl,
-    
-    [Parameter(Mandatory=$true)]
-    [string]$RunnerToken,
-    
-    [Parameter(Mandatory=$false)]
-    [string[]]$Labels = @()
-)
-
-Set-Location C:\\actions-runner
-$labelArgs = if ($Labels.Count -gt 0) { '--labels ' + ($Labels -join ',') } else { '' }
-.\\config.cmd --url $GitHubUrl --token $RunnerToken --unattended $labelArgs
-.\\svc.ps1 install
-Start-Service actions.runner.*
-Set-Service -Name 'actions.runner.*' -StartupType Automatic
-'@",
+      "$runnerScript = @'\nparam(\n    [Parameter(Mandatory=$true)]\n    [string]$GitHubUrl,\n    \n    [Parameter(Mandatory=$true)]\n    [string]$RunnerToken,\n    \n    [Parameter(Mandatory=$false)]\n    [string[]]$Labels = @()\n)\n\nSet-Location C:\\actions-runner\n$labelArgs = if ($Labels.Count -gt 0) { \'--labels \' + ($Labels -join \',\') } else { \'\' }\n.\\config.cmd --url $GitHubUrl --token $RunnerToken --unattended $labelArgs\n.\\svc.ps1 install\nStart-Service actions.runner.*\nSet-Service -Name \'actions.runner.*\' -StartupType Automatic\n'@",
       "Set-Content -Path 'C:\\actions-runner\\configure-runner.ps1' -Value $runnerScript",
       
       # Cleanup
