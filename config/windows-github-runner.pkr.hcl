@@ -50,7 +50,12 @@ source "amazon-ebs" "windows" {
 
 build {
   sources = ["source.amazon-ebs.windows"]
-  
+
+  provisioner "file" {
+    source      = "config/configure-runner.ps1"
+    destination = "C:\\actions-runner\\configure-runner.ps1"
+  }
+
   provisioner "powershell" {
     inline = [
       # Install Chocolatey package manager
@@ -74,13 +79,10 @@ build {
       "New-ItemProperty -Path $SSMPath -Name 'AutoDisconnectTimeout' -Value 0 -PropertyType DWORD -Force",
       
       # Configure PEM-based authentication
-      "mkdir C:\\SSM",
-      "$sshConfig = @'
-Host *
-    PubkeyAuthentication yes
-    IdentityFile C:\\SSM\\instance-key.pem
-'@",
-      "Set-Content -Path 'C:\\SSM\\ssh_config' -Value $sshConfig",
+      "New-Item -Path C:\\SSM -Force",
+      "Add-Content -Path C:\\SSM\\ssh_config -Value 'Host *'",
+      "Add-Content -Path C:\\SSM\\ssh_config -Value '    PubkeyAuthentication yes'",
+      "Add-Content -Path C:\\SSM\\ssh_config -Value '    IdentityFile C:\\\\SSM\\\\instance-key.pem'",
       "icacls 'C:\\SSM' /inheritance:r",
       "icacls 'C:\\SSM' /grant:r 'SYSTEM:(OI)(CI)F' /grant:r 'Administrators:(OI)(CI)F'",
       
@@ -94,31 +96,11 @@ Host *
       "$RegPath = 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon'",
       "Set-ItemProperty -Path $RegPath -Name 'AutoAdminLogon' -Value '1'",
       "Set-ItemProperty -Path $RegPath -Name 'DefaultUsername' -Value 'Administrator'",
-      "# Set-ItemProperty -Path $RegPath -Name 'DefaultPassword' -Value 'PackerAdmin123!'  # Avoid hardcoded password for security",
+      # Avoid hard coded password for security, # Set-ItemProperty -Path $RegPath -Name 'DefaultPassword' -Value 'PackerAdmin123!'  
       
       # Create runner configuration script
-      "$runnerScript = <<-EOT
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$GitHubUrl,
-    
-    [Parameter(Mandatory=$true)]
-    [string]$RunnerToken,
-    
-    [Parameter(Mandatory=$false)]
-    [string[]]$Labels = @()
-)
+      # "configure-runner.ps1" is copied to "C:\\actions-runner\\configure-runner.ps1"
 
-Set-Location C:\\actions-runner
-$configCmd = \".\\config.cmd --url $GitHubUrl --token $RunnerToken --unattended\"
-if ($Labels.Count -gt 0) { $configCmd += \" --labels \" + ($Labels -join ',') }
-Invoke-Expression $configCmd
-.\\svc.ps1 install
-Start-Service actions.runner.*
-Set-Service -Name 'actions.runner.*' -StartupType Automatic
-EOT",
-      "Set-Content -Path 'C:\\actions-runner\\configure-runner.ps1' -Value $runnerScript",
-      
       # Cleanup
       "Remove-Item actions-runner-win-x64-${env:github_runner_version}.zip"
     ]
