@@ -7,10 +7,25 @@ packer {
   }
 }
 
+variable "region" {
+  type    = string
+  default = "ap-northeast-1"
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t2.medium"
+}
+
+variable "github_runner_version" {
+  type    = string
+  default = "2.311.0"
+}
+
 source "amazon-ebs" "windows" {
   ami_name      = "windows-github-runner-{{timestamp}}"
-  instance_type = "t2.medium"
-  region        = "ap-northeast-1"
+  instance_type = var.instance_type
+  region        = var.region
   
   source_ami_filter {
     filters = {
@@ -27,7 +42,7 @@ source "amazon-ebs" "windows" {
   winrm_use_ssl = true
   winrm_insecure = true
   
-  user_data_file = "./bootstrap-winrm.txt"
+  user_data_file = "bootstrap-winrm.txt"
   
   # Enable Systems Manager (SSM) for Fleet Manager
   iam_instance_profile = "SSMInstanceProfile"
@@ -72,14 +87,14 @@ EOT",
       # Download and install GitHub runner
       "mkdir C:\\actions-runner",
       "cd C:\\actions-runner",
-      "Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.311.0/actions-runner-win-x64-2.311.0.zip -OutFile actions-runner-win-x64-2.311.0.zip",
-      "Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory('actions-runner-win-x64-2.311.0.zip', 'C:\\actions-runner')",
+      "Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v${env:github_runner_version}/actions-runner-win-x64-${env:github_runner_version}.zip -OutFile actions-runner-win-x64-${env:github_runner_version}.zip",
+      "Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory('actions-runner-win-x64-${env:github_runner_version}.zip', 'C:\\actions-runner')",
       
       # Configure auto-login
       "$RegPath = 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon'",
       "Set-ItemProperty -Path $RegPath -Name 'AutoAdminLogon' -Value '1'",
       "Set-ItemProperty -Path $RegPath -Name 'DefaultUsername' -Value 'Administrator'",
-      "Set-ItemProperty -Path $RegPath -Name 'DefaultPassword' -Value 'PackerAdmin123!'",
+      "# Set-ItemProperty -Path $RegPath -Name 'DefaultPassword' -Value 'PackerAdmin123!'  # Avoid hardcoded password for security",
       
       # Create runner configuration script
       "$runnerScript = <<-EOT
@@ -95,8 +110,9 @@ param(
 )
 
 Set-Location C:\\actions-runner
-$labelArgs = if ($Labels.Count -gt 0) { '--labels ' + ($Labels -join ',') } else { '' }
-.\\config.cmd --url $GitHubUrl --token $RunnerToken --unattended $labelArgs
+$configCmd = \".\\config.cmd --url $GitHubUrl --token $RunnerToken --unattended\"
+if ($Labels.Count -gt 0) { $configCmd += \" --labels \" + ($Labels -join ',') }
+Invoke-Expression $configCmd
 .\\svc.ps1 install
 Start-Service actions.runner.*
 Set-Service -Name 'actions.runner.*' -StartupType Automatic
@@ -104,7 +120,7 @@ EOT",
       "Set-Content -Path 'C:\\actions-runner\\configure-runner.ps1' -Value $runnerScript",
       
       # Cleanup
-      "Remove-Item actions-runner-win-x64-2.311.0.zip"
+      "Remove-Item actions-runner-win-x64-${env:github_runner_version}.zip"
     ]
   }
 }
