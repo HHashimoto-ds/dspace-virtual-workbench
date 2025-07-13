@@ -75,11 +75,11 @@ build {
       
       # Configure PEM-based authentication
       "mkdir C:\\SSM",
-      "$sshConfig = <<-EOT
+      "$sshConfig = @'
 Host *
     PubkeyAuthentication yes
     IdentityFile C:\\SSM\\instance-key.pem
-EOT",
+'@",
       "Set-Content -Path 'C:\\SSM\\ssh_config' -Value $sshConfig",
       "icacls 'C:\\SSM' /inheritance:r",
       "icacls 'C:\\SSM' /grant:r 'SYSTEM:(OI)(CI)F' /grant:r 'Administrators:(OI)(CI)F'",
