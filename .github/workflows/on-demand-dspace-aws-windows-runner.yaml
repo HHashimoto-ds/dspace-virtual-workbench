@@ -44,6 +44,11 @@ permissions:
 jobs:
   start-runner:
     name: Start self-hosted EC2 Runner
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+      actions: write
     runs-on: ubuntu-latest
     outputs:
       label: ${{ steps.start-ec2-runner.outputs.label }}
@@ -149,6 +154,11 @@ jobs:
     needs:
       - start-runner # required to get output from the start-runner job
       - do-the-job # required to wait when the main job is done
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+      actions: write    
     runs-on: ubuntu-latest
     if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
     steps:
