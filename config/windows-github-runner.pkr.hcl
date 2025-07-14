@@ -42,7 +42,7 @@ source "amazon-ebs" "windows" {
   winrm_use_ssl = true
   winrm_insecure = true
   
-  user_data_file = "./bootstrap-winrm.txt"
+  user_data_file = "config/bootstrap-winrm.txt"
   
   # Enable Systems Manager (SSM) for Fleet Manager
   iam_instance_profile = "SSMInstanceProfile"
