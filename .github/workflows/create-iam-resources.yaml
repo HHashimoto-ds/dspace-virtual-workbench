@@ -1,0 +1,34 @@
+name: Create IAM Resources
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-iam-resources:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Create IAM instance profile
+        run: |
+          aws iam create-instance-profile --instance-profile-name SSMInstanceProfile
+
+      - name: Create IAM role
+        run: |
+          aws iam create-role --role-name SSMRole --assume-role-policy-document file://trust-policy.json
+
+      - name: Attach policy to role
+        run: |
+          aws iam attach-role-policy --role-name SSMRole --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+
+      - name: Add role to instance profile
+        run: |
+          aws iam add-role-to-instance-profile --instance-profile-name SSMInstanceProfile --role-name SSMRole
