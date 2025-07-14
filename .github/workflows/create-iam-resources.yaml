@@ -19,6 +19,7 @@ jobs:
 
       - name: Create IAM instance profile
         run: |
+          aws iam get-instance-profile --instance-profile-name SSMInstanceProfile || \
           aws iam create-instance-profile --instance-profile-name SSMInstanceProfile
 
       - name: Create IAM role
