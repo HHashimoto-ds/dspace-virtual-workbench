@@ -89,7 +89,7 @@ build {
       # Download and install GitHub runner
       "mkdir C:\\actions-runner",
       "cd C:\\actions-runner",
-      "Invoke-WebRequest -Uri \"https://github.com/actions/runner/releases/download/v$env:github_runner_version/actions-runner-win-x64-$env:github_runner_version.zip\" -OutFile \"actions-runner-win-x64-$env:github_runner_version.zip\"",
+      "Invoke-WebRequest -Uri \"https://github.com/actions/runner/releases/download/v$env:github_runner_version/actions-runner-win-x64-$env:github_runner_version.zip\" -OutFile \"actions-runner-win-x64-$env:var.zip\"",
       "Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory(\"actions-runner-win-x64-$env:github_runner_version.zip\", \"C:\\actions-runner\")",
       
       # Configure auto-login
@@ -102,7 +102,8 @@ build {
       # "configure-runner.ps1" is copied to "C:\\actions-runner\\configure-runner.ps1"
 
       # Cleanup
-      "Remove-Item actions-runner-win-x64-${env:github_runner_version}.zip"
+      "Remove-Item actions-runner-win-x64-$env:github_runner_version.zip"
+
     ]
   }
 }
