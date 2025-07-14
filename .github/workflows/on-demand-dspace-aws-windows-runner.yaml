@@ -36,7 +36,8 @@ on:
         default: 'SSMRole'
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
   id-token: write # Required for requesting the JWT
   actions: write # Required for managing self-hosted runners
 
