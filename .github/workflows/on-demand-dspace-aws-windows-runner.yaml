@@ -63,6 +63,7 @@ jobs:
         id: start-ec2-runner
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           script: |
             const path = require('path');
             const sdkPath = path.join(process.env.GITHUB_WORKSPACE, 'node_modules', '@aws-sdk/client-ec2');
@@ -163,6 +164,7 @@ jobs:
       - name: Stop EC2 runner
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           script: |
             const path = require('path');
             const sdkPath = path.join(process.env.GITHUB_WORKSPACE, 'node_modules', '@aws-sdk/client-ec2');
