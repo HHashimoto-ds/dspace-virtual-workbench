@@ -38,7 +38,7 @@ on:
         description: 'IAM Role Name (must have EC2 and SSM permissions)'
         type: string
         required: false
-        default: 'data-replay-346-AccessInstanceProfile-cCDJrbRcf8M0'  # arn:aws:iam::952832774451:role/dcv-license-2
+        default: 'AmazonSSMRoleForInstancesQuickSetup'  # arn:aws:iam::952832774451:role/dcv-license-2
 
 permissions:
   contents: read
