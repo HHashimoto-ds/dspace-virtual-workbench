@@ -28,7 +28,7 @@ on:
         description: 'VPC Subnet ID for the runner'
         type: string
         required: false
-        default: 'subnet-0c02234f0685149b9'  # Replace with your default subnet
+        default: 'subnet-073bcdd8747c6daaf'  # Replace with your default subnet
       security-group-id:
         description: 'Security Group ID (must allow WinRM)'
         type: string
