@@ -71,8 +71,8 @@ jobs:
             const path = require('path');
             const sdkPath = path.join(process.env.GITHUB_WORKSPACE, 'node_modules', '@aws-sdk/client-ec2');
             const response = await github.rest.actions.createRegistrationTokenForRepo({
-              owner: github.repository_owner,
-              repo: github.repository,
+              owner: ${{ github.repository_owner }},
+              repo: ${{ github.repository }},
             });
             const token = response.data.token;
             
