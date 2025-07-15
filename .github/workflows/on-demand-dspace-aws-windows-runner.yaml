@@ -106,13 +106,24 @@ jobs:
           </powershell>"
 
           # Launch EC2 instance
+          # INSTANCE_ID=$(aws ec2 run-instances \
+          #   --image-id "${{ inputs.ami-id }}" \
+          #   --instance-type "${{ inputs.instance-type }}" \
+          #   --subnet-id "${{ inputs.subnet-id }}" \
+          #   --security-group-ids "${{ inputs.security-group-id }}" \
+          #   --iam-instance-profile "Name=${{ inputs.iam-role-name }}" \
+          #   --user-data "$USER_DATA" \
+          #   --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":500,\"VolumeType\":\"gp3\"}}]" \
+          #   --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
+          #   --query 'Instances[0].InstanceId' \
+          #   --output text)
+
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id "${{ inputs.ami-id }}" \
             --instance-type "${{ inputs.instance-type }}" \
             --subnet-id "${{ inputs.subnet-id }}" \
             --security-group-ids "${{ inputs.security-group-id }}" \
             --iam-instance-profile "Name=${{ inputs.iam-role-name }}" \
-            --user-data "$USER_DATA" \
             --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":500,\"VolumeType\":\"gp3\"}}]" \
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
             --query 'Instances[0].InstanceId' \
