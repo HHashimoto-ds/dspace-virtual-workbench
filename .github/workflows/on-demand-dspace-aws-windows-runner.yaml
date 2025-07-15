@@ -7,7 +7,7 @@ on:
         description: 'Windows Runner AMI ID'
         type: choice
         required: false
-        default: 'ami-0e1cf64385e467ba0' # Replace with your default Windows AMI
+        default: 'ami-0cfdba0116ec18ad9' # Replace with your default Windows AMI
         options:
           - 'ami-0e1cf64385e467ba0'
           - 'ami-0eb9b73605890c2d1'
