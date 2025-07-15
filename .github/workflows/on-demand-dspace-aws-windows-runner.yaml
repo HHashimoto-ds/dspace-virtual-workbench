@@ -59,85 +59,63 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install AWS SDK
-        run: npm install @aws-sdk/client-ec2
-
       - name: Start EC2 runner
         id: start-ec2-runner
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          script: |
-            const path = require('path');
-            const sdkPath = path.join(process.env.GITHUB_WORKSPACE, 'node_modules', '@aws-sdk/client-ec2');
-            const response = await github.rest.actions.createRegistrationTokenForRepo({
-              owner: ${{ github.repository_owner }},
-              repo: ${{ github.repository }},
-            });
-            const token = response.data.token;
-            
-            const aws = require('@aws-sdk/client-ec2');
-            const ec2Client = new aws.EC2Client();
-            
-            const userData = Buffer.from(`<powershell>
-            Set-ExecutionPolicy Bypass -Scope Process -Force
-            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-            
-            # Configure WinRM
-            winrm quickconfig -q
-            winrm set winrm/config/service '@{AllowUnencrypted="true"}'
-            winrm set winrm/config/service/auth '@{Basic="true"}'
-            
-            # Install and configure GitHub runner
-            $GH_RUNNER_VERSION="2.308.0"
-            
-            New-Item -ItemType Directory -Path C:\actions-runner
-            Set-Location C:\actions-runner
-            Invoke-WebRequest -Uri "https://github.com/actions/runner/releases/download/v$GH_RUNNER_VERSION/actions-runner-win-x64-$GH_RUNNER_VERSION.zip" -OutFile "actions-runner.zip"
-            Expand-Archive -Path actions-runner.zip -DestinationPath .
-            
-            # Configure and start runner using the registration token
-            ./config.cmd --url "https://github.com/${{ github.repository_owner }}/${{ github.repository }}" --token "${token}" --name "windows-runner-${{ github.run_id }}" --work "_work" --runasservice --labels "windows,aws-ec2"
-            
-            # Start the runner service
-            ./svc.ps1 install
-            ./svc.ps1 start
-            </powershell>`).toString('base64');
-            
-            const runnerLabel = `windows-runner-${{ github.run_id }}`;
-            
-            const runInstancesCommand = new aws.RunInstancesCommand({
-              ImageId: '${{ inputs.ami-id }}',
-              InstanceType: '${{ inputs.instance-type }}',
-              MinCount: 1,
-              MaxCount: 1,
-              UserData: userData,
-              SubnetId: '${{ inputs.subnet-id }}',
-              SecurityGroupIds: ['${{ inputs.security-group-id }}'],
-              IamInstanceProfile: {
-                Name: '${{ inputs.iam-role-name }}'
-              },
-              BlockDeviceMappings: [{
-                DeviceName: '/dev/sda1',
-                Ebs: {
-                  VolumeSize: 500,
-                  VolumeType: 'gp3'
-                }
-              }],
-              TagSpecifications: [{
-                ResourceType: 'instance',
-                Tags: [
-                  { Key: 'Name', Value: runnerLabel },
-                  { Key: 'GitHubRepository', Value: '${{ github.repository_owner }}/${{ github.repository }}' }
-                ]
-              }]
-            });
-            
-            const instance = await ec2Client.send(runInstancesCommand);
-            const instanceId = instance.Instances[0].InstanceId;
-            
-            core.setOutput('label', runnerLabel);
-            core.setOutput('ec2-instance-id', instanceId);
+        run: |
+          # Get GitHub runner registration token
+          TOKEN_RESPONSE=$(curl -sL \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token")
+          REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
+
+          # Set runner label
+          RUNNER_LABEL="windows-runner-${{ github.run_id }}"
+          echo "RUNNER_LABEL=$RUNNER_LABEL" >> $GITHUB_ENV
+
+          # Create user data script
+          USER_DATA="<powershell>
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+
+          # Configure WinRM
+          winrm quickconfig -q
+          winrm set winrm/config/service '@{AllowUnencrypted=\"true\"}'
+          winrm set winrm/config/service/auth '@{Basic=\"true\"}'
+
+          # Install and configure GitHub runner
+          \$GH_RUNNER_VERSION=\"2.308.0\"
+
+          New-Item -ItemType Directory -Path C:\actions-runner
+          Set-Location C:\actions-runner
+          Invoke-WebRequest -Uri \"https://github.com/actions/runner/releases/download/v\$GH_RUNNER_VERSION/actions-runner-win-x64-\$GH_RUNNER_VERSION.zip\" -OutFile \"actions-runner.zip\"
+          Expand-Archive -Path actions-runner.zip -DestinationPath .
+
+          # Configure and start runner using the registration token
+          ./config.cmd --url \"https://github.com/${{ github.repository }}\" --token \"${REGISTRATION_TOKEN}\" --name \"${RUNNER_LABEL}\" --work \"_work\" --runasservice --labels \"windows,aws-ec2\"
+
+          # Start the runner service
+          ./svc.ps1 install
+          ./svc.ps1 start
+          </powershell>"
+
+          # Launch EC2 instance
+          INSTANCE_ID=$(aws ec2 run-instances \
+            --image-id "${{ inputs.ami-id }}" \
+            --instance-type "${{ inputs.instance-type }}" \
+            --subnet-id "${{ inputs.subnet-id }}" \
+            --security-group-ids "${{ inputs.security-group-id }}" \
+            --iam-instance-profile "Name=${{ inputs.iam-role-name }}" \
+            --user-data "$USER_DATA" \
+            --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":500,\"VolumeType\":\"gp3\"}}]" \
+            --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
+            --query 'Instances[0].InstanceId' \
+            --output text)
+
+          # Set outputs
+          echo "label=${RUNNER_LABEL}" >> $GITHUB_OUTPUT
+          echo "ec2-instance-id=${INSTANCE_ID}" >> $GITHUB_OUTPUT
             
   do-the-job:
     name: Do the job on the Runner
@@ -161,39 +139,25 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Install AWS SDK
-        run: npm install @aws-sdk/client-ec2
-
       - name: Stop EC2 runner
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          script: |
-            const path = require('path');
-            const sdkPath = path.join(process.env.GITHUB_WORKSPACE, 'node_modules', '@aws-sdk/client-ec2');
-            const aws = require('@aws-sdk/client-ec2');
-            const ec2Client = new aws.EC2Client();
-            
-            // Terminate the EC2 instance
-            const terminateCommand = new aws.TerminateInstancesCommand({
-              InstanceIds: ['${{ needs.start-runner.outputs.ec2-instance-id }}']
-            });
-            await ec2Client.send(terminateCommand);
-            
-            // Remove runner from GitHub
-            const runners = await github.rest.actions.listSelfHostedRunnersForRepo({
-              owner: github.repository_owner,
-              repo: github.repository,
-            });
-            
-            const runner = runners.data.runners.find(
-              r => r.name === '${{ needs.start-runner.outputs.label }}'
-            );
-            
-            if (runner) {
-              await github.rest.actions.deleteSelfHostedRunnerFromRepo({
-                owner: github.repository_owner,
-                repo: github.repository,
-                runner_id: runner.id,
-              });
-            }
+        run: |
+          # Terminate EC2 instance
+          aws ec2 terminate-instances \
+            --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+
+          # Get runner ID
+          RUNNERS_RESPONSE=$(curl -sL \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runners")
+          
+          RUNNER_ID=$(echo "$RUNNERS_RESPONSE" | jq -r ".runners[] | select(.name == \"${{ needs.start-runner.outputs.label }}\") | .id")
+
+          # Remove runner if found
+          if [ ! -z "$RUNNER_ID" ]; then
+            curl -sL \
+              -X DELETE \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runners/$RUNNER_ID"
+          fi
