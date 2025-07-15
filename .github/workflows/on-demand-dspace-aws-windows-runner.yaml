@@ -5,9 +5,12 @@ on:
     inputs:
       ami-id:
         description: 'Windows Runner AMI ID'
-        type: string
+        type: choice
         required: false
-        default: 'ami-0cfdba0116ec18ad9'  # Replace with your default Windows AMI
+        default: 'ami-0eb9b73605890c2d1' # Replace with your default Windows AMI
+        options:
+          - 'ami-0eb9b73605890c2d1'
+          - 'ami-0cfdba0116ec18ad9'
       instance-type:
         description: 'EC2 Instance Type (recommended: t3.large or larger)'
         type: choice
@@ -125,7 +128,7 @@ jobs:
                 ResourceType: 'instance',
                 Tags: [
                   { Key: 'Name', Value: runnerLabel },
-                  { Key: 'GitHubRepository', Value: '${context.repo.owner}/${context.repo.repo}' }
+                  { Key: 'GitHubRepository', Value: '${{ context.repo.owner }}/${{ context.repo.repo }}' }
                 ]
               }]
             });
