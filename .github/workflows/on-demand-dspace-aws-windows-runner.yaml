@@ -85,6 +85,11 @@ jobs:
           winrm set winrm/config/service '@{AllowUnencrypted=\"true\"}'
           winrm set winrm/config/service/auth '@{Basic=\"true\"}'
 
+          # Start SSM Agent service
+          Start-Service -Name AmazonSSMAgent
+          Set-Service -Name AmazonSSMAgent -StartupType Automatic
+          Write-Host "SSM Agent service started and set to automatic startup"
+
           # Install and configure GitHub runner
           \$GH_RUNNER_VERSION=\"2.308.0\"
 
