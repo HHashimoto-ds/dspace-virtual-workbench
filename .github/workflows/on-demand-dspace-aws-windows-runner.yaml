@@ -71,8 +71,8 @@ jobs:
             const path = require('path');
             const sdkPath = path.join(process.env.GITHUB_WORKSPACE, 'node_modules', '@aws-sdk/client-ec2');
             const response = await github.rest.actions.createRegistrationTokenForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              owner: github.repository_owner,
+              repo: github.repository,
             });
             const token = response.data.token;
             
@@ -97,7 +97,7 @@ jobs:
             Expand-Archive -Path actions-runner.zip -DestinationPath .
             
             # Configure and start runner using the registration token
-            ./config.cmd --url "https://github.com/${context.repo.owner}/${context.repo.repo}" --token "${token}" --name "windows-runner-${{ github.run_id }}" --work "_work" --runasservice --labels "windows,aws-ec2"
+            ./config.cmd --url "https://github.com/${{ github.repository_owner }}/${{ github.repository }}" --token "${token}" --name "windows-runner-${{ github.run_id }}" --work "_work" --runasservice --labels "windows,aws-ec2"
             
             # Start the runner service
             ./svc.ps1 install
@@ -128,7 +128,7 @@ jobs:
                 ResourceType: 'instance',
                 Tags: [
                   { Key: 'Name', Value: runnerLabel },
-                  { Key: 'GitHubRepository', Value: '${{ context.repo.owner }}/${{ context.repo.repo }}' }
+                  { Key: 'GitHubRepository', Value: '${{ github.repository_owner }}/${{ github.repository }}' }
                 ]
               }]
             });
@@ -182,8 +182,8 @@ jobs:
             
             // Remove runner from GitHub
             const runners = await github.rest.actions.listSelfHostedRunnersForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              owner: github.repository_owner,
+              repo: github.repository,
             });
             
             const runner = runners.data.runners.find(
@@ -192,8 +192,8 @@ jobs:
             
             if (runner) {
               await github.rest.actions.deleteSelfHostedRunnerFromRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
+                owner: github.repository_owner,
+                repo: github.repository,
                 runner_id: runner.id,
               });
             }
