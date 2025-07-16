@@ -98,27 +98,27 @@ jobs:
           # Create user data script
           USER_DATA="<powershell>
           
-            # Create a folder under the drive root
-            New-Item -ItemType Directory -Path "C:\actions-runner" -Force
-            Set-Location -Path "C:\actions-runner"
-  
-            Start-Transcript -Path "C:\actions-runner\startup.log" -Append
+          # Create a folder under the drive root
+          New-Item -ItemType Directory -Path "C:\actions-runner" -Force
+          Set-Location -Path "C:\actions-runner"
 
-            # Download the latest runner package
-            Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-win-x64-2.326.0.zip -OutFile actions-runner-win-x64-2.326.0.zip
+          Start-Transcript -Path "C:\actions-runner\startup.log" -Append
 
-            # Validate hash (optional but recommended)
-            if((Get-FileHash -Path actions-runner-win-x64-2.326.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '539d48815f8ecda6903755025d5b578f919a32692b731d85a9a24419fe4dbd9e'.ToUpper()){ throw 'Computed checksum did not match' }
+          # Download the latest runner package
+          Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-win-x64-2.326.0.zip -OutFile actions-runner-win-x64-2.326.0.zip
 
-            # Extract the installer
-            Add-Type -AssemblyName System.IO.Compression.FileSystem ;
-            [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD\actions-runner-win-x64-2.326.0.zip", "$PWD")
+          # Validate hash (optional but recommended)
+          if((Get-FileHash -Path actions-runner-win-x64-2.326.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '539d48815f8ecda6903755025d5b578f919a32692b731d85a9a24419fe4dbd9e'.ToUpper()){ throw 'Computed checksum did not match' }
 
-            # 'token' for repository runner comes from https://github.com/<OWNER>/<REPO>/settings/actions/runners/new
-            # configure the runner
-            .\config.cmd --url https://github.com//${{ github.repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABEL} --unattended
+          # Extract the installer
+          Add-Type -AssemblyName System.IO.Compression.FileSystem ;
+          [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD\actions-runner-win-x64-2.326.0.zip", "$PWD")
 
-            Stop-Transcript
+          # 'token' for repository runner comes from https://github.com/<OWNER>/<REPO>/settings/actions/runners/new
+          # configure the runner
+          .\config.cmd --url https://github.com//${{ github.repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABEL} --unattended
+
+          Stop-Transcript
           </powershell>"
 
           # Launch EC2 instance
