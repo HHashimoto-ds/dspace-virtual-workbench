@@ -28,11 +28,11 @@ on:
         description: 'EC2 Instance Shutdown Behavior'
         type: choice
         required: false
-        default: 'delete always'
+        default: 'terminate always'
         options:
           - 'terminate always'
-          - 'terminate if job failed'
-          - 'stop only'
+          - 'stop only if job failed'
+          - 'stop always'
 
       subnet-id:
         description: 'VPC Subnet ID for the runner'
