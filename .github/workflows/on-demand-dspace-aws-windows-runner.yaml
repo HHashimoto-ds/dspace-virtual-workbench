@@ -29,11 +29,20 @@ on:
         description: 'Shutdown Behavior for EC2 Instance'
         type: choice
         required: false
-        default: 'terminate always'
+        default: 'terminate'
         options:
-          - 'terminate always'
-          - 'stop only if job failed'
-          - 'stop always'
+          - 'terminate'
+          - 'stop'
+      failed-job-behavior:
+        description: 'Do NOT terminate EC2 Instance when the job fails'
+        type: boolean
+        required: false
+        default: false
+      key-nmae:
+        description: 'SSH Key Pair Name for EC2 Instance (used for RDP password decryption)'
+        type: string
+        required: false
+        default: 'vew' # Replace with your default key pair name
       subnet-id:
         description: 'VPC Subnet ID for EC2 Instance'
         type: string
@@ -134,8 +143,9 @@ jobs:
             --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":500,\"VolumeType\":\"gp3\"}}]" \
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
             --query 'Instances[0].InstanceId' \
-            --instance-initiated-shutdown-behavior stop \
-            --user-data "$USER_DATA" \
+            --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
+            --key-name "${{ inputs.key-nmae }}" \
+            --user-data "${USER_DATA}" \
             --output text)
 
           # Set outputs
