@@ -183,6 +183,8 @@ jobs:
                 -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
                 "https://api.github.com/repos/${{ github.repository }}/actions/runners")
               
+              echo $RUNNERS_RESPONSE
+
               RUNNER_ID=$(echo "$RUNNERS_RESPONSE" | jq -r ".runners[] | select(.name == \"${{ needs.start-runner.outputs.label }}\") | .id")
               
               if [ ! -z "$RUNNER_ID" ]; then
