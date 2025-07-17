@@ -151,10 +151,21 @@ jobs:
     steps:
       - name: Hello dSPACE World
         shell: pwsh
-        run: 
+        run: |
           Write-Host "Hello dSPACE World!"
-          exit 1 # exit with failure
+          # exit 1 # exit with failure
           # exit 0 # exit with success
+      
+      - name: Start ControlDesk
+        shell: pwsh
+        run: |
+          python - <<EOF
+          from win32com.client import Dispatch
+          cdnApp =  Dispatch("ControlDeskNG.Application")
+          cdnApp.OpenProject("C:\\dSPACE\\Projects\\MyProject\\MyProject.prj") # Replace with your project path
+          cdnApp.Quit(False)
+          cdnApp = None
+          EOF
 
 
   stop-runner:
@@ -173,76 +184,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Stop EC2 runner
         run: |
-          # # Function to get runner ID with retries
-          # get_runner_id() {
-          #   local max_attempts=5
-          #   local attempt=1
-          #   local wait_time=10
-            
-          #   while [ $attempt -le $max_attempts ]; do
-          #     echo "Attempt $attempt to get runner ID..."
-              
-          #     RUNNERS_RESPONSE=$(curl -sL \
-          #       -H "Accept: application/vnd.github.v3+json" \
-          #       -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
-          #       "https://api.github.com/repos/${{ github.repository }}/actions/runners")
-              
-          #     echo $RUNNERS_RESPONSE
-
-          #     RUNNER_ID=$(echo "$RUNNERS_RESPONSE" | jq -r ".runners[] | select(.name == \"${{ needs.start-runner.outputs.label }}\") | .id")
-              
-          #     if [ ! -z "$RUNNER_ID" ]; then
-          #       echo "Runner ID found: $RUNNER_ID"
-          #       return 0
-          #     fi
-              
-          #     echo "Runner not found, waiting ${wait_time} seconds before retry..."
-          #     sleep $wait_time
-          #     attempt=$((attempt + 1))
-          #   done
-            
-          #   return 1
-          # }
-
-          # # Function to remove runner with retries
-          # remove_runner() {
-          #   local runner_id=$1
-          #   local max_attempts=3
-          #   local attempt=1
-          #   local wait_time=5
-            
-          #   while [ $attempt -le $max_attempts ]; do
-          #     echo "Attempt $attempt to remove runner..."
-              
-          #     HTTP_STATUS=$(curl -sL -o /dev/null -w "%{http_code}" \
-          #       -X DELETE \
-          #       -H "Accept: application/vnd.github.v3+json" \
-          #       -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
-          #       "https://api.github.com/repos/${{ github.repository }}/actions/runners/$runner_id")
-              
-          #     if [ "$HTTP_STATUS" -eq 204 ]; then
-          #       echo "Runner removed successfully"
-          #       return 0
-          #     fi
-              
-          #     echo "Failed to remove runner (HTTP status: $HTTP_STATUS), waiting ${wait_time} seconds before retry..."
-          #     sleep $wait_time
-          #     attempt=$((attempt + 1))
-          #   done
-            
-          #   return 1
-          # }
-
-          # # Get runner ID first
-          # if ! get_runner_id; then
-          #   echo "Failed to get runner ID after multiple attempts"
-          # else
-          #   # Try to remove the runner
-          #   if ! remove_runner "$RUNNER_ID"; then
-          #     echo "Failed to remove runner after multiple attempts"
-          #   fi
-          # fi
-
           # Handle instance based on conditions
           if [ "${{ inputs.shutdown-behavior }}" == "stop" ] || \
              ([ "${{ needs.do-dspace-job.result }}" == "failure" ] && ${{ inputs.failed-job-not-terminate }}); then
