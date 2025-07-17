@@ -9,8 +9,8 @@ jobs:
     strategy:
       matrix:
         cdn-project-subpath:
-          - "Projects\\ProjectA\\ProjectA.prj"
-          - "Projects\\ProjectB\\ProjectB.prj"
+          - "CDN\\ProjectA\\ProjectA.cdp"
+          - "CDN\\ProjectB\\ProjectB.cdp"
         param1: [A, B]
         param2: [a, b]
     steps:

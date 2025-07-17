@@ -162,6 +162,7 @@ jobs:
           $script = @"
           from win32com.client import Dispatch
           cdnApp = Dispatch("ControlDeskNG.Application")
+          cdnApp.Visible = True
           cdnApp.OpenProject("C:\\dSPACE\\Projects\\MyProject\\MyProject.prj")
           cdnApp.Quit(False)
           "@
