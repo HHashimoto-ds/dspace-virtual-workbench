@@ -49,7 +49,7 @@ on:
         description: 'VPC Subnet ID for EC2 Instance'
         type: string
         required: false
-        default: 'subnet-0c67a10776c1a8ab5' # 'subnet-073bcdd8747c6daaf'  # Replace with your default subnet
+        default: 'subnet-0c02234f0685149b9' # 'subnet-0c67a10776c1a8ab5' # Replace with your default subnet
       security-group-id:
         description: 'Security Group ID for EC2 Instance'
         type: string
