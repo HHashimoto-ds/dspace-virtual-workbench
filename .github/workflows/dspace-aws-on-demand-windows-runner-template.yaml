@@ -160,12 +160,22 @@ jobs:
         shell: powershell
         run: |
           $script = @"
-          from win32com.client import Dispatch
-          cdnApp = Dispatch("ControlDeskNG.Application")
-          cdnApp.Visible = True
-          cdnApp.OpenProject("C:\\dSPACE\\Projects\\MyProject\\MyProject.prj")
-          cdnApp.Quit(False)
+          import win32com.client
+          import pythoncom
+          try:
+              pythoncom.CoInitialize()
+              cdnApp = win32com.client.Dispatch("ControlDeskNG.Application")
+              cdnApp.OpenProject(r"C:\dSPACE\Projects\MyProject\MyProject.prj")
+              cdnApp.Quit(False)
+          except Exception as e:
+              import traceback
+              print("Failed to start ControlDesk:", e)
+              traceback.print_exc()
+              exit(1)
+          finally:
+              pythoncom.CoUninitialize()
           "@
+
           $scriptPath = "$env:TEMP\\start_cd.py"
           $script | Out-File -FilePath $scriptPath -Encoding UTF8
           python $scriptPath
