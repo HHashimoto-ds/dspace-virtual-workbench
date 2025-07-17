@@ -113,7 +113,9 @@ jobs:
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           [System.IO.Compression.ZipFile]::ExtractToDirectory("\$PWD\\actions-runner-win-x64-2.326.0.zip", "\$PWD")
 
-          .\config.cmd --url https://github.com/${{ github.repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABEL} --unattended
+          # With --ephemeral option, the runner will be removed after the job is done
+          # With --unattended option, the runner will not prompt for any input
+          .\config.cmd --url https://github.com/${{ github.repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABEL} --unattended --ephemeral
 
           Start-Process -FilePath ".\run.cmd" -WindowStyle Hidden
 
@@ -134,6 +136,7 @@ jobs:
             --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
             --key-name "${{ inputs.key-nmae }}" \
             --user-data "${USER_DATA}" \
+            --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
             --output text)
 
           # Set outputs
@@ -147,10 +150,11 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
     steps:
       - name: Hello dSPACE World
+        shell: pwsh
         run: 
-          echo 'Hello dSPACE World!'
+          Write-Host "Hello dSPACE World!"
           exit 1 # exit with failure
-          # exit 0 # exit with success 
+          # exit 0 # exit with success
 
 
   stop-runner:
@@ -169,75 +173,75 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Stop EC2 runner
         run: |
-          # Function to get runner ID with retries
-          get_runner_id() {
-            local max_attempts=5
-            local attempt=1
-            local wait_time=10
+          # # Function to get runner ID with retries
+          # get_runner_id() {
+          #   local max_attempts=5
+          #   local attempt=1
+          #   local wait_time=10
             
-            while [ $attempt -le $max_attempts ]; do
-              echo "Attempt $attempt to get runner ID..."
+          #   while [ $attempt -le $max_attempts ]; do
+          #     echo "Attempt $attempt to get runner ID..."
               
-              RUNNERS_RESPONSE=$(curl -sL \
-                -H "Accept: application/vnd.github.v3+json" \
-                -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runners")
+          #     RUNNERS_RESPONSE=$(curl -sL \
+          #       -H "Accept: application/vnd.github.v3+json" \
+          #       -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+          #       "https://api.github.com/repos/${{ github.repository }}/actions/runners")
               
-              echo $RUNNERS_RESPONSE
+          #     echo $RUNNERS_RESPONSE
 
-              RUNNER_ID=$(echo "$RUNNERS_RESPONSE" | jq -r ".runners[] | select(.name == \"${{ needs.start-runner.outputs.label }}\") | .id")
+          #     RUNNER_ID=$(echo "$RUNNERS_RESPONSE" | jq -r ".runners[] | select(.name == \"${{ needs.start-runner.outputs.label }}\") | .id")
               
-              if [ ! -z "$RUNNER_ID" ]; then
-                echo "Runner ID found: $RUNNER_ID"
-                return 0
-              fi
+          #     if [ ! -z "$RUNNER_ID" ]; then
+          #       echo "Runner ID found: $RUNNER_ID"
+          #       return 0
+          #     fi
               
-              echo "Runner not found, waiting ${wait_time} seconds before retry..."
-              sleep $wait_time
-              attempt=$((attempt + 1))
-            done
+          #     echo "Runner not found, waiting ${wait_time} seconds before retry..."
+          #     sleep $wait_time
+          #     attempt=$((attempt + 1))
+          #   done
             
-            return 1
-          }
+          #   return 1
+          # }
 
-          # Function to remove runner with retries
-          remove_runner() {
-            local runner_id=$1
-            local max_attempts=3
-            local attempt=1
-            local wait_time=5
+          # # Function to remove runner with retries
+          # remove_runner() {
+          #   local runner_id=$1
+          #   local max_attempts=3
+          #   local attempt=1
+          #   local wait_time=5
             
-            while [ $attempt -le $max_attempts ]; do
-              echo "Attempt $attempt to remove runner..."
+          #   while [ $attempt -le $max_attempts ]; do
+          #     echo "Attempt $attempt to remove runner..."
               
-              HTTP_STATUS=$(curl -sL -o /dev/null -w "%{http_code}" \
-                -X DELETE \
-                -H "Accept: application/vnd.github.v3+json" \
-                -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runners/$runner_id")
+          #     HTTP_STATUS=$(curl -sL -o /dev/null -w "%{http_code}" \
+          #       -X DELETE \
+          #       -H "Accept: application/vnd.github.v3+json" \
+          #       -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+          #       "https://api.github.com/repos/${{ github.repository }}/actions/runners/$runner_id")
               
-              if [ "$HTTP_STATUS" -eq 204 ]; then
-                echo "Runner removed successfully"
-                return 0
-              fi
+          #     if [ "$HTTP_STATUS" -eq 204 ]; then
+          #       echo "Runner removed successfully"
+          #       return 0
+          #     fi
               
-              echo "Failed to remove runner (HTTP status: $HTTP_STATUS), waiting ${wait_time} seconds before retry..."
-              sleep $wait_time
-              attempt=$((attempt + 1))
-            done
+          #     echo "Failed to remove runner (HTTP status: $HTTP_STATUS), waiting ${wait_time} seconds before retry..."
+          #     sleep $wait_time
+          #     attempt=$((attempt + 1))
+          #   done
             
-            return 1
-          }
+          #   return 1
+          # }
 
-          # Get runner ID first
-          if ! get_runner_id; then
-            echo "Failed to get runner ID after multiple attempts"
-          else
-            # Try to remove the runner
-            if ! remove_runner "$RUNNER_ID"; then
-              echo "Failed to remove runner after multiple attempts"
-            fi
-          fi
+          # # Get runner ID first
+          # if ! get_runner_id; then
+          #   echo "Failed to get runner ID after multiple attempts"
+          # else
+          #   # Try to remove the runner
+          #   if ! remove_runner "$RUNNER_ID"; then
+          #     echo "Failed to remove runner after multiple attempts"
+          #   fi
+          # fi
 
           # Handle instance based on conditions
           if [ "${{ inputs.shutdown-behavior }}" == "stop" ] || \
