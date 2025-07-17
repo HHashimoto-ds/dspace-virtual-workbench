@@ -33,7 +33,7 @@ on:
         options:
           - 'terminate'
           - 'stop'
-      failed-job-behavior:
+      failed-job-not-terminate:
         description: 'Do NOT terminate EC2 Instance when the job fails'
         type: boolean
         required: false
@@ -95,7 +95,7 @@ jobs:
           RUNNER_LABEL=github-run-id-"${{ github.run_id }}"
           echo "RUNNER_LABEL=$RUNNER_LABEL" >> $GITHUB_ENV
 
-          # Create user data powershell script
+          # Create user-data powershell script
           USER_DATA=$(cat <<EOF
           <powershell>
           New-Item -ItemType Directory -Path "C:\\actions-runner" -Force
@@ -120,21 +120,6 @@ jobs:
           EOF
           )
 
-
-
-          # Launch EC2 instance
-          # INSTANCE_ID=$(aws ec2 run-instances \
-          #   --image-id "${{ inputs.ami-id }}" \
-          #   --instance-type "${{ inputs.instance-type }}" \
-          #   --subnet-id "${{ inputs.subnet-id }}" \
-          #   --security-group-ids "${{ inputs.security-group-id }}" \
-          #   --iam-instance-profile "Name=${{ inputs.iam-role-name }}" \
-          #   --user-data "$USER_DATA" \
-          #   --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":500,\"VolumeType\":\"gp3\"}}]" \
-          #   --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
-          #   --query 'Instances[0].InstanceId' \
-          #   --output text)
-
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id "${{ inputs.ami-id }}" \
             --instance-type "${{ inputs.instance-type }}" \
@@ -153,19 +138,22 @@ jobs:
           echo "label=${RUNNER_LABEL}" >> $GITHUB_OUTPUT
           echo "ec2-instance-id=${INSTANCE_ID}" >> $GITHUB_OUTPUT
             
-  do-the-job:
-    name: Do the job on the Runner
+  do-dspace-job:
+    name: Do dSPACE job on the Runner
     needs: start-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
     steps:
-      - name: Hello World
-        run: echo 'Hello World!'
+      - name: Hello dSPACE World
+        run: 
+          echo 'Hello dSPACE World!'
+          exit 0 # exit with success 
+          # exit 1 # exit with failure
 
   stop-runner:
     name: Stop self-hosted EC2 Runner
     needs:
       - start-runner # required to get output from the start-runner job
-      - do-the-job # required to wait when the main job is done  
+      - do-dspace-job # required to wait when the main job is done  
     runs-on: ubuntu-latest
     if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
     steps:
@@ -177,9 +165,21 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Stop EC2 runner
         run: |
-          # Terminate EC2 instance
-          aws ec2 terminate-instances \
-            --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+          # Stop EC2 instance if the behavior is set to 'stop'
+          if [ "${{ inputs.shutdown-behavior }}" == "stop" ]; then
+            aws ec2 stop-instances \
+              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+          
+          # Stop EC2 instance if job failed and failed-job-not-terminate is set to 'true'
+          elif [ "${{ needs.do-dspace-job.result }}" == "failure" ] && ${{ inputs.failed-job-not-terminate }}; then
+            aws ec2 stop-instances \
+              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+
+          # Terminate EC2 instance oterwise
+          else
+            aws ec2 terminate-instances \
+              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+          fi
 
           # Get runner ID
           RUNNERS_RESPONSE=$(curl -sL \
@@ -188,7 +188,8 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/actions/runners")
           
           RUNNER_ID=$(echo "$RUNNERS_RESPONSE" | jq -r ".runners[] | select(.name == \"${{ needs.start-runner.outputs.label }}\") | .id")
-
+          echo "RUNNER_ID=$RUNNER_ID"
+          
           # Remove runner if found
           if [ ! -z "$RUNNER_ID" ]; then
             curl -sL \
