@@ -11,11 +11,11 @@ jobs:
         cdn-project-subpath:
           - "Projects\\ProjectA\\ProjectA.prj"
           - "Projects\\ProjectB\\ProjectB.prj"
-        param-1: [A, B]
-        param-2: [a, b]
+        param1: [A, B]
+        param2: [a, b]
     steps:
       - name: Show parameters
         run: |
           echo "cdn-project-subpath = ${{ matrix.cdn-project-subpath }}"
-          echo "param-1 = ${{ matrix.param1 }}"
-          echo "param^2 = ${{ matrix.param2 }}"
+          echo "param1 = ${{ matrix.param1 }}"
+          echo "param2 = ${{ matrix.param2 }}"
