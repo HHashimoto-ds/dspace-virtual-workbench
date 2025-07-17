@@ -3,19 +3,45 @@ name: Brute Force Cross-Validation Template
 on:
   workflow_dispatch:
 
+permissions:
+  actions: write # Required to call other workflows
+
 jobs:
   brute-force-cross-validation:
     runs-on: ubuntu-latest
     strategy:
+      # Add any additional parameters needed for your dSPACE job
       matrix:
         cdn-project-subpath:
           - "CDN\\ProjectA\\ProjectA.cdp"
           - "CDN\\ProjectB\\ProjectB.cdp"
         param1: [A, B]
         param2: [a, b]
+      # Allow all combinations to run even if one fails
+      fail-fast: false
     steps:
-      - name: Show parameters
-        run: |
-          echo "cdn-project-subpath = ${{ matrix.cdn-project-subpath }}"
-          echo "param1 = ${{ matrix.param1 }}"
-          echo "param2 = ${{ matrix.param2 }}"
+      - name: Call dSPACE Windows Runner
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'dspace-aws-on-demand-windows-runner-template.yaml',
+              ref: context.ref,
+              inputs: {
+                'ami-id': 'ami-0cfdba0116ec18ad9',
+                'instance-type': 't3.large',
+                'shutdown-behavior': 'terminate',
+                'ebs-volume-size': '500',
+                'failed-job-not-terminate': 'false',
+                'key-nmae': 'vew',
+                'subnet-id': 'subnet-0c67a10776c1a8ab5',
+                'security-group-id': 'sg-0b34f202be4889f4f',
+                'iam-role-name': 'AmazonSSMRoleForInstancesQuickSetup',
+                'cdn-project-subpath': '${{ matrix.cdn-project-subpath }}',
+                'param1': '${{ matrix.param1 }}',
+                'param2': '${{ matrix.param2 }}'
+              }
+            });

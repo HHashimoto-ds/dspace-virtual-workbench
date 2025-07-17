@@ -60,6 +60,22 @@ on:
         type: string
         required: false
         default: 'AmazonSSMRoleForInstancesQuickSetup'  # arn:aws:iam::952832774451:instance-profile/AmazonSSMRoleForInstancesQuickSetup
+      # Add any additional parameters needed for your dSPACE job
+      cdn-project-subpath:
+        description: 'ControlDesk Project Subpath'
+        type: string
+        required: false
+        default: 'CDN\\ProjectA\\ProjectA.cdp' # Replace with your default project subpath
+      param1:
+        description: 'Parameter 1'
+        type: string
+        required: false
+        default: 'A' # Replace with your default value
+      param2:
+        description: 'Parameter 2'
+        type: string
+        required: false
+        default: 'a' # Replace with your default value
 
 permissions:
   contents: read
@@ -162,20 +178,63 @@ jobs:
           $script = @"
           import win32com.client
           import pythoncom
+          import os
+          import sys
+          import logging
+
+          # Configure logging
+          logging.basicConfig(
+              level=logging.INFO,
+              format='%(asctime)s - %(levelname)s - %(message)s'
+          )
+
+          # Get parameters from environment variables
+          project_subpath = os.environ['CDN_PROJECT_SUBPATH']
+          param1 = os.environ['PARAM1']
+          param2 = os.environ['PARAM2']
+
           try:
+              logging.info(f"Starting ControlDesk automation")
+              logging.info(f"Project path: {project_subpath}")
+              logging.info(f"Parameters: param1={param1}, param2={param2}")
+              
               pythoncom.CoInitialize()
-              cdnApp = win32com.client.Dispatch("ControlDeskNG.Application")
-              cdnApp.OpenProject(r"C:\dSPACE\Projects\MyProject\MyProject.prj")
-              cdnApp.Quit(False)
+              cdn_app = None
+
+              logging.info("Initializing ControlDesk application")
+              cdn_app = win32com.client.Dispatch("ControlDeskNG.Application")
+              
+              logging.info("Opening project")
+              cdn_app.OpenProject(project_subpath)
+              logging.info("Project opened successfully")
+              
+              # Here you can use param1 and param2 for your ControlDesk operations
+              # For example:
+              # cdn_app.DoSomething(param1, param2)
+              
+              logging.info("Operations completed successfully")
+
+              logging.info("Closing ControlDesk application")
+              cdn_app.Quit(False)  # False = don't save changes
+              logging.info("ControlDesk closed successfully")
+              cdn_app = None
+              
           except Exception as e:
+              logging.error(f"Error in ControlDesk automation: {e}")
               import traceback
-              print("Failed to start ControlDesk:", e)
               traceback.print_exc()
-              exit(1)
+              sys.exit(1)
+              
           finally:
               pythoncom.CoUninitialize()
+              logging.info("ControlDesk automation completed")
           "@
 
+          # Set environment variables for the Python script
+          $env:CDN_PROJECT_SUBPATH = "${{ inputs.cdn-project-subpath }}"
+          $env:PARAM1 = "${{ inputs.param1 }}"
+          $env:PARAM2 = "${{ inputs.param2 }}"
+          
           $scriptPath = "$env:TEMP\\start_cd.py"
           $script | Out-File -FilePath $scriptPath -Encoding UTF8
           python $scriptPath
