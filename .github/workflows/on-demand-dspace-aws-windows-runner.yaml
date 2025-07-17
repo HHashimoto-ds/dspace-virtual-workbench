@@ -49,12 +49,12 @@ on:
         description: 'VPC Subnet ID for EC2 Instance'
         type: string
         required: false
-        default: 'subnet-0c02234f0685149b9' # 'subnet-0c67a10776c1a8ab5' # Replace with your default subnet
+        default: 'subnet-0c67a10776c1a8ab5' # 'subnet-0c02234f0685149b9' # 'subnet-0c67a10776c1a8ab5' # Replace with your default subnet
       security-group-id:
         description: 'Security Group ID for EC2 Instance'
         type: string
         required: false
-        default: sg-0a3740d437cb92517 # 'sg-0b34f202be4889f4f' # 'sg-0a3740d437cb92517'  # Replace with your default security group
+        default: sg-0b34f202be4889f4f # 'sg-0b34f202be4889f4f' # 'sg-0a3740d437cb92517'  # Replace with your default security group
       iam-role-name:
         description: 'IAM Role Name for EC2 Instance (must have EC2 and SSM permissions)'
         type: string
