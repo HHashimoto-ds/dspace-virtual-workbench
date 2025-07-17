@@ -150,18 +150,18 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
     steps:
       - name: Hello dSPACE World
-        shell: pwsh
+        shell: powershell
         run: |
           Write-Host "Hello dSPACE World!"
           # exit 1 # exit with failure
           # exit 0 # exit with success
       
       - name: Start ControlDesk
-        shell: pwsh
+        shell: powershell
         run: |
           python - <<EOF
           from win32com.client import Dispatch
-          cdnApp =  Dispatch("ControlDeskNG.Application")
+          cdnApp = Dispatch("ControlDeskNG.Application")
           cdnApp.OpenProject("C:\\dSPACE\\Projects\\MyProject\\MyProject.prj") # Replace with your project path
           cdnApp.Quit(False)
           cdnApp = None
