@@ -39,7 +39,7 @@ on:
         description: 'Do NOT terminate EC2 Instance when the job fails'
         type: boolean
         required: false
-        default: false
+        default: true
       # Add any additional parameters needed for your dSPACE job
       cdn-project-subpath:
         description: 'ControlDesk Project Subpath'
