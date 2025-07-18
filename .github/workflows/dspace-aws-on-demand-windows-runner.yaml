@@ -183,9 +183,12 @@ jobs:
           param1 = os.environ['PARAM1']
           param2 = os.environ['PARAM2']
 
+          # Get GITHUB WORKSPACE Path
+          github_workspace = os.environ('GITHUB_WORKSPACE')
+
           try:
               logging.info(f"Starting ControlDesk automation")
-              logging.info(f"Project path: {project_subpath}")
+              logging.info(f"Project subpath: {project_subpath}")
               logging.info(f"Parameters: param1={param1}, param2={param2}")
               
               pythoncom.CoInitialize()
@@ -194,8 +197,11 @@ jobs:
               logging.info("Initializing ControlDesk application")
               cdn_app = win32com.client.Dispatch("ControlDeskNG.Application")
               
-              logging.info("Opening project")
-              cdn_app.OpenProject(project_subpath)
+              # Convert relative path to absolute path
+              project_abspath = os.path.abspath(os.path.join(github_workspace, project_subpath))
+
+              logging.info(f"Opening project: {project_abspath}")
+              cdn_app.OpenProject(project_abspath)
               logging.info("Project opened successfully")
               
               # Here you can use param1 and param2 for your ControlDesk operations

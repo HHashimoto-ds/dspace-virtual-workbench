@@ -13,8 +13,8 @@ jobs:
       # Add any additional parameters needed for your dSPACE job
       matrix:
         cdn-project-subpath:
-          - "CDN/ProjectA/ProjectA.cdp"
-          - "CDN/ProjectB/ProjectB.cdp"
+          - "ControlDesk/ProjectA/ProjectA.CDP"
+          - "ControlDesk/ProjectB/ProjectB.CDP"
         param1: [A, B]
         param2: [a, b]
       # Allow all combinations to run even if one fails
