@@ -13,7 +13,7 @@ jobs:
       # Add any additional parameters needed for your dSPACE job
       matrix:
         ami-id: ['ami-0cfdba0116ec18ad9'] # Windows with dSPACE ControlDesk
-        instance-type: ['t3.large'] # recommended: t3.large or larger
+        instance-type: ['t3.2xlarge'] # recommended: t3.large or larger
         shutdown-behavior: ['terminate'] # or 'stop'
         ebs-volume-size: [500] # EBS volume size in GB
         failed-job-not-terminate: [true] # Do NOT terminate EC2 Instance when the job fails
