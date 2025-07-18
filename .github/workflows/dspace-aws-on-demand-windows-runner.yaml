@@ -1,4 +1,4 @@
-name: dSPACE AWS On-Demand Windows Runner Template
+name: dSPACE AWS On-Demand Windows Runner
 
 on:
   workflow_dispatch:
@@ -154,7 +154,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1 # Only fetch the latest commit to save time
-          
+
       - name: Hello dSPACE World
         shell: powershell
         run: |

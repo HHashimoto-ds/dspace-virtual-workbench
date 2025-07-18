@@ -1,4 +1,4 @@
-name: Brute Force Cross-Validation Template
+name: Brute Force Cross-Validation Dispatcher
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'dspace-aws-on-demand-windows-runner-template.yaml',
+              workflow_id: 'dspace-aws-on-demand-windows-runner.yaml',
               ref: context.ref,
               inputs: {
                 'ami-id': 'ami-0cfdba0116ec18ad9',
