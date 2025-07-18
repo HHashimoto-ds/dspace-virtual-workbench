@@ -19,7 +19,7 @@ jobs:
         failed-job-not-terminate: [true] # Do NOT terminate EC2 Instance when the job fails
         cdn-project-subpath:
           - "ControlDesk/ProjectA.ZIP"
-          - "ControlDesk/CD_Traffic.ZIP"
+          - "ControlDesk/VEOS.ZIP"
         param1: [A, B]
         param2: [a, b]
       # Allow all combinations to run even if one fails

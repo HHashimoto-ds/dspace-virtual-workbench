@@ -42,10 +42,10 @@ on:
         default: true
       # Add any additional parameters needed for your dSPACE job
       cdn-project-subpath:
-        description: 'ControlDesk Project Subpath'
+        description: 'ControlDesk Project ZIP Subpath'
         type: string
         required: false
-        default: 'ControlDesk/CD_Traffic.ZIP' # Replace with your default project subpath
+        default: 'ControlDesk/VEOS.ZIP' # Replace with your default project subpath
       param1:
         description: 'Parameter 1'
         type: string
@@ -76,7 +76,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ap-northeast-1
 
       - name: Start EC2 runner
         id: start-ec2-runner
@@ -264,7 +264,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ap-northeast-1
       - name: Stop EC2 runner
         run: |
           # Handle instance based on conditions
