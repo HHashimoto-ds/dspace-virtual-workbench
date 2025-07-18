@@ -45,7 +45,7 @@ on:
         description: 'ControlDesk Project Subpath'
         type: string
         required: false
-        default: 'ControlDesk/ProjectA/ProjectA.CDP' # Replace with your default project subpath
+        default: 'ControlDesk/CD_Traffic.ZIP' # Replace with your default project subpath
       param1:
         description: 'Parameter 1'
         type: string
