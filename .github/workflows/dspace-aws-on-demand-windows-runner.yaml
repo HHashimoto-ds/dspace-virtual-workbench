@@ -130,7 +130,7 @@ jobs:
             --instance-type "${{ inputs.instance-type }}" \
             --subnet-id "subnet-0aa2561258482ae58" \
             --security-group-ids "sg-0a3740d437cb92517" \
-            --iam-instance-profile "Name=AmazonSSMRoleForInstancesQuickSetup" \
+            --iam-instance-profile "Name=data-replay-346-AccessInstanceProfile-cCDJrbRcf8M0" \
             --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
             --query 'Instances[0].InstanceId' \
