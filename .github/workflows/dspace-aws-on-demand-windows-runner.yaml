@@ -186,7 +186,7 @@ jobs:
 
           try:
               logging.info(f"Starting ControlDesk automation")
-              logging.info(f"Project subpath: {project_subpath}")
+              logging.info(f"Project ZIP subpath: {project_subpath}")
               logging.info(f"Parameters: param1={param1}, param2={param2}")
               
               pythoncom.CoInitialize()
