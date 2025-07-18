@@ -1,4 +1,4 @@
-name: Brute Force Validation Dispatcher
+name: Brute Force Execution Dispatcher
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   actions: write # Required to call other workflows
 
 jobs:
-  brute-force-validation:
+  brute-force-execution:
     runs-on: ubuntu-latest
     strategy:
       # Add any additional parameters needed for your dSPACE job
