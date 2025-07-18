@@ -40,11 +40,6 @@ on:
         type: boolean
         required: false
         default: false
-      key-nmae:
-        description: 'SSH Key Pair Name for EC2 Instance (used for RDP password decryption)'
-        type: string
-        required: false
-        default: 'vew' # Replace with your default key pair name
       # Add any additional parameters needed for your dSPACE job
       cdn-project-subpath:
         description: 'ControlDesk Project Subpath'
@@ -125,6 +120,7 @@ jobs:
           EOF
           )
 
+          # With --key-name option, replace with your SSH key pair name for RDP password decryption
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id "${{ inputs.ami-id }}" \
             --instance-type "${{ inputs.instance-type }}" \
@@ -136,7 +132,7 @@ jobs:
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
             --query 'Instances[0].InstanceId' \
             --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
-            --key-name "${{ inputs.key-nmae }}" \
+            --key-name "vew" \
             --user-data "${USER_DATA}" \
             --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
             --output text)
