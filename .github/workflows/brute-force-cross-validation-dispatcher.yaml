@@ -2,6 +2,44 @@ name: Brute Force Cross-Validation Dispatcher
 
 on:
   workflow_dispatch:
+    inputs:
+      ami-id:
+        description: 'Windows AMI ID'
+        type: choice
+        required: false
+        default: 'ami-0cfdba0116ec18ad9' # Replace with your default Windows AMI
+        options:
+          - 'ami-0cfdba0116ec18ad9' # Windows with dSPACE ControlDesk
+          - 'ami-03f341346ac05fc46' # Windows_Server-2022-English-Full-Base-2025.07.09
+      instance-type:
+        description: 'EC2 Instance Type (recommended: t3.large or larger)'
+        type: choice
+        required: false
+        default: 't3.large'
+        options:
+          - 't3.large'
+          - 't3.xlarge'
+          - 't3.2xlarge'
+          - 'm5.large'
+          - 'm5.xlarge'
+      shutdown-behavior:
+        description: 'Shutdown Behavior for EC2 Instance'
+        type: choice
+        required: false
+        default: 'terminate'
+        options:
+          - 'terminate'
+          - 'stop'
+      ebs-volume-size:
+        description: 'EBS Volume Size in GB (default: 500)'
+        type: number
+        required: false
+        default: 500
+      failed-job-not-terminate:
+        description: 'Do NOT terminate EC2 Instance when the job fails'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   actions: write # Required to call other workflows
@@ -31,11 +69,11 @@ jobs:
               workflow_id: 'dspace-aws-on-demand-windows-runner.yaml',
               ref: context.ref,
               inputs: {
-                'ami-id': 'ami-0cfdba0116ec18ad9',
-                'instance-type': 't3.large',
-                'shutdown-behavior': 'terminate',
-                'ebs-volume-size': '500',
-                'failed-job-not-terminate': 'false',
+                'ami-id': '${{ inputs.ami-id }}',
+                'instance-type': '${{ inputs.instance-type }}',
+                'shutdown-behavior': '${{ inputs.shutdown-behavior }}',
+                'ebs-volume-size': '${{ inputs.ebs-volume-size }}',
+                'failed-job-not-terminate': '${{ inputs.failed-job-not-terminate }}',
                 'key-nmae': 'vew',
                 'cdn-project-subpath': '${{ matrix.cdn-project-subpath }}',
                 'param1': '${{ matrix.param1 }}',

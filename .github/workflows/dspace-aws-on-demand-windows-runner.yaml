@@ -50,7 +50,7 @@ on:
         description: 'ControlDesk Project Subpath'
         type: string
         required: false
-        default: 'CDN\\ProjectA\\ProjectA.cdp' # Replace with your default project subpath
+        default: 'ControlDesk/ProjectA/ProjectA.CDP' # Replace with your default project subpath
       param1:
         description: 'Parameter 1'
         type: string
@@ -185,7 +185,7 @@ jobs:
           param2 = os.environ['PARAM2']
 
           # Get GITHUB WORKSPACE Path
-          github_workspace = os.environ('GITHUB_WORKSPACE')
+          github_workspace = os.environ['GITHUB_WORKSPACE']
 
           try:
               logging.info(f"Starting ControlDesk automation")
@@ -198,8 +198,9 @@ jobs:
               logging.info("Initializing ControlDesk application")
               cdn_app = win32com.client.Dispatch("ControlDeskNG.Application")
               
-              # Convert relative path to absolute path
+              # Convert relative path to absolute path and normalize slashes
               project_abspath = os.path.abspath(os.path.join(github_workspace, project_subpath))
+              project_abspath = project_abspath.replace('/', '\\')  # Convert to Windows path format
 
               logging.info(f"Opening project: {project_abspath}")
               cdn_app.OpenProject(project_abspath)
