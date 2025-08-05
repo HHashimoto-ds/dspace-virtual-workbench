@@ -99,6 +99,9 @@ jobs:
           # Create user-data powershell script
           USER_DATA=$(cat <<EOF
           <powershell>
+          # Install Python uv
+          powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
           # Install Git
           \$GitVersion = "2.43.0"
           \$GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v\${GitVersion}.windows.1/Git-\${GitVersion}-64-bit.exe"
@@ -194,23 +197,10 @@ jobs:
           # exit 1 # exit with failure
           # exit 0 # exit with success
 
-      # - name: Install Python uv
-      #   shell: powershell
-      #   run: |
-      #     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-      - name: Register VEOS
+      - name: Register VEOS and Run pytest with allure reporting
         shell: powershell
         run: |
-          $result = & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
-          Write-Host "VEOS registration return code: $LASTEXITCODE"
-          if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 1) {
-            throw "VEOS registration failed with return code: $LASTEXITCODE"
-          }
-
-      - name: Run test with allure reporting
-        shell: powershell
-        run: |
+          & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
           cd "${{ inputs.uv }}"
           uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
