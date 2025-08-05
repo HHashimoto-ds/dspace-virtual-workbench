@@ -100,7 +100,19 @@ jobs:
           USER_DATA=$(cat <<EOF
           <powershell>
           # Install Python uv
+          Write-Host "Installing Python uv..."
           powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+          
+          # Add uv to PATH
+          Write-Host "Adding uv to PATH..."
+          \$uvPath = "\$env:USERPROFILE\.uv\bin"
+          \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";\$uvPath"
+          [System.Environment]::SetEnvironmentVariable("Path", \$env:Path, "Machine")
+          
+          # Verify uv installation
+          Write-Host "Verifying uv installation..."
+          \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+          uv --version
 
           # Install Git
           \$GitVersion = "2.43.0"
