@@ -211,21 +211,23 @@ jobs:
         id: upload_allure
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: allure-results
           path: ${{ inputs.uv }}/allure-results
           retention-days: 30
-        continue-on-error: true
 
-      - name: Set upload result
+      - name: Check Upload Status
         if: always()
-        shell: bash
+        shell: pwsh
         run: |
-          if [[ "${{ steps.upload_allure.outcome }}" == "success" ]]; then
-            echo "result=success" >> $GITHUB_OUTPUT
-          else
-            echo "result=failure" >> $GITHUB_OUTPUT
-          fi
+          if ("${{ steps.upload_allure.outcome }}" -eq "success") {
+            echo "result=success" >> $env:GITHUB_OUTPUT
+            Write-Host "Allure results upload successful"
+          } else {
+            echo "result=failure" >> $env:GITHUB_OUTPUT
+            Write-Host "Allure results upload failed"
+          }
 
 
   deploy-allure:
