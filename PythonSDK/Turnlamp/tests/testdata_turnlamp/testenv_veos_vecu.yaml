@@ -1,0 +1,29 @@
+
+# yaml-language-server: $schema=../../../../libs/openta/src/openta/config/testenv_schema.json
+
+ports:
+  - type: XIL API MAPort
+    name: Model
+    factory:
+      vendor_name: dSPACE GmbH
+      product_name: XIL API
+      product_version: 2024-A
+    order: 1
+    target_state: STARTED
+    port_config_file: VEOSVECU/turnlamp/Variable Descriptions/turnlamp.sdf/MAPortConfig.xml
+    force_config: true
+
+  - type: XIL API dSPACE ECUPort
+    name: ECU
+    factory:
+      vendor_name: dSPACE GmbH
+      product_name: XIL API
+      product_version: 2024-A
+    order: 2
+    target_state: STARTED
+    port_config_file: VEOSVECU/turnlamp/Variable Descriptions/leaderAppl.a2l/ECUPortConfig.xml
+    loading_type: eUPLOAD
+
+mappings:
+  - file: VEOSVECU/turnlamp/Mappings/TurnLampMapping.xml
+    type: XIL API Mapping

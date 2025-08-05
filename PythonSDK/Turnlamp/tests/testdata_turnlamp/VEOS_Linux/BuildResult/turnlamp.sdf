@@ -1,0 +1,16 @@
+[System]
+Version=2.1
+SystemType=SingleProcessorSystem
+Status=Start
+DAQService=DsDAQ
+File=turnlamp.osa
+RTP=turnlamp
+[turnlamp]
+ID=AGbUKoJFUTTuOUiRaNzgzgzOpZKPfpEQwQRyNECnzZUDIlJDy0b9zbpx0WX14zLsbvKbOEk1icynsOX5X6tybdo2AfQpREV8WOf/yk4/3t5svBFYDNhHxn4g/lgp+7L4zYPpDKlH3HujbLXINgW1NvDLyg4wZdH1SPlWTYJgX5m2oVEA
+Type=Offline
+BoardName=Offline
+State=Enabled
+ServiceID=1
+TraceFile=turnlamp.trc
+
+

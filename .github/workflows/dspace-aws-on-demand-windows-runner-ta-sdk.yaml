@@ -1,0 +1,257 @@
+name: dSPACE AWS On-Demand Windows Runner TA SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      ami-id:
+        description: 'Windows AMI ID'
+        type: choice
+        required: false
+        default: 'ami-0dc0f13e8dbac09d4' # Replace with your default Windows AMI
+        options:
+          - 'ami-0cfdba0116ec18ad9' # Windows with dSPACE ControlDesk
+          - 'ami-03f341346ac05fc46' # Windows_Server-2022-English-Full-Base-2025.07.09
+          - 'ami-0dc0f13e8dbac09d4' # TA_SDK
+      instance-type:
+        description: 'EC2 Instance Type (recommended: t3.large or larger)'
+        type: choice
+        required: false
+        default: 't3.2xlarge'
+        options:
+          - 't3.large'
+          - 't3.xlarge'
+          - 't3.2xlarge'
+          - 'm5.large'
+          - 'm5.xlarge'
+      shutdown-behavior:
+        description: 'Shutdown Behavior for EC2 Instance'
+        type: choice
+        required: false
+        default: 'terminate'
+        options:
+          - 'terminate'
+          - 'stop'
+      ebs-volume-size:
+        description: 'EBS Volume Size in GB (default: 500)'
+        type: number
+        required: false
+        default: 500
+      failed-job-not-terminate:
+        description: 'Do NOT terminate EC2 Instance when the job fails'
+        type: boolean
+        required: false
+        default: true
+      # Add any additional parameters needed for your dSPACE job
+      uv:
+        description: 'Python uv path'
+        type: string
+        required: false
+        default: 'PythonSDK/Turnlamp' # Replace with your default value
+      test:
+        description: 'Python test path'
+        type: string
+        required: false
+        default: 'tests/test_turnlamp.py' # Replace with your default value
+      openta-testenv-config:
+        description: 'OpenTA test environment config path'
+        type: string
+        required: false
+        default: 'tests/testdata_turnlamp/testenv_veos.yaml' # Replace with your default value  
+
+permissions:
+  contents: write
+  actions: write
+  checks: write
+  pages: write
+  id-token: write
+
+jobs:
+  start-runner:
+    name: Start self-hosted EC2 Runner
+    runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        run: |
+          # Get GitHub runner registration token
+          TOKEN_RESPONSE=$(curl -sL \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token")
+          REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
+
+          # Set runner label
+          RUNNER_LABEL=github-run-id-"${{ github.run_id }}"
+          echo "RUNNER_LABEL=$RUNNER_LABEL" >> $GITHUB_ENV
+
+          # Create user-data powershell script
+          USER_DATA=$(cat <<EOF
+          <powershell>
+          New-Item -ItemType Directory -Path "C:\\actions-runner" -Force
+          Set-Location -Path "C:\\actions-runner"
+
+          Start-Transcript -Path "C:\\actions-runner\\startup.log" -Append
+          Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-win-x64-2.326.0.zip -OutFile actions-runner-win-x64-2.326.0.zip
+
+          if ((Get-FileHash -Path actions-runner-win-x64-2.326.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '539d48815f8ecda6903755025d5b578f919a32692b731d85a9a24419fe4dbd9e'.ToUpper()) {
+            throw 'Computed checksum did not match'
+          }
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          [System.IO.Compression.ZipFile]::ExtractToDirectory("\$PWD\\actions-runner-win-x64-2.326.0.zip", "\$PWD")
+
+          # With --ephemeral option, the runner will be removed after the job is done
+          # With --unattended option, the runner will not prompt for any input
+          .\config.cmd --url https://github.com/${{ github.repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABEL} --unattended --ephemeral
+
+          Start-Process -FilePath ".\run.cmd" -WindowStyle Hidden
+
+          Stop-Transcript
+          </powershell>
+          EOF
+          )
+
+          # With --key-name option, replace with your SSH key pair name for RDP password decryption
+          INSTANCE_ID=$(aws ec2 run-instances \
+            --image-id "${{ inputs.ami-id }}" \
+            --instance-type "${{ inputs.instance-type }}" \
+            --subnet-id "subnet-0aa2561258482ae58" \
+            --security-group-ids "sg-0a3740d437cb92517" \
+            --associate-public-ip-address \
+            --iam-instance-profile "Name=data-replay-346-AccessInstanceProfile-cCDJrbRcf8M0" \
+            --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
+            --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
+            --query 'Instances[0].InstanceId' \
+            --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
+            --key-name "vew" \
+            --user-data "${USER_DATA}" \
+            --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
+            --output text)
+
+          # Set outputs
+          echo "label=${RUNNER_LABEL}" >> $GITHUB_OUTPUT
+          echo "ec2-instance-id=${INSTANCE_ID}" >> $GITHUB_OUTPUT
+
+
+  do-dspace-job:
+    name: Do dSPACE job on the Runner
+    needs: start-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # Only fetch the latest commit to save time
+
+      - name: Hello dSPACE World
+        shell: powershell
+        run: |
+          Write-Host "Hello dSPACE World!"
+          # exit 1 # exit with failure
+          # exit 0 # exit with success
+
+      # - name: Install Python uv
+      #   shell: powershell
+      #   run: |
+      #     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+      - name: Register VEOS
+        shell: powershell
+        run: |
+          & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
+      
+      - name: Sync Python uv environment
+        shell: powershell
+        run: |
+          cd "${{ inputs.uv }}"
+          uv sync
+
+      - name: Run test with allure reporting
+        shell: powershell
+        run: |
+          cd "${{ inputs.uv }}"
+          uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: ${{ inputs.uv }}/allure-results
+          retention-days: 30
+
+
+  deploy-allure:
+    name: Deploy Allure Report to GitHub Pages
+    needs: do-dspace-job
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download Allure Results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          gh_pages: true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        if: always()
+
+  stop-runner:
+    name: Stop self-hosted EC2 Runner
+    needs:
+      - start-runner # required to get output from the start-runner job
+      - do-dspace-job # required to wait when the main job is done  
+    runs-on: ubuntu-latest
+    if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      - name: Stop EC2 runner
+        run: |
+          # Handle instance based on conditions
+          if [ "${{ inputs.shutdown-behavior }}" == "stop" ] || \
+             ([ "${{ needs.do-dspace-job.result }}" == "failure" ] && ${{ inputs.failed-job-not-terminate }}); then
+            echo "Stopping EC2 instance..."
+            aws ec2 stop-instances \
+              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+          else
+            echo "Terminating EC2 instance..."
+            aws ec2 terminate-instances \
+              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
+          fi

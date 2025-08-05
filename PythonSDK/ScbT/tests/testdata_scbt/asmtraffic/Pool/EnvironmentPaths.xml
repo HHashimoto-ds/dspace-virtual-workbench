@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnvironmentPaths xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dspace.com/XMLSchema/ScenarioAccess/EnvironmentPaths/V10">
+	<Version>24.1</Version>
+
+  <!-- Write Access -->
+  <SubComponent Name="MODEL_DESK_WRITE_ACCESS">
+    <EnvironmentPath ParameterName="ModelDesk_WriteAccess">Model Root/Environment/Maneuver/PlantModel/MODEL_DESK_WRITE_ACCESS/Const_ModelDesk_WriteAccess/Value</EnvironmentPath>
+  </SubComponent>
+
+  <!-- Maneuver Control -->
+  <SubComponent Name="MANEUVER_STATE">
+    <EnvironmentPath ParameterName="MDLDManCtrl_ManeuverState">Model Root/Environment/Maneuver/PlantModel/MANEUVER_STATE/ManStateGain/Out1</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="MANEUVER_START">
+    <EnvironmentPath ParameterName="MDLDManCtrl_ManeuverStart">Model Root/Environment/Maneuver/UserInterface/PAR_Plant/ManeuverControl/MANEUVER_START/ManeuverStart[0|1]/Value</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="MANEUVER_STOP">
+    <EnvironmentPath ParameterName="MDLDManCtrl_ManeuverStop">Model Root/Environment/Maneuver/UserInterface/PAR_Plant/ManeuverControl/MANEUVER_STOP/ManeuverStop[0|1]/Value</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="RESET">
+    <EnvironmentPath ParameterName="MDLDManCtrl_Reset">Model Root/Environment/Maneuver/UserInterface/PAR_Plant/ManeuverControl/RESET/Reset[0|1]/Value</EnvironmentPath>
+  </SubComponent>
+
+  <!-- Maneuver -->
+  <SubComponent Name="MANEUVER_SCHEDULER">
+    <EnvironmentPath ParameterName="MDLDCom_ManeuverScheduler_HostStatus">Model Root/Environment/Maneuver/PlantModel/MANEUVER_SCHEDULER/MDLD_ComFlags_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ManeuverScheduler_HostMEMSize">Model Root/Environment/Maneuver/PlantModel/MANEUVER_SCHEDULER/MDLD_ComFlags_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ManeuverScheduler_SfcnStatus">Model Root/Environment/Maneuver/PlantModel/MANEUVER_SCHEDULER/ParameterDataProvider_SFcn/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ManeuverScheduler_SfcnMEMAddress">ASM ModelDesk/Maneuver_Data</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="MANEUVER_SELECT_SWITCH">
+    <EnvironmentPath ParameterName="Sw_Maneuver_Select">Model Root/Environment/Maneuver/UserInterface/PAR_Plant/MANEUVER_SELECT_SWITCH/Sw_ManeuverSelect[1_6]/Value</EnvironmentPath>
+  </SubComponent>
+
+  <!-- Road -->
+  <SubComponent Name="ROAD">
+    <EnvironmentPath ParameterName="MDLDCom_Road_HostStatus">Model Root/Environment/Road/PlantModel/ROAD/MDLD_ComFlags_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_Road_HostMEMSize">Model Root/Environment/Road/PlantModel/ROAD/MDLD_ComFlags_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_Road_SfcnStatus">Model Root/Environment/Road/PlantModel/ROAD/ParameterDataProvider_SFcn/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_Road_SfcnMEMAddress">ASM ModelDesk/Road_Data</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="ROAD_SELECT_SWITCH">
+    <EnvironmentPath ParameterName="SW_Road_Select">Model Root/Environment/Road/UserInterface/PAR_Plant/ROAD_SELECT_SWITCH/Sw_Road_Select[1_6]/Value</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="DISCRETE_OBJECTS">
+    <EnvironmentPath ParameterName="MDLDCom_DiscreteObjects_HostStatus">Model Root/Environment/Traffic/PlantModel/ObjectParameters/DISCRETE_OBJECTS/MDLD_ComFlags_DiscreteObjects_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_DiscreteObjects_HostMEMSize">Model Root/Environment/Traffic/PlantModel/ObjectParameters/DISCRETE_OBJECTS/MDLD_ComFlags_DiscreteObjects_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_DiscreteObjects_SfcnStatus">Model Root/Environment/Traffic/PlantModel/ObjectParameters/DISCRETE_OBJECTS/ParameterDataProvider_SFcn_DiscreteObjects/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_DiscreteObjects_SfcnMEMAddress">ASM ModelDesk/DiscreteObjects_Data</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_DiscreteObjects_SWParameterSelect">Model Root/Environment/Traffic/PlantModel/ObjectParameters/DISCRETE_OBJECTS/Sw_ParameterSelect_DiscreteObjects/Value</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="LANE_NETWORK">
+    <EnvironmentPath ParameterName="MDLDCom_LaneNetwork_HostStatus">Model Root/Environment/Road/PlantModel/LANE_NETWORK/MDLD_ComFlags_LaneNetwork_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_LaneNetwork_HostMEMSize">Model Root/Environment/Road/PlantModel/LANE_NETWORK/MDLD_ComFlags_LaneNetwork_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_Lane_Network_SfcnStatus">Model Root/Environment/Road/PlantModel/LANE_NETWORK/ParameterDataProvider_SFcn_LaneNetwork/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_LaneNetwork_SfcnMEMAddress">ASM ModelDesk/LaneNetwork_Data</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_LaneNetwork_SWParameterSelect">Model Root/Environment/Road/PlantModel/LANE_NETWORK/Sw_ParameterSelect_LaneNetwork/Value</EnvironmentPath>
+  </SubComponent>
+
+  <!-- Traffic -->
+  <SubComponent Name="TRAFFIC_SCHEDULER">
+    <EnvironmentPath ParameterName="MDLDCom_TrafficScheduler_HostStatus">Model Root/Environment/Traffic/PlantModel/FellowMovement/TRAFFIC_SCHEDULER/MDLD_ComFlags_TrafficScheduler_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_TrafficScheduler_HostMEMSize">Model Root/Environment/Traffic/PlantModel/FellowMovement/TRAFFIC_SCHEDULER/MDLD_ComFlags_TrafficScheduler_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_TrafficScheduler_SfcnStatus">Model Root/Environment/Traffic/PlantModel/FellowMovement/TRAFFIC_SCHEDULER/ParameterDataProvider_SFcn_TrafficScheduler/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_TrafficScheduler_SfcnMEMAddress">ASM ModelDesk/Traffic_Data</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_TrafficScheduler_SWParameterSelect">Model Root/Environment/Traffic/PlantModel/FellowMovement/TRAFFIC_SCHEDULER/Sw_ParameterSelect_TrafficScheduler/Value</EnvironmentPath>
+  </SubComponent>
+  <SubComponent Name="FELLOW_PARAMETERS">
+    <EnvironmentPath ParameterName="TrafficObject_Type_Fellows">Model Root/Environment/Traffic/PlantModel/ObjectParameters/FELLOW_PARAMETERS/Const_TrafficObject_Type_Fellows[]/Value</EnvironmentPath>
+  </SubComponent>
+
+  <!-- Traffic Objects (Road / Traffic) -->
+  <SubComponent Name="TRAFFIC_OBJECTS">
+    <EnvironmentPath ParameterName="MDLDCom_ObjRoad_HostStatus">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/MDLD_ComFlags_ObjRoad_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjRoad_HostMEMSize">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/MDLD_ComFlags_ObjRoad_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjRoad_SfcnStatus">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/ParameterDataProvider_SFcn_ObjRoad/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjRoad_SfcnMEMAddress">ASM ModelDesk/RoadObjects_Data</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjTraffic_HostStatus">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/MDLD_ComFlags_ObjTraffic_In/Com_In1/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjTraffic_HostMEMSize">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/MDLD_ComFlags_ObjTraffic_In/Com_In2/Value</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjTraffic_SfcnStatus">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/ParameterDataProvider_SFcn_ObjTraffic/Out2</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjTraffic_SfcnMEMAddress">ASM ModelDesk/TrafficObjects_Data</EnvironmentPath>
+    <EnvironmentPath ParameterName="MDLDCom_ObjTraffic_SWParameterSelect">Model Root/Environment/Traffic/PlantModel/ObjectParameters/TRAFFIC_OBJECTS/Sw_ParameterSelect_ObjTraffic/Value</EnvironmentPath>
+  </SubComponent>
+</EnvironmentPaths>

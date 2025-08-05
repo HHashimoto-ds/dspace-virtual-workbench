@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MappingsMetaData SchemaVersion="1">
+  <PortIDMapping>
+    <Entry PortID="Model" PlatformID="cec186a2-0abb-4b89-a49c-1dd6a31b6fb1" />
+  </PortIDMapping>
+  <MappingFiles>
+    <MappingFile Name="TurnLampMapping.xml">
+      <SourcePath>turnlamp\TurnLampMapping.xml</SourcePath>
+    </MappingFile>
+  </MappingFiles>
+</MappingsMetaData>

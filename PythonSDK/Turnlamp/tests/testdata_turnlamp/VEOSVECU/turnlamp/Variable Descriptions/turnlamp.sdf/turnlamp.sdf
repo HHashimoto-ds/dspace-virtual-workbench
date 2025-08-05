@@ -1,0 +1,16 @@
+[System]
+Version=2.1
+SystemType=SingleProcessorSystem
+Status=Start
+DAQService=DsDAQ
+File=turnlamp.osa
+RTP=followerAppl
+[followerAppl]
+ID=AWV+pZy9tabsL2dv6Jjtr8k7Tlx8z9K8uGAm9WhHPdJm8yf9P4syWn298Nmt7oIP9V/yR9hhIDT3W6VvJ3Snf12TARku1jCg2dZno7b3VBcs7jL9zHGaUVmQPn0erks0/Xv3aej7mFpmG/QrbyOmK+L/vBXBPHBFo2Mts282QNC6Vs09
+Type=Offline
+BoardName=Offline
+State=Enabled
+ServiceID=1
+TraceFile=followerAppl.trc
+
+
