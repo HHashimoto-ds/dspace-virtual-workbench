@@ -212,6 +212,7 @@ jobs:
       - name: Register VEOS and Run pytest with allure reporting
         shell: powershell
         run: |
+          powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
           & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
           cd "${{ inputs.uv }}"
           uv sync
