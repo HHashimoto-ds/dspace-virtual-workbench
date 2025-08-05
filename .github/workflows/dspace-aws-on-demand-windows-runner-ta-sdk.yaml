@@ -100,19 +100,24 @@ jobs:
           USER_DATA=$(cat <<EOF
           <powershell>
           # Install Git
-          # $GitVersion = "2.43.0"
-          # $GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v${GitVersion}.windows.1/Git-${GitVersion}-64-bit.exe"
-          # $GitInstallerPath = "C:\\Git-${GitVersion}-64-bit.exe"
+          $GitVersion = "2.43.0"
+          $GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v${GitVersion}.windows.1/Git-${GitVersion}-64-bit.exe"
+          $GitInstallerPath = "C:\\Git-${GitVersion}-64-bit.exe"
           
-          # Write-Host "Downloading Git installer..."
-          # Invoke-WebRequest -Uri $GitInstallerUrl -OutFile $GitInstallerPath
+          Write-Host "Downloading Git installer..."
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          $webClient = New-Object System.Net.WebClient
+          $webClient.Headers.Add("User-Agent", "PowerShell")
+          Write-Host "Download started..."
+          $webClient.DownloadFile($GitInstallerUrl, $GitInstallerPath)
+          Write-Host "Download completed."
           
-          # Write-Host "Installing Git..."
-          # Start-Process -FilePath $GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
+          Write-Host "Installing Git..."
+          Start-Process -FilePath $GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
           
-          # Write-Host "Adding Git to PATH..."
-          # $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
-          # [System.Environment]::SetEnvironmentVariable("Path", $env:Path, "Machine")
+          Write-Host "Adding Git to PATH..."
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
+          [System.Environment]::SetEnvironmentVariable("Path", $env:Path, "Machine")
 
           New-Item -ItemType Directory -Path "C:\\actions-runner" -Force
           Set-Location -Path "C:\\actions-runner"
