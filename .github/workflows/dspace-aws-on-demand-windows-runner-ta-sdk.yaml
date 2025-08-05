@@ -172,6 +172,8 @@ jobs:
     name: Do dSPACE job on the Runner
     needs: start-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
+    outputs:
+      allure_upload_result: ${{ steps.upload_allure.outputs.result }}
     steps:
       - name: Verify Git Installation
         shell: powershell
@@ -206,17 +208,30 @@ jobs:
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
 
       - name: Upload Allure Results
+        id: upload_allure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: ${{ inputs.uv }}/allure-results
           retention-days: 30
+        continue-on-error: true
+
+      - name: Set upload result
+        if: always()
+        shell: bash
+        run: |
+          if [[ "${{ steps.upload_allure.outcome }}" == "success" ]]; then
+            echo "result=success" >> $GITHUB_OUTPUT
+          else
+            echo "result=failure" >> $GITHUB_OUTPUT
+          fi
 
 
   deploy-allure:
     name: Deploy Allure Report to GitHub Pages
     needs: do-dspace-job
+    if: needs.do-dspace-job.outputs.allure_upload_result == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
