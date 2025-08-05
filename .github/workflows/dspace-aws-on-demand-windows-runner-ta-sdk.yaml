@@ -202,18 +202,17 @@ jobs:
       - name: Register VEOS
         shell: powershell
         run: |
-          & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
-      
-      - name: Sync Python uv environment
-        shell: powershell
-        run: |
-          cd "${{ inputs.uv }}"
-          uv sync
+          $result = & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
+          Write-Host "VEOS registration return code: $LASTEXITCODE"
+          if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 1) {
+            throw "VEOS registration failed with return code: $LASTEXITCODE"
+          }
 
       - name: Run test with allure reporting
         shell: powershell
         run: |
           cd "${{ inputs.uv }}"
+          uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
 
       - name: Upload Allure Results
