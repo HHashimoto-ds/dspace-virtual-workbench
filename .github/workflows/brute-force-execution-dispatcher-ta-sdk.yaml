@@ -40,8 +40,8 @@ jobs:
                 'shutdown-behavior': '${{ matrix.shutdown-behavior }}',
                 'ebs-volume-size': '${{ matrix.ebs-volume-size }}',
                 'failed-job-not-terminate': '${{ matrix.failed-job-not-terminate }}',
-                'cdn-project-subpath': '${{ matrix.cdn-project-subpath }}',
-                'param1': '${{ matrix.param1 }}',
-                'param2': '${{ matrix.param2 }}'
+                'uv': '${{ matrix.uv }}',
+                'test': '${{ matrix.test }}',
+                'openta-testenv-config': '${{ matrix.openta-testenv-config }}'
               }
             });
