@@ -1,0 +1,107 @@
+name: dSPACE Debug Job
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner-label:
+        description: 'Runner label to use'
+        type: string
+        required: true
+      uv:
+        description: 'Python uv path'
+        type: string
+        required: false
+        default: 'PythonSDK/Turnlamp'
+      test:
+        description: 'Python test path'
+        type: string
+        required: false
+        default: 'tests/test_turnlamp.py'
+      openta-testenv-config:
+        description: 'OpenTA test environment config path'
+        type: string
+        required: false
+        default: 'tests/testdata_turnlamp/testenv_veos.yaml'
+
+permissions:
+  contents: write
+  actions: write
+  checks: write
+  pages: write
+  id-token: write
+
+jobs:
+  do-dspace-job:
+    name: Do dSPACE job on the Runner
+    runs-on: ${{ inputs.runner-label }}
+    steps:
+      - name: Verify Git Installation
+        shell: powershell
+        run: |
+          Write-Host "Verifying Git installation..."
+          git --version
+          if ($LASTEXITCODE -ne 0) {
+            throw "Git is not properly installed or not in PATH"
+          }
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Register VEOS and Run pytest with allure reporting
+        shell: powershell
+        run: |
+          powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+          $env:Path = "C:\Users\Administrator\.local\bin;$env:Path"
+          
+          & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
+          cd "${{ inputs.uv }}"
+          uv sync
+          uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: allure-results
+          path: ${{ inputs.uv }}/allure-results
+          retention-days: 30
+          if-no-files-found: warn
+
+  deploy-allure:
+    name: Deploy Allure Report to GitHub Pages
+    needs: do-dspace-job
+    if: always()
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download Allure Results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          gh_pages: true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        if: always()
