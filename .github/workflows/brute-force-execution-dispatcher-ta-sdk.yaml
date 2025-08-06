@@ -32,7 +32,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'dspace-aws-on-demand-windows-runner.yaml',
+              workflow_id: 'dspace-aws-on-demand-windows-runner-ta-sdk.yaml',
               ref: context.ref,
               inputs: {
                 'ami-id': '${{ matrix.ami-id }}',
