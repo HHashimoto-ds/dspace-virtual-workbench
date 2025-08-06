@@ -60,6 +60,29 @@ jobs:
           uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
 
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: allure-results
+          path: ${{ inputs.uv }}/allure-results
+
+  generate-report:
+    name: Generate Allure Report
+    needs: do-dspace-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download test results
+        uses: actions/download-artifact@v3
+        with:
+          name: allure-results
+          path: allure-results
+
       - name: Load test report history
         uses: actions/checkout@v4
         if: always()
