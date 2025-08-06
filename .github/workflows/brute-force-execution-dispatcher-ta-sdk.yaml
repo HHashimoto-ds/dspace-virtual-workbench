@@ -1,0 +1,141 @@
+name: Brute Force Execution Dispatcher TA SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      matrix-ami-id:
+        description: 'AMI IDs (comma-separated)'
+        type: string
+        required: false
+        default: 'ami-0dc0f13e8dbac09d4'
+      matrix-instance-type:
+        description: 'Instance types (comma-separated)'
+        type: string
+        required: false
+        default: 't3.2xlarge'
+      matrix-shutdown-behavior:
+        description: 'Shutdown behaviors (comma-separated)'
+        type: string
+        required: false
+        default: 'terminate'
+      matrix-ebs-volume-size:
+        description: 'EBS volume sizes (comma-separated)'
+        type: string
+        required: false
+        default: '500'
+      matrix-failed-job-not-terminate:
+        description: 'Failed job not terminate flags (comma-separated)'
+        type: string
+        required: false
+        default: 'true'
+      matrix-uv:
+        description: 'UV paths (comma-separated)'
+        type: string
+        required: false
+        default: 'PythonSDK/Turnlamp'
+      matrix-test:
+        description: 'Test paths (comma-separated)'
+        type: string
+        required: false
+        default: 'tests/test_turnlamp.py'
+      matrix-openta-testenv-config:
+        description: 'OpenTA test environment config paths (comma-separated)'
+        type: string
+        required: false
+        default: 'tests/testdata_turnlamp/testenv_veos.yaml'
+
+permissions:
+  actions: write # Required to call other workflows
+
+jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set matrix
+        id: set-matrix
+        run: |
+          # Function to generate combinations
+          generate_combinations() {
+            local arrays=("$@")
+            local result="[]"
+            
+            # Start with first array
+            for item in $(echo "${arrays[0]}" | jq -r '.[]'); do
+              result=$(echo "$result" | jq ". + [{\"ami-id\": \"$item\"}]")
+            done
+            
+            # Add other arrays
+            local keys=("instance-type" "shutdown-behavior" "ebs-volume-size" "failed-job-not-terminate" "uv" "test" "openta-testenv-config")
+            for i in {1..7}; do
+              local new_result="[]"
+              for combination in $(echo "$result" | jq -c '.[]'); do
+                for item in $(echo "${arrays[$i]}" | jq -r '.[]'); do
+                  new_combination=$(echo "$combination" | jq ". + {\"${keys[$i-1]}\": \"$item\"}")
+                  new_result=$(echo "$new_result" | jq ". + [$new_combination]")
+                done
+              done
+              result="$new_result"
+            done
+            
+            echo "$result"
+          }
+
+          # Convert inputs to JSON arrays
+          ami_id_array=$(echo '${{ inputs.matrix-ami-id }}' | jq -R 'split(",") | map(select(length > 0))')
+          instance_type_array=$(echo '${{ inputs.matrix-instance-type }}' | jq -R 'split(",") | map(select(length > 0))')
+          shutdown_behavior_array=$(echo '${{ inputs.matrix-shutdown-behavior }}' | jq -R 'split(",") | map(select(length > 0))')
+          ebs_volume_size_array=$(echo '${{ inputs.matrix-ebs-volume-size }}' | jq -R 'split(",") | map(select(length > 0))')
+          failed_job_not_terminate_array=$(echo '${{ inputs.matrix-failed-job-not-terminate }}' | jq -R 'split(",") | map(select(length > 0))')
+          uv_array=$(echo '${{ inputs.matrix-uv }}' | jq -R 'split(",") | map(select(length > 0))')
+          test_array=$(echo '${{ inputs.matrix-test }}' | jq -R 'split(",") | map(select(length > 0))')
+          openta_testenv_config_array=$(echo '${{ inputs.matrix-openta-testenv-config }}' | jq -R 'split(",") | map(select(length > 0))')
+
+          # Generate all combinations
+          combinations=$(generate_combinations "$ami_id_array" "$instance_type_array" "$shutdown_behavior_array" "$ebs_volume_size_array" "$failed_job_not_terminate_array" "$uv_array" "$test_array" "$openta_testenv_config_array")
+
+          # Create matrix JSON
+          matrix_json=$(cat <<EOF
+          {
+            "include": $combinations
+          }
+          EOF
+          )
+
+          # Escape JSON for GitHub Actions
+          matrix_json="${matrix_json//'%'/'%25'}"
+          matrix_json="${matrix_json//$'\n'/'%0A'}"
+          matrix_json="${matrix_json//$'\r'/'%0D'}"
+
+          # Set matrix output
+          echo "matrix=${matrix_json}" >> $GITHUB_OUTPUT
+
+  brute-force-execution:
+    needs: prepare-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - name: Call dSPACE Windows Runner
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'dspace-aws-on-demand-windows-runner-ta-sdk.yaml',
+              ref: context.ref,
+              inputs: {
+                'ami-id': '${{ matrix.ami-id }}',
+                'instance-type': '${{ matrix.instance-type }}',
+                'shutdown-behavior': '${{ matrix.shutdown-behavior }}',
+                'ebs-volume-size': '${{ matrix.ebs-volume-size }}',
+                'failed-job-not-terminate': '${{ matrix.failed-job-not-terminate }}',
+                'uv': '${{ matrix.uv }}',
+                'test': '${{ matrix.test }}',
+                'openta-testenv-config': '${{ matrix.openta-testenv-config }}'
+              }
+            });

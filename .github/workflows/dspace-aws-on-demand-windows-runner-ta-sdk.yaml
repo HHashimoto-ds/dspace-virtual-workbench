@@ -7,11 +7,11 @@ on:
         description: 'Windows AMI ID'
         type: choice
         required: false
-        default: 'ami-0dc0f13e8dbac09d4' # Replace with your default Windows AMI
+        default: 'ami-0dc0f13e8dbac09d4'
         options:
           - 'ami-0cfdba0116ec18ad9' # Windows with dSPACE ControlDesk
           - 'ami-03f341346ac05fc46' # Windows_Server-2022-English-Full-Base-2025.07.09
-          - 'ami-0dc0f13e8dbac09d4' # TA_SDK
+          - 'ami-0dc0f13e8dbac09d4' # Windows TA_SDK AMI
       instance-type:
         description: 'EC2 Instance Type (recommended: t3.large or larger)'
         type: choice

@@ -1,4 +1,4 @@
-name: dSPACE Debug Job
+name: dSPACE Debug Workflow
 
 on:
   workflow_dispatch:
