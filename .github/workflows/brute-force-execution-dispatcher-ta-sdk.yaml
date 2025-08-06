@@ -18,8 +18,8 @@ jobs:
         ebs-volume-size: [500] # EBS volume size in GB
         failed-job-not-terminate: [true] # Do NOT terminate EC2 Instance when the job fails
         uv: ['PythonSDK/Turnlamp']
-        test : ['tests/test_turnlamp.py', 'tests/test_turnlamp.py']
-        openta-testenv-config: [tests/testdata_turnlamp/testenv_veos.yam']
+        test: ['tests/test_turnlamp.py']
+        openta-testenv-config: ['tests/testdata_turnlamp/testenv_veos.yaml']
 
       # Allow all combinations to run even if one fails
       fail-fast: false
