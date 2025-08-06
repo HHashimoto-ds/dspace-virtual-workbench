@@ -60,12 +60,26 @@ jobs:
           uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
 
-      - name: Upload Allure Results
+      - name: Load test report history
+        uses: actions/checkout@v4
         if: always()
-        uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: allure-results
-          path: ${{ inputs.uv }}/allure-results
-          retention-days: 30
-          if-no-files-found: warn
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Build test report
+        uses: simple-elf/allure-report-action@v1.11
+        if: always()
+        with:
+          gh_pages: gh-pages
+          allure_results: allure-results # このデータを基に、
+          allure_history: allure-history # このディレクトリにレポートを生成
+ 
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v4
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history # レポートをGitHub Pagesへ配信    
