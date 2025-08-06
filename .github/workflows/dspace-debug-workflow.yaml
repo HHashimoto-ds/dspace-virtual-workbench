@@ -98,8 +98,15 @@ jobs:
         if: always()
         with:
           gh_pages: gh-pages
-          allure_results: allure-results # このデータを基に、
-          allure_history: allure-history # このディレクトリにレポートを生成
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
+          github_run_num: ${{ github.run_number }}
+          github_run_id: ${{ github.run_id }}
+          github_repo: ${{ github.repository }}
+          github_repo_owner: ${{ github.repository_owner }}
+          github_tests_repo: ${{ github.repository }}
+          github_server_url: ${{ github.server_url }}
  
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v4
@@ -107,4 +114,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-history # レポートをGitHub Pagesへ配信
+          publish_dir: allure-history
+          keep_files: true
