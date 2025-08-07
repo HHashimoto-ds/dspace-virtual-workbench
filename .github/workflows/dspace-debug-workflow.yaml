@@ -107,8 +107,9 @@ jobs:
           path: allure-report
 
   deploy-pages:
-    name: Deploy to GitHub Pages
+    name: Deploy Allure Report to GitHub Pages
     needs: generate-allure-report
+    if: always()
     runs-on: ubuntu-latest
     environment:
       name: github-pages
