@@ -32,7 +32,7 @@ permissions:
 
 jobs:
   do-dspace-job:
-    name: Do dSPACE job on self-hosted runner
+    name: Do dSPACE job
     runs-on: ${{ inputs.runner-label }}
     steps:
       - name: Verify Git Installation
@@ -47,15 +47,25 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 1 # Only fetch the latest commit to save time
 
-      - name: Register VEOS and Run pytest with allure reporting
+      - name: Hello dSPACE World
+        shell: powershell
+        run: |
+          Write-Host "Hello dSPACE World!"
+          # exit 1 # exit with failure
+          # exit 0 # exit with success
+
+      - name: Run pytest with Allure reporting
         shell: powershell
         run: |
           powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
           $env:Path = "C:\Users\Administrator\.local\bin;$env:Path"
           
+          # Start VEOS
           & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
+          
+          # Run pytest with Allure Results
           cd "${{ inputs.uv }}"
           uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
@@ -71,7 +81,7 @@ jobs:
           if-no-files-found: warn
 
   generate-allure-report:
-    name: Generate and Deploy Allure Report
+    name: Generate Allure Report
     needs: do-dspace-job
     if: always()
     runs-on: ubuntu-latest
@@ -101,4 +111,4 @@ jobs:
         run: |
           REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
           echo "### 🔍 Allure Report" >> $GITHUB_STEP_SUMMARY
-          echo "📊 [View Test Report](https://${{ github.repository_owner }}.github.io/${REPO_NAME}/reports/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View report](https://${{ github.repository_owner }}.github.io/${REPO_NAME}/reports/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
