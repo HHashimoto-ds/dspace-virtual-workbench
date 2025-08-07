@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PortConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ECUPortConfig>
-    <A2LFile>leaderAppl.a2l</A2LFile>
-  </ECUPortConfig>
-</PortConfigurations>

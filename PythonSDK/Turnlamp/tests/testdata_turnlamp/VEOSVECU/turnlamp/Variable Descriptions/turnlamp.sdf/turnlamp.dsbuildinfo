@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BuildInfo xmlns:bldInfo="urn:dSPACE:BuildInfo"
-  bldInfo:version="1">
-  <!--The last modification of the following simulation system: turnlamp.-->
-  <bldInfo:ModificationDate>2024-03-12T13:27:44.9144966Z</bldInfo:ModificationDate>
-</BuildInfo>

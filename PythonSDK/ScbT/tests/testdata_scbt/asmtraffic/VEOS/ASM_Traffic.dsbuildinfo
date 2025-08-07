@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BuildInfo xmlns:bldInfo="urn:dSPACE:BuildInfo"
-  bldInfo:version="1">
-  <!--The last modification of the following simulation system: ASM_Traffic.-->
-  <bldInfo:ModificationDate>2025-03-21T12:49:11.9525604Z</bldInfo:ModificationDate>
-</BuildInfo>
