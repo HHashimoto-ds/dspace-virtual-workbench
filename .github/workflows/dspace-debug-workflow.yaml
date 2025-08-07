@@ -101,8 +101,8 @@ jobs:
       - name: Generate Report
         run: |
           mkdir -p allure-report
-          allure generate allure-results --clean -o allure-report
-          mv allure-report/* allure-report/${{ steps.run-id.outputs.run_id }}
+          mkdir -p allure-report/${{ steps.run-id.outputs.run_id }}
+          allure generate allure-results --clean -o allure-report/${{ steps.run-id.outputs.run_id }}
 
       - name: Create index.html
         run: |
