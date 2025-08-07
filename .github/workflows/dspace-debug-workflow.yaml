@@ -73,6 +73,7 @@ jobs:
   generate-allure-report:
     name: Generate Allure Report
     needs: do-dspace-job
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Download Allure Results
