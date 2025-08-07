@@ -1,0 +1,3 @@
+INFO     openta:testenv.py:65 XIL release port.
+INFO     openta:xil_port.py:59 Disconnect port 'Model'
+INFO     openta:xil_port.py:71 Dispose port 'Model'
