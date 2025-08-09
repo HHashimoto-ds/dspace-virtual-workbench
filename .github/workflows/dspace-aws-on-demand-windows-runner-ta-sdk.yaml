@@ -81,11 +81,11 @@ jobs:
           echo "| Shutdown Behavior | \`${{ inputs.shutdown-behavior }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| EBS Volume Size | \`${{ inputs.ebs-volume-size }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Failed Job Not Terminate | \`${{ inputs.failed-job-not-terminate }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| GitHub Branch | \`${{ github.ref }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| GitHub Repository | \`${{ github.repository }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| UV Path | \`${{ inputs.uv }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Test Path | \`${{ inputs.test }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| OpenTA Test Environment Config | \`${{ inputs.openta-testenv-config }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| GitHub Repository | \`${{ github.repository }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| GitHub Branch | \`${{ github.ref }}\` |" >> $GITHUB_STEP_SUMMARY
 
   start-runner:
     name: Start self-hosted EC2 Runner
