@@ -66,6 +66,24 @@ permissions:
   id-token: write
 
 jobs:
+  show-inputs:
+    name: Show Inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show Inputs
+        run: |
+          echo "## Inputs" >> $GITHUB_STEP_SUMMARY
+          echo "### AMI ID: ${{ inputs.ami-id }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Instance Type: ${{ inputs.instance-type }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Shutdown Behavior: ${{ inputs.shutdown-behavior }}" >> $GITHUB_STEP_SUMMARY
+          echo "### EBS Volume Size: ${{ inputs.ebs-volume-size }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Failed Job Not Terminate: ${{ inputs.failed-job-not-terminate }}" >> $GITHUB_STEP_SUMMARY
+          echo "### UV Path: ${{ inputs.uv }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Path: ${{ inputs.test }}" >> $GITHUB_STEP_SUMMARY
+          echo "### OpenTA Test Environment Config: ${{ inputs.openta-testenv-config }}" >> $GITHUB_STEP_SUMMARY
+          echo "### GitHub Repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "### GitHub Branch: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+
   start-runner:
     name: Start self-hosted EC2 Runner
     runs-on: ubuntu-latest
