@@ -91,8 +91,8 @@ jobs:
     name: Start self-hosted EC2 Runner
     runs-on: ubuntu-latest
     outputs:
-      label: ${{ steps.start-ec2-runner.outputs.label }}
-      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+      label: ${{ steps.start-windows-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-windows-ec2-runner.outputs.ec2-instance-id }}
 
     steps:
       - name: Configure AWS credentials
@@ -100,10 +100,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-1
+          aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Start EC2 runner
-        id: start-ec2-runner
+      - name: Start Windows EC2 runner
+        id: start-windows-ec2-runner
         run: |
           # Get GitHub runner registration token
           TOKEN_RESPONSE=$(curl -sL \
@@ -171,15 +171,15 @@ jobs:
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id "${{ inputs.ami-id }}" \
             --instance-type "${{ inputs.instance-type }}" \
-            --subnet-id "subnet-0aa2561258482ae58" \
-            --security-group-ids "sg-0a3740d437cb92517" \
+            --subnet-id "${{ vars.AWS_VPC_SUBNET_ID }}"  \
+            --security-group-ids "${{ vars.AWS_SECURITY_GROUP_IDS }}" \
             --associate-public-ip-address \
-            --iam-instance-profile "Name=data-replay-346-AccessInstanceProfile-cCDJrbRcf8M0" \
+            --iam-instance-profile "Name=${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}" \
             --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
             --query 'Instances[0].InstanceId' \
             --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
-            --key-name "vew" \
+            --key-name "${{ vars.AWS_EC2_INSTANCE_KEY_NAME }}" \
             --user-data "${USER_DATA}" \
             --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
             --output text)
@@ -285,7 +285,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-1
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Stop EC2 runner
         run: |
           # Handle instance based on conditions
