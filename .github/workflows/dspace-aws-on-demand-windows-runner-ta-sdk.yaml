@@ -94,6 +94,10 @@ jobs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Start One-Time Windows EC2 Runner
         id: start-ec2-runner
         uses: ./.github/actions/start-one-time-windows-ec2-runner
@@ -197,13 +201,17 @@ jobs:
           echo "📊 [View report](https://${{ github.repository_owner }}.github.io/${REPO_NAME}/reports/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
 
   stop-runner:
-    name: Stop One-Time Windows EC2 Runner
+    name: Stop EC2 Runner
     needs:
       - start-runner
       - run-dspace-simulation-and-test
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Stop EC2 runner
         uses: ./.github/actions/stop-ec2-runner
         with:
