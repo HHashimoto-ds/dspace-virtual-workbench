@@ -88,111 +88,35 @@ jobs:
           echo "| OpenTA Test Environment Config | \`${{ inputs.openta-testenv-config }}\` |" >> $GITHUB_STEP_SUMMARY
 
   start-runner:
-    name: Start self-hosted EC2 Runner
+    name: Start One-Time Windows EC2 Runner
     runs-on: ubuntu-latest
     outputs:
-      label: ${{ steps.start-windows-ec2-runner.outputs.label }}
-      ec2-instance-id: ${{ steps.start-windows-ec2-runner.outputs.ec2-instance-id }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
 
     steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Start One-Time Windows EC2 Runner
+        id: start-ec2-runner
+        uses: ./.github/actions/start-one-time-windows-ec2-runner
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          ami-id: ${{ inputs.ami-id }}
+          instance-type: ${{ inputs.instance-type }}
+          subnet-id: ${{ vars.AWS_VPC_SUBNET_ID }}
+          security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
+          ebs-volume-size: ${{ inputs.ebs-volume-size }}
+          shutdown-behavior: ${{ inputs.shutdown-behavior }}
+          key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
+          github-repository: ${{ github.repository }}
+          runner-labels: ${{ github.run_id }}-run-dspace-simulation-and-test
 
-      - name: Start Windows EC2 runner
-        id: start-windows-ec2-runner
-        run: |
-          # Get GitHub runner registration token
-          TOKEN_RESPONSE=$(curl -sL \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token")
-          REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
-
-          # Set runner label
-          RUNNER_LABEL=github-run-id-"${{ github.run_id }}"
-          echo "RUNNER_LABEL=$RUNNER_LABEL" >> $GITHUB_ENV
-
-          # Create user-data powershell script
-          USER_DATA=$(cat <<EOF
-          <powershell>
-          # Install Git
-          \$GitVersion = "2.43.0"
-          \$GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v\${GitVersion}.windows.1/Git-\${GitVersion}-64-bit.exe"
-          \$GitInstallerPath = "C:\\Git-\${GitVersion}-64-bit.exe"
-          
-          Write-Host "Downloading Git installer..."
-          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-          \$webClient = New-Object System.Net.WebClient
-          \$webClient.Headers.Add("User-Agent", "PowerShell")
-          Write-Host "Download started..."
-          \$webClient.DownloadFile(\$GitInstallerUrl, \$GitInstallerPath)
-          Write-Host "Download completed."
-          
-          Write-Host "Installing Git..."
-          Start-Process -FilePath \$GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
-          
-          Write-Host "Adding Git to PATH..."
-          \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
-          [System.Environment]::SetEnvironmentVariable("Path", \$env:Path, "Machine")
-          
-          # Refresh environment variables
-          \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
-          
-          New-Item -ItemType Directory -Path "C:\\actions-runner" -Force
-          Set-Location -Path "C:\\actions-runner"
-
-          Start-Transcript -Path "C:\\actions-runner\\startup.log" -Append
-          Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-win-x64-2.326.0.zip -OutFile actions-runner-win-x64-2.326.0.zip
-
-          if ((Get-FileHash -Path actions-runner-win-x64-2.326.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '539d48815f8ecda6903755025d5b578f919a32692b731d85a9a24419fe4dbd9e'.ToUpper()) {
-            throw 'Computed checksum did not match'
-          }
-
-          Add-Type -AssemblyName System.IO.Compression.FileSystem
-          [System.IO.Compression.ZipFile]::ExtractToDirectory("\$PWD\\actions-runner-win-x64-2.326.0.zip", "\$PWD")
-
-          # With --ephemeral option, the runner will be removed after the job is done
-          # With --unattended option, the runner will not prompt for any input
-          .\config.cmd --url https://github.com/${{ github.repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABEL} --unattended --ephemeral
-
-          Start-Process -FilePath ".\run.cmd" -WindowStyle Hidden
-
-          Stop-Transcript
-          </powershell>
-          EOF
-          )
-
-          # With --key-name option, replace with your SSH key pair name for RDP password decryption
-          INSTANCE_ID=$(aws ec2 run-instances \
-            --image-id "${{ inputs.ami-id }}" \
-            --instance-type "${{ inputs.instance-type }}" \
-            --subnet-id "${{ vars.AWS_VPC_SUBNET_ID }}"  \
-            --security-group-ids "${{ vars.AWS_SECURITY_GROUP_IDS }}" \
-            --associate-public-ip-address \
-            --iam-instance-profile "Name=${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}" \
-            --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
-            --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABEL}},{Key=GitHubRepository,Value=${{ github.repository }}}]" \
-            --query 'Instances[0].InstanceId' \
-            --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
-            --key-name "${{ vars.AWS_EC2_INSTANCE_KEY_NAME }}" \
-            --user-data "${USER_DATA}" \
-            --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
-            --output text)
-
-          # Set outputs
-          echo "label=${RUNNER_LABEL}" >> $GITHUB_OUTPUT
-          echo "ec2-instance-id=${INSTANCE_ID}" >> $GITHUB_OUTPUT
-
-
-  do-dspace-job:
-    name: Do dSPACE job
+  run-dspace-simulation-and-test:
+    name: Run dSPACE Simlulation and Test
     needs: start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
+    runs-on: ${{ github.run_id }}-run-dspace-simulation-and-test # run the job on the newly created runner with the same label
     steps:
       - name: Verify Git Installation
         shell: powershell
@@ -241,7 +165,7 @@ jobs:
 
   generate-allure-report:
     name: Generate Allure Report
-    needs: do-dspace-job
+    needs: run-dspace-simulation-and-test
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -273,29 +197,20 @@ jobs:
           echo "📊 [View report](https://${{ github.repository_owner }}.github.io/${REPO_NAME}/reports/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
 
   stop-runner:
-    name: Stop self-hosted EC2 Runner
+    name: Stop One-Time Windows EC2 Runner
     needs:
       - start-runner
-      - do-dspace-job
+      - run-dspace-simulation-and-test
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Stop EC2 runner
+        uses: ./.github/actions/stop-ec2-runner
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-      - name: Stop EC2 runner
-        run: |
-          # Handle instance based on conditions
-          if [ "${{ inputs.shutdown-behavior }}" == "stop" ] || \
-             ([ "${{ needs.do-dspace-job.result }}" == "failure" ] && ${{ inputs.failed-job-not-terminate }}); then
-            echo "Stopping EC2 instance..."
-            aws ec2 stop-instances \
-              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
-          else
-            echo "Terminating EC2 instance..."
-            aws ec2 terminate-instances \
-              --instance-ids "${{ needs.start-runner.outputs.ec2-instance-id }}"
-          fi
+          instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
+          shutdown-behavior: ${{ inputs.shutdown-behavior }}
+          job-result: ${{ needs.run-dspace-simulation-and-test.result }}
+          failed-job-not-terminate: ${{ inputs.failed-job-not-terminate }}

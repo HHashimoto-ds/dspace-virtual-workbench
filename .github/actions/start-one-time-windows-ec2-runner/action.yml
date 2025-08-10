@@ -1,0 +1,147 @@
+name: 'Start One-Time Windows EC2 Runner'
+description: 'Start a self-hosted Windows EC2 Runner with Git installation for one-time use'
+
+inputs:
+  aws-access-key-id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws-region:
+    description: 'AWS Region'
+    required: true
+  github-token:
+    description: 'GitHub Personal Access Token'
+    required: true
+  ami-id:
+    description: 'Windows AMI ID'
+    required: true
+  instance-type:
+    description: 'EC2 Instance Type'
+    required: true
+  subnet-id:
+    description: 'Subnet ID'
+    required: true
+  security-group-id:
+    description: 'Security Group ID'
+    required: true
+  iam-instance-profile:
+    description: 'IAM Instance Profile'
+    required: true
+  ebs-volume-size:
+    description: 'EBS Volume Size in GB'
+    required: true
+  shutdown-behavior:
+    description: 'Instance Shutdown Behavior'
+    required: true
+  key-name:
+    description: 'SSH Key Pair Name'
+    required: true
+  github-repository:
+    description: 'GitHub Repository'
+    required: true
+  runner-labels:
+    description: 'Labels for the GitHub runner'
+    required: true
+
+outputs:
+  ec2-instance-id:
+    description: 'ID of the created EC2 instance'
+    value: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Start EC2 runner
+      id: start-ec2-runner
+      shell: bash
+      run: |
+        # Get GitHub runner registration token
+        TOKEN_RESPONSE=$(curl -sL \
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ inputs.github-token }}" \
+          "https://api.github.com/repos/${{ inputs.github-repository }}/actions/runners/registration-token")
+        REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
+
+        # Set runner label
+        RUNNER_LABELS="${{ inputs.runner-labels }}"
+        echo "RUNNER_LABELS=$RUNNER_LABELS" >> $GITHUB_ENV
+
+        # Create user-data powershell script
+        USER_DATA=$(cat <<EOF
+        <powershell>
+        # Install Git
+        \$GitVersion = "2.43.0"
+        \$GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v\${GitVersion}.windows.1/Git-\${GitVersion}-64-bit.exe"
+        \$GitInstallerPath = "C:\\Git-\${GitVersion}-64-bit.exe"
+        
+        Write-Host "Downloading Git installer..."
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        \$webClient = New-Object System.Net.WebClient
+        \$webClient.Headers.Add("User-Agent", "PowerShell")
+        Write-Host "Download started..."
+        \$webClient.DownloadFile(\$GitInstallerUrl, \$GitInstallerPath)
+        Write-Host "Download completed."
+        
+        Write-Host "Installing Git..."
+        Start-Process -FilePath \$GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
+        
+        Write-Host "Adding Git to PATH..."
+        \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
+        [System.Environment]::SetEnvironmentVariable("Path", \$env:Path, "Machine")
+        
+        # Refresh environment variables
+        \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+        
+        New-Item -ItemType Directory -Path "C:\\actions-runner" -Force
+        Set-Location -Path "C:\\actions-runner"
+
+        Start-Transcript -Path "C:\\actions-runner\\startup.log" -Append
+        Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-win-x64-2.326.0.zip -OutFile actions-runner-win-x64-2.326.0.zip
+
+        if ((Get-FileHash -Path actions-runner-win-x64-2.326.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '539d48815f8ecda6903755025d5b578f919a32692b731d85a9a24419fe4dbd9e'.ToUpper()) {
+          throw 'Computed checksum did not match'
+        }
+
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory("\$PWD\\actions-runner-win-x64-2.326.0.zip", "\$PWD")
+
+        # With --ephemeral option, the runner will be removed after the job is done
+        # With --unattended option, the runner will not prompt for any input
+        .\config.cmd --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABELS} --unattended --ephemeral
+
+        Start-Process -FilePath ".\run.cmd" -WindowStyle Hidden
+
+        Stop-Transcript
+        </powershell>
+        EOF
+        )
+
+        # With --key-name option, replace with your SSH key pair name for RDP password decryption
+        INSTANCE_ID=$(aws ec2 run-instances \
+          --image-id "${{ inputs.ami-id }}" \
+          --instance-type "${{ inputs.instance-type }}" \
+          --subnet-id "${{ inputs.subnet-id }}" \
+          --security-group-ids "${{ inputs.security-group-id }}" \
+          --associate-public-ip-address \
+          --iam-instance-profile "Name=${{ inputs.iam-instance-profile }}" \
+          --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
+          --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABELS}},{Key=GitHubRepository,Value=${{ inputs.github-repository }}}]" \
+          --query 'Instances[0].InstanceId' \
+          --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
+          --key-name "${{ inputs.key-name }}" \
+          --user-data "${USER_DATA}" \
+          --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
+          --output text)
+
+        # Set output
+        echo "ec2-instance-id=${INSTANCE_ID}" >> $GITHUB_OUTPUT
