@@ -90,7 +90,7 @@ jobs:
     name: Job 1 - dSPACE Simulation and Test
     needs:
       - job-1-start-runner
-    runs-on: ${{ github.run_id }}-job-1-dspace-simulation-and-test # run the job on the newly created runner with this label
+    runs-on: job-1-dspace-simulation-and-test-${{ github.run_id }} # run the job on the newly created runner with this label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -207,7 +207,7 @@ jobs:
     name: Job 2 - dSPACE Simulation and Test
     needs:
       - job-2-start-runner
-    runs-on: ${{ github.run_id }}-job-2-dspace-simulation-and-test
+    runs-on: job-2-dspace-simulation-and-test-${{ github.run_id }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -324,7 +324,7 @@ jobs:
     name: Job 3 - dSPACE Simulation and Test
     needs:
       - job-3-start-runner
-    runs-on: ${{ github.run_id }}-job-3-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    runs-on: job-3-dspace-simulation-and-test-${{ github.run_id }} # run the job on the newly created runner with the same label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
