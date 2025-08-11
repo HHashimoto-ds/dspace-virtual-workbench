@@ -110,7 +110,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          
+
+      - name: Add Test Information to Summary
+        shell: powershell
+        run: |
+          echo "### 🧪 Test Information" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 📂 Python uv directory | \`${{ inputs.uv }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📝 Python test script path | \`${{ inputs.test }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |" >> $GITHUB_STEP_SUMMARY
+                    
       - name: Run pytest with Allure reporting
         shell: powershell
         run: |
