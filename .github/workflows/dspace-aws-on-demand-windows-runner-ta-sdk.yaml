@@ -1,4 +1,4 @@
-name: dSPACE AWS On-Demand Windows Runner TA SDK
+name: One-Time Simulation and Test with TA SDK using AWS Windows Runner
 
 on:
   workflow_dispatch:
@@ -9,8 +9,6 @@ on:
         required: false
         default: 'ami-0dc0f13e8dbac09d4'
         options:
-          - 'ami-0cfdba0116ec18ad9' # Windows with dSPACE ControlDesk
-          - 'ami-03f341346ac05fc46' # Windows_Server-2022-English-Full-Base-2025.07.09
           - 'ami-0dc0f13e8dbac09d4' # Windows TA_SDK AMI
       instance-type:
         description: 'EC2 Instance Type (recommended: t3.large or larger)'
@@ -43,12 +41,12 @@ on:
         default: true
       # Add any additional parameters needed for your dSPACE job
       uv:
-        description: 'Python uv path'
+        description: 'Python uv directory'
         type: string
         required: false
         default: 'PythonSDK/Turnlamp' # Replace with your default value
       test:
-        description: 'Python test path'
+        description: 'Python test script parh'
         type: string
         required: false
         default: 'tests/test_turnlamp.py' # Replace with your default value
@@ -66,33 +64,11 @@ permissions:
   id-token: write
 
 jobs:
-  show-inputs:
-    name: Show Inputs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show Inputs
-        run: |
-          echo "## Workflow Inputs" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Name | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| AMI ID | \`${{ inputs.ami-id }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Instance Type | \`${{ inputs.instance-type }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Shutdown Behavior | \`${{ inputs.shutdown-behavior }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| EBS Volume Size | \`${{ inputs.ebs-volume-size }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Failed Job Not Terminate | \`${{ inputs.failed-job-not-terminate }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| GitHub Branch | \`${{ github.ref }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| GitHub Repository | \`${{ github.repository }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| UV Path | \`${{ inputs.uv }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Test Path | \`${{ inputs.test }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| OpenTA Test Environment Config | \`${{ inputs.openta-testenv-config }}\` |" >> $GITHUB_STEP_SUMMARY
-
   start-runner:
     name: Start One-Time Windows EC2 Runner
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -116,26 +92,25 @@ jobs:
           key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           github-repository: ${{ github.repository }}
           runner-labels: ${{ github.run_id }}-run-dspace-simulation-and-test
+      - name: Add Runner Information to Summary
+        run: |
+          echo "${{ steps.start-ec2-runner.outputs.inputs-markdown }}" >> $GITHUB_STEP_SUMMARY
+      - name: Add EC2 Instance Link to Summary
+        run: |
+          echo "### 🖥️ EC2 Instance Details" >> $GITHUB_STEP_SUMMARY
+          echo "📌 [View in AWS Console](https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }})" >> $GITHUB_STEP_SUMMARY
+
+
 
   run-dspace-simulation-and-test:
-    name: Run dSPACE Simlulation and Test
+    name: Run dSPACE Simulation and Test
     needs: start-runner # required to start the main job when the runner is ready
     runs-on: ${{ github.run_id }}-run-dspace-simulation-and-test # run the job on the newly created runner with the same label
     steps:
-      - name: Verify Git Installation
-        shell: powershell
-        run: |
-          Write-Host "Verifying Git installation..."
-          git --version
-          if ($LASTEXITCODE -ne 0) {
-            throw "Git is not properly installed or not in PATH"
-          }
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1 # Only fetch the latest commit to save time
-
+          fetch-depth: 1
       - name: Hello dSPACE World
         shell: powershell
         run: |
@@ -157,6 +132,14 @@ jobs:
           uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
 
+      - name: Add Test Information to Summary
+        shell: powershell
+        run: |
+          echo "### 🧪 Test Information" >> $GITHUB_STEP_SUMMARY
+          echo "- 📂 Python uv directory: ${{ inputs.uv }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 📝 Python test script parh: ${{ inputs.test }}" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚙️ OpenTA test environment config path: ${{ inputs.openta-testenv-config }}" >> $GITHUB_STEP_SUMMARY
+      
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -166,6 +149,31 @@ jobs:
           path: ${{ inputs.uv }}/allure-results
           retention-days: 30
           if-no-files-found: warn
+
+
+  stop-runner:
+    name: Stop EC2 Runner
+    needs:
+      - start-runner
+      - run-dspace-simulation-and-test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Stop EC2 runner
+        uses: ./.github/actions/stop-ec2-runner
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+          instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
+          shutdown-behavior: ${{ inputs.shutdown-behavior }}
+          job-result: ${{ needs.run-dspace-simulation-and-test.result }}
+          failed-job-not-terminate: ${{ inputs.failed-job-not-terminate }}
+
 
   generate-allure-report:
     name: Generate Allure Report
@@ -199,26 +207,3 @@ jobs:
           REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
           echo "### 🔍 Allure Report" >> $GITHUB_STEP_SUMMARY
           echo "📊 [View report](https://${{ github.repository_owner }}.github.io/${REPO_NAME}/reports/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-
-  stop-runner:
-    name: Stop EC2 Runner
-    needs:
-      - start-runner
-      - run-dspace-simulation-and-test
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - name: Stop EC2 runner
-        uses: ./.github/actions/stop-ec2-runner
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
-          instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
-          shutdown-behavior: ${{ inputs.shutdown-behavior }}
-          job-result: ${{ needs.run-dspace-simulation-and-test.result }}
-          failed-job-not-terminate: ${{ inputs.failed-job-not-terminate }}

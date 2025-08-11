@@ -49,6 +49,27 @@ outputs:
   ec2-instance-id:
     description: 'ID of the created EC2 instance'
     value: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+  inputs-markdown:
+    description: 'Markdown formatted input parameters'
+    value: |
+      # Input Parameters for Windows EC2 Runner
+
+      | Parameter | Description | Value |
+      |-----------|-------------|--------|
+      | aws-access-key-id | AWS Access Key ID | `************` |
+      | aws-secret-access-key | AWS Secret Access Key | `************` |
+      | aws-region | AWS Region | `${{ inputs.aws-region }}` |
+      | github-token | GitHub Personal Access Token | `************` |
+      | ami-id | Windows AMI ID | `${{ inputs.ami-id }}` |
+      | instance-type | EC2 Instance Type | `${{ inputs.instance-type }}` |
+      | subnet-id | Subnet ID | `${{ inputs.subnet-id }}` |
+      | security-group-id | Security Group ID | `${{ inputs.security-group-id }}` |
+      | iam-instance-profile | IAM Instance Profile | `${{ inputs.iam-instance-profile }}` |
+      | ebs-volume-size | EBS Volume Size in GB | `${{ inputs.ebs-volume-size }}` |
+      | shutdown-behavior | Instance Shutdown Behavior | `${{ inputs.shutdown-behavior }}` |
+      | key-name | SSH Key Pair Name | `${{ inputs.key-name }}` |
+      | github-repository | GitHub Repository | `${{ inputs.github-repository }}` |
+      | runner-labels | Labels for the GitHub runner | `${{ inputs.runner-labels }}` |
 
 runs:
   using: "composite"
