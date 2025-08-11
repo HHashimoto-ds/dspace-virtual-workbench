@@ -89,8 +89,6 @@ jobs:
   job-1-dspace-simulation-and-test:
     name: Job 1 - dSPACE Simulation and Test
     needs:
-      - build-controller-model
-      - build-plant-model
       - job-1-start-runner
     runs-on: ${{ github.run_id }}-job-1-dspace-simulation-and-test # run the job on the newly created runner with this label
     steps:
@@ -144,8 +142,6 @@ jobs:
   job-1-stop-runner:
     name: Job 1 - Stop EC2 Runner
     needs:
-      - build-controller-model
-      - build-plant-model
       - job-1-start-runner
       - job-1-dspace-simulation-and-test
     runs-on: ubuntu-latest
@@ -210,8 +206,6 @@ jobs:
   job-2-dspace-simulation-and-test:
     name: Job 2 - dSPACE Simulation and Test
     needs:
-      - build-controller-model
-      - build-plant-model
       - job-2-start-runner
     runs-on: ${{ github.run_id }}-job-2-dspace-simulation-and-test
     steps:
@@ -265,8 +259,6 @@ jobs:
   job-2-stop-runner:
     name: Job 2 - Stop EC2 Runner
     needs:
-      - build-controller-model
-      - build-plant-model
       - job-2-start-runner
       - job-2-dspace-simulation-and-test
     runs-on: ubuntu-latest
@@ -330,8 +322,7 @@ jobs:
 
   job-3-dspace-simulation-and-test:
     name: Job 3 - dSPACE Simulation and Test
-      - build-controller-model
-      - build-plant-model
+    needs:
       - job-3-start-runner
     runs-on: ${{ github.run_id }}-job-3-dspace-simulation-and-test # run the job on the newly created runner with the same label
     steps:
@@ -385,8 +376,6 @@ jobs:
   job-3-stop-runner:
     name: Job 3 - Stop EC2 Runner
     needs:
-      - build-controller-model
-      - build-plant-model
       - job-3-start-runner
       - job-3-dspace-simulation-and-test
     runs-on: ubuntu-latest
