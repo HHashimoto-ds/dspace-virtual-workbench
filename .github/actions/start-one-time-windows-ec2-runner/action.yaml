@@ -69,7 +69,7 @@ outputs:
       | shutdown-behavior | \`${{ inputs.shutdown-behavior }}\` | Instance Shutdown Behavior |
       | key-name | \`${{ inputs.key-name }}\` | SSH Key Pair Name |
       | github-repository | \`${{ inputs.github-repository }}\` | GitHub Repository |
-      | runner-labels | \`${{ inputs.runner-labels }}\` | Labels for the GitHub runner |
+      | runner-labels | \`${{ inputs.runner-labels }}\` | Runner's Labels |
 
 runs:
   using: "composite"

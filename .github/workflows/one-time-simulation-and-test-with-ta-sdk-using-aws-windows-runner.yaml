@@ -114,13 +114,13 @@ jobs:
       - name: Add Test Information to Summary
         shell: powershell
         run: |
-          echo "### 🧪 Test Information" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 📂 Python uv directory | \`${{ inputs.uv }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📝 Python test script path | \`${{ inputs.test }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |" >> $GITHUB_STEP_SUMMARY
+          "### 🧪 Test Information" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+          "" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+          "| Parameter | Value |" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+          "|-----------|--------|" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+          "| 📂 Python uv directory | ``${{ inputs.uv }}`` |" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+          "| 📝 Python test script path | ``${{ inputs.test }}`` |" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+          "| ⚙️ OpenTA test environment config | ``${{ inputs.openta-testenv-config }}`` |" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
                     
       - name: Run pytest with Allure reporting
         shell: powershell
@@ -141,17 +141,6 @@ jobs:
           # exit 1    # means failure result
           # exit 0    # means success result
 
-      - name: Add Test Information to Summary
-        shell: powershell
-        run: |
-          echo "### 🧪 Test Information" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 📂 Python uv directory | \`${{ inputs.uv }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📝 Python test script path | \`${{ inputs.test }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |" >> $GITHUB_STEP_SUMMARY
-      
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
         if: always()
