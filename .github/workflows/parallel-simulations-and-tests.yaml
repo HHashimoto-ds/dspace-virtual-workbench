@@ -119,8 +119,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
           instance-id: ${{ needs.job-1-start-runner.outputs.ec2-instance-id }}
-          shutdown-behavior: terminate
           job-result: ${{ needs.job-1-run-dspace-simulation-and-test.result }}
+          shutdown-behavior: terminate
           failed-job-not-terminate: true
 
 
@@ -232,8 +232,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
           instance-id: ${{ needs.job-2-start-runner.outputs.ec2-instance-id }}
-          shutdown-behavior: terminate
           job-result: ${{ needs.job-2-run-dspace-simulation-and-test.result }}
+          shutdown-behavior: terminate
           failed-job-not-terminate: true
 
 
