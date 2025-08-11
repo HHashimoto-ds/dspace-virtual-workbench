@@ -58,18 +58,18 @@ outputs:
       |-----------|-------|-------------|
       | aws-access-key-id | \`************\` | AWS Access Key ID |
       | aws-secret-access-key | \`************\` | AWS Secret Access Key |
-      | aws-region | `${{ inputs.aws-region }}` | AWS Region |
-      | github-token | `************` | GitHub Personal Access Token |
-      | ami-id | `${{ inputs.ami-id }}` | Windows AMI ID |
-      | instance-type | `${{ inputs.instance-type }}` | EC2 Instance Type |
-      | subnet-id | `${{ inputs.subnet-id }}` | Subnet ID |
-      | security-group-id | `${{ inputs.security-group-id }}` | Security Group ID |
-      | iam-instance-profile | `${{ inputs.iam-instance-profile }}` | IAM Instance Profile |
-      | ebs-volume-size | `${{ inputs.ebs-volume-size }}` | EBS Volume Size in GB |
-      | shutdown-behavior | `${{ inputs.shutdown-behavior }}` | Instance Shutdown Behavior |
-      | key-name | `${{ inputs.key-name }}` | SSH Key Pair Name |
-      | github-repository | `${{ inputs.github-repository }}` | GitHub Repository |
-      | runner-labels | `${{ inputs.runner-labels }}` | Labels for the GitHub runner |
+      | aws-region | \`${{ inputs.aws-region }}\` | AWS Region |
+      | github-token | \`************\` | GitHub Personal Access Token |
+      | ami-id | \`${{ inputs.ami-id }}\` | Windows AMI ID |
+      | instance-type | \`${{ inputs.instance-type }}\` | EC2 Instance Type |
+      | subnet-id | \`${{ inputs.subnet-id }}\` | Subnet ID |
+      | security-group-id | \`${{ inputs.security-group-id }}\` | Security Group ID |
+      | iam-instance-profile | \`${{ inputs.iam-instance-profile }}\` | IAM Instance Profile |
+      | ebs-volume-size | \`${{ inputs.ebs-volume-size }}\` | EBS Volume Size in GB |
+      | shutdown-behavior | \`${{ inputs.shutdown-behavior }}\` | Instance Shutdown Behavior |
+      | key-name | \`${{ inputs.key-name }}\` | SSH Key Pair Name |
+      | github-repository | \`${{ inputs.github-repository }}\` | GitHub Repository |
+      | runner-labels | \`${{ inputs.runner-labels }}\` | Labels for the GitHub runner |
 
 runs:
   using: "composite"
