@@ -1,4 +1,4 @@
-name: Parallel Simulations and Tests
+name: dSPACE Virtual Workbench CI Demo
 
 on:
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
         id: start-ec2-runner
         uses: ./.github/actions/start-one-time-windows-ec2-runner
         with:
-          runner-labels: ${{ github.run_id }}-job-1-run-dspace-simulation-and-test
+          runner-labels: job-1-dspace-simulation-and-test-${{ github.run_id }}
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           github-repository: ${{ github.repository }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -48,10 +48,10 @@ jobs:
           echo "### 🖥️ EC2 Instance Details" >> $GITHUB_STEP_SUMMARY
           echo "📌 <a href=\"https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }}\" target=\"_blank\">View in AWS Console</a>" >> $GITHUB_STEP_SUMMARY
 
-  job-1-run-dspace-simulation-and-test:
-    name: Job 1 - Run dSPACE Simulation and Test
+  job-1-dspace-simulation-and-test:
+    name: Job 1 - dSPACE Simulation and Test
     needs: job-1-start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ github.run_id }}-job-1-run-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    runs-on: ${{ github.run_id }}-job-1-dspace-simulation-and-test # run the job on the newly created runner with the same label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -104,7 +104,7 @@ jobs:
     name: Job 1 - Stop EC2 Runner
     needs:
       - job-1-start-runner
-      - job-1-run-dspace-simulation-and-test
+      - job-1-dspace-simulation-and-test
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -119,7 +119,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
           instance-id: ${{ needs.job-1-start-runner.outputs.ec2-instance-id }}
-          job-result: ${{ needs.job-1-run-dspace-simulation-and-test.result }}
+          job-result: ${{ needs.job-1-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
           failed-job-not-terminate: true
 
@@ -138,7 +138,7 @@ jobs:
         id: start-ec2-runner
         uses: ./.github/actions/start-one-time-windows-ec2-runner
         with:
-          runner-labels: ${{ github.run_id }}-job-2-run-dspace-simulation-and-test
+          runner-labels: job-2-dspace-simulation-and-test-${{ github.run_id }}
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           github-repository: ${{ github.repository }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -161,10 +161,10 @@ jobs:
           echo "### 🖥️ EC2 Instance Details" >> $GITHUB_STEP_SUMMARY
           echo "📌 <a href=\"https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }}\" target=\"_blank\">View in AWS Console</a>" >> $GITHUB_STEP_SUMMARY
 
-  job-2-run-dspace-simulation-and-test:
-    name: Job 2 - Run dSPACE Simulation and Test
+  job-2-dspace-simulation-and-test:
+    name: Job 2 - dSPACE Simulation and Test
     needs: job-2-start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ github.run_id }}-job-2-run-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    runs-on: ${{ github.run_id }}-job-2-dspace-simulation-and-test # run the job on the newly created runner with the same label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -217,7 +217,7 @@ jobs:
     name: Job 2 - Stop EC2 Runner
     needs:
       - job-2-start-runner
-      - job-2-run-dspace-simulation-and-test
+      - job-2-dspace-simulation-and-test
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -232,14 +232,126 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
           instance-id: ${{ needs.job-2-start-runner.outputs.ec2-instance-id }}
-          job-result: ${{ needs.job-2-run-dspace-simulation-and-test.result }}
+          job-result: ${{ needs.job-2-dspace-simulation-and-test.result }}
+          shutdown-behavior: terminate
+          failed-job-not-terminate: true
+
+  job-3-start-runner:
+    name: Job 3 - Start One-Time EC2 Windows Runner
+    runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start One-Time EC2 Windows Runner
+        id: start-ec2-runner
+        uses: ./.github/actions/start-one-time-windows-ec2-runner
+        with:
+          runner-labels: job-3-dspace-simulation-and-test-${{ github.run_id }}
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          github-repository: ${{ github.repository }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+          subnet-id: ${{ vars.AWS_VPC_SUBNET_ID }}
+          security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
+          key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
+          ami-id: ami-0dc0f13e8dbac09d4   # Windows TA_SDK AMI
+          instance-type: t3.2xlarge
+          ebs-volume-size: 500
+          shutdown-behavior: terminate
+          
+      - name: Add Runner Information to Summary
+        run: |
+          echo "${{ steps.start-ec2-runner.outputs.inputs-markdown }}" >> $GITHUB_STEP_SUMMARY
+      - name: Add EC2 Instance Link to Summary
+        run: |
+          echo "### 🖥️ EC2 Instance Details" >> $GITHUB_STEP_SUMMARY
+          echo "📌 <a href=\"https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }}\" target=\"_blank\">View in AWS Console</a>" >> $GITHUB_STEP_SUMMARY
+
+  job-3-dspace-simulation-and-test:
+    name: Job 3 - dSPACE Simulation and Test
+    needs: job-3-start-runner # required to start the main job when the runner is ready
+    runs-on: ${{ github.run_id }}-job-3-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Add Test Information to Summary
+        shell: bash
+        run: |
+          {
+            echo "### 🧪 Test Information"
+            echo
+            echo "| Parameter | Value |"
+            echo "|-----------|--------|"
+            echo "| 📂 Python uv directory | \`PythonSDK/Turnlamp\` |"
+            echo "| 📝 Python test script path | \`tests/test_turnlamp_all_pass.py\` |"
+            echo "| ⚙️ OpenTA test environment config | \`tests/testdata_turnlamp/testenv_veos.yaml\` |"
+          } >> $GITHUB_STEP_SUMMARY
+                    
+      - name: Run pytest with Allure reporting
+        shell: powershell
+        run: |
+          Write-Host "Hello dSPACE World!"
+
+          powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+          $env:Path = "C:\Users\Administrator\.local\bin;$env:Path"
+          
+          # Start VEOS
+          & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
+          
+          # Run pytest with Allure Results
+          cd PythonSDK/Turnlamp
+          uv sync
+          uv run pytest tests/test_turnlamp_all_pass.py --openta-testenv-config=tests/testdata_turnlamp/testenv_veos.yaml --alluredir=allure-results
+
+          # exit 1    # means failure result
+          # exit 0    # means success result
+
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: job-3-allure-results
+          path: PythonSDK/Turnlamp/allure-results
+          retention-days: 30
+          if-no-files-found: warn
+
+  job-3-stop-runner:
+    name: Job 3 - Stop EC2 Runner
+    needs:
+      - job-3-start-runner
+      - job-3-dspace-simulation-and-test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Stop EC2 runner
+        uses: ./.github/actions/stop-ec2-runner
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+          instance-id: ${{ needs.job-3-start-runner.outputs.ec2-instance-id }}
+          job-result: ${{ needs.job-3-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
           failed-job-not-terminate: true
 
 
   generate-allure-report:
     name: Generate Allure Report
-    needs: [job-1-run-dspace-simulation-and-test, job-2-run-dspace-simulation-and-test]
+    needs: [job-1-dspace-simulation-and-test, job-2-dspace-simulation-and-test, job-3-dspace-simulation-and-test]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -255,11 +367,18 @@ jobs:
           name: job-2-allure-results
           path: allure-results/job2
 
+      - name: Download Job 3 Allure Results
+        uses: actions/download-artifact@v4
+        with:
+          name: job-3-allure-results
+          path: allure-results/job3
+
       - name: Merge Allure Results
         run: |
           mkdir -p merged-results
           cp -r allure-results/job1/* merged-results/
           cp -r allure-results/job2/* merged-results/
+          cp -r allure-results/job3/* merged-results/
 
       - name: Generate Allure Report
         run: |

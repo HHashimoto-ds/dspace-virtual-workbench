@@ -52,7 +52,7 @@ outputs:
   inputs-markdown:
     description: 'Markdown formatted input parameters'
     value: |
-      ### Parameters for EC2 Windows Runner
+      ### ⚙️ Parameters for EC2 Windows Runner
 
       | Parameter | Value | Description |
       |-----------|-------|-------------|
