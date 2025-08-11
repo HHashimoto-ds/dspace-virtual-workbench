@@ -1,0 +1,45 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3468","test_turnlamp_synchronflash[13]","tests","Mon Aug 11 22:37:08 UTC 2025","passed","Mon Aug 11 22:37:11 UTC 2025","","test_turnlamp","",""
+"","3566","test_turnlamp_synchronflash[8]","tests","Mon Aug 11 22:36:50 UTC 2025","failed","Mon Aug 11 22:36:54 UTC 2025","","test_turnlamp","",""
+"","3528","test_turnlamp_synchronflash[11]","tests","Mon Aug 11 22:37:02 UTC 2025","passed","Mon Aug 11 22:37:06 UTC 2025","","test_turnlamp_all_pass","",""
+"","3496","test_turnlamp_synchronflash[8]","tests","Mon Aug 11 22:36:51 UTC 2025","passed","Mon Aug 11 22:36:55 UTC 2025","","test_turnlamp_all_pass","",""
+"","3487","test_turnlamp_synchronflash[9]","tests","Mon Aug 11 22:36:54 UTC 2025","passed","Mon Aug 11 22:36:57 UTC 2025","","test_turnlamp","",""
+"","3487","test_turnlamp_synchronflash[13]","tests","Mon Aug 11 22:37:09 UTC 2025","passed","Mon Aug 11 22:37:13 UTC 2025","","test_turnlamp_all_pass","",""
+"","10681","test_turnlamp_triggered_synchronflash[12]","tests","Mon Aug 11 22:37:15 UTC 2025","passed","Mon Aug 11 22:37:25 UTC 2025","","test_turnlamp","",""
+"","3491","test_turnlamp_synchronflash[7]","tests","Mon Aug 11 22:36:48 UTC 2025","passed","Mon Aug 11 22:36:51 UTC 2025","","test_turnlamp_all_pass","",""
+"","4244","test_turnlamp_synchronflash[6]","tests","Mon Aug 11 22:36:42 UTC 2025","failed","Mon Aug 11 22:36:46 UTC 2025","","test_turnlamp","",""
+"","10746","test_turnlamp_triggered_mf4file[14]","tests","Mon Aug 11 22:37:25 UTC 2025","passed","Mon Aug 11 22:37:36 UTC 2025","","test_turnlamp","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0.1-50]","tests","Mon Aug 11 22:36:58 UTC 2025","broken","Mon Aug 11 22:36:58 UTC 2025","","test_scbt","",""
+"","3682","test_turnlamp_synchronflash[11]","tests","Mon Aug 11 22:37:01 UTC 2025","passed","Mon Aug 11 22:37:04 UTC 2025","","test_turnlamp","",""
+"","4283","test_turnlamp_synchronflash[6]","tests","Mon Aug 11 22:36:44 UTC 2025","passed","Mon Aug 11 22:36:48 UTC 2025","","test_turnlamp_all_pass","",""
+"","10771","test_turnlamp_triggered_mf4file[14]","tests","Mon Aug 11 22:37:27 UTC 2025","passed","Mon Aug 11 22:37:38 UTC 2025","","test_turnlamp_all_pass","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0.1-60]","tests","Mon Aug 11 22:36:58 UTC 2025","broken","Mon Aug 11 22:36:58 UTC 2025","","test_scbt","",""
+"","3472","test_turnlamp_synchronflash[12]","tests","Mon Aug 11 22:37:04 UTC 2025","passed","Mon Aug 11 22:37:08 UTC 2025","","test_turnlamp","",""
+"","3625","test_turnlamp_synchronflash[14]","tests","Mon Aug 11 22:37:11 UTC 2025","passed","Mon Aug 11 22:37:15 UTC 2025","","test_turnlamp","",""
+"","3634","test_turnlamp_synchronflash[14]","tests","Mon Aug 11 22:37:13 UTC 2025","passed","Mon Aug 11 22:37:16 UTC 2025","","test_turnlamp_all_pass","",""
+"","10707","test_turnlamp_triggered_synchronflash[12]","tests","Mon Aug 11 22:37:16 UTC 2025","passed","Mon Aug 11 22:37:27 UTC 2025","","test_turnlamp_all_pass","",""
+"","3472","test_turnlamp_synchronflash[10]","tests","Mon Aug 11 22:36:57 UTC 2025","passed","Mon Aug 11 22:37:01 UTC 2025","","test_turnlamp","",""
+"","3490","test_turnlamp_synchronflash[7]","tests","Mon Aug 11 22:36:46 UTC 2025","failed","Mon Aug 11 22:36:50 UTC 2025","","test_turnlamp","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0-60]","tests","Mon Aug 11 22:36:58 UTC 2025","broken","Mon Aug 11 22:36:58 UTC 2025","","test_scbt","",""
+"","3509","test_turnlamp_synchronflash[10]","tests","Mon Aug 11 22:36:59 UTC 2025","passed","Mon Aug 11 22:37:02 UTC 2025","","test_turnlamp_all_pass","",""
+"","4698","test_turnlamp_synchronflash_alternative[12]","tests","Mon Aug 11 22:37:36 UTC 2025","passed","Mon Aug 11 22:37:41 UTC 2025","","test_turnlamp","",""
+"","4760","test_turnlamp_synchronflash_alternative[12]","tests","Mon Aug 11 22:37:38 UTC 2025","passed","Mon Aug 11 22:37:43 UTC 2025","","test_turnlamp_all_pass","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0-50]","tests","Mon Aug 11 22:36:35 UTC 2025","broken","Mon Aug 11 22:36:35 UTC 2025","","test_scbt","",""
+"","3635","test_turnlamp_synchronflash[12]","tests","Mon Aug 11 22:37:06 UTC 2025","passed","Mon Aug 11 22:37:09 UTC 2025","","test_turnlamp_all_pass","",""
+"","3637","test_turnlamp_synchronflash[9]","tests","Mon Aug 11 22:36:55 UTC 2025","passed","Mon Aug 11 22:36:59 UTC 2025","","test_turnlamp_all_pass","",""
