@@ -11,8 +11,46 @@ permissions:
   id-token: write
 
 jobs:
+  build-controller-model:
+    name: Build Controller Model
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Build Controller Model
+        run: |
+          echo "Building controller model..."
+          # Add your build commands here
+      - name: Add Build Information to Summary
+        run: |
+          echo "### 🏗️ Build Information" >> $GITHUB_STEP_SUMMARY
+          echo "Controller model built successfully." >> $GITHUB_STEP_SUMMARY
+
+  build-plant-model:
+    name: Build Plant Model
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Build Plant Model
+        run: |
+          echo "Building plant model..."
+          # Add your build commands here
+      - name: Add Build Information to Summary
+        run: |
+          echo "### 🌱 Build Information" >> $GITHUB_STEP_SUMMARY
+          echo "Plant model built successfully." >> $GITHUB_STEP_SUMMARY
+
+
   job-1-start-runner:
     name: Job 1 - Start One-Time EC2 Windows Runner
+    needs:
+      - build-controller-model
+      - build-plant-model
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
@@ -126,6 +164,9 @@ jobs:
 
   job-2-start-runner:
     name: Job 2 - Start One-Time EC2 Windows Runner
+    needs:
+      - build-controller-model
+      - build-plant-model
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
@@ -236,8 +277,12 @@ jobs:
           shutdown-behavior: terminate
           failed-job-not-terminate: true
 
+
   job-3-start-runner:
     name: Job 3 - Start One-Time EC2 Windows Runner
+    needs:
+      - build-controller-model
+      - build-plant-model
     runs-on: ubuntu-latest
     outputs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
