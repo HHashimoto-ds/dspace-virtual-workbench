@@ -88,8 +88,11 @@ jobs:
 
   job-1-dspace-simulation-and-test:
     name: Job 1 - dSPACE Simulation and Test
-    needs: job-1-start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ github.run_id }}-job-1-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    needs:
+      - build-controller-model
+      - build-plant-model
+      - job-1-start-runner
+    runs-on: ${{ github.run_id }}-job-1-dspace-simulation-and-test # run the job on the newly created runner with this label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -141,6 +144,8 @@ jobs:
   job-1-stop-runner:
     name: Job 1 - Stop EC2 Runner
     needs:
+      - build-controller-model
+      - build-plant-model
       - job-1-start-runner
       - job-1-dspace-simulation-and-test
     runs-on: ubuntu-latest
@@ -204,8 +209,11 @@ jobs:
 
   job-2-dspace-simulation-and-test:
     name: Job 2 - dSPACE Simulation and Test
-    needs: job-2-start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ github.run_id }}-job-2-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    needs:
+      - build-controller-model
+      - build-plant-model
+      - job-2-start-runner
+    runs-on: ${{ github.run_id }}-job-2-dspace-simulation-and-test
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -257,6 +265,8 @@ jobs:
   job-2-stop-runner:
     name: Job 2 - Stop EC2 Runner
     needs:
+      - build-controller-model
+      - build-plant-model
       - job-2-start-runner
       - job-2-dspace-simulation-and-test
     runs-on: ubuntu-latest
@@ -320,7 +330,9 @@ jobs:
 
   job-3-dspace-simulation-and-test:
     name: Job 3 - dSPACE Simulation and Test
-    needs: job-3-start-runner # required to start the main job when the runner is ready
+      - build-controller-model
+      - build-plant-model
+      - job-3-start-runner
     runs-on: ${{ github.run_id }}-job-3-dspace-simulation-and-test # run the job on the newly created runner with the same label
     steps:
       - name: Checkout Repository
@@ -373,6 +385,8 @@ jobs:
   job-3-stop-runner:
     name: Job 3 - Stop EC2 Runner
     needs:
+      - build-controller-model
+      - build-plant-model
       - job-3-start-runner
       - job-3-dspace-simulation-and-test
     runs-on: ubuntu-latest
