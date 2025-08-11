@@ -56,8 +56,8 @@ outputs:
 
       | Parameter | Value | Description |
       |-----------|-------|-------------|
-      | aws-access-key-id | `************` | AWS Access Key ID |
-      | aws-secret-access-key | `************` | AWS Secret Access Key |
+      | aws-access-key-id | \`************\` | AWS Access Key ID |
+      | aws-secret-access-key | \`************\` | AWS Secret Access Key |
       | aws-region | `${{ inputs.aws-region }}` | AWS Region |
       | github-token | `************` | GitHub Personal Access Token |
       | ami-id | `${{ inputs.ami-id }}` | Windows AMI ID |
