@@ -1,5 +1,5 @@
-name: 'Start One-Time Windows EC2 Runner'
-description: 'Start a self-hosted Windows EC2 Runner with Git installation for one-time use'
+name: 'Start One-Time EC2 Windows Runner'
+description: 'Start a self-hosted EC2 Windows Runner with Git installation for one-time use'
 
 inputs:
   aws-access-key-id:
@@ -52,24 +52,24 @@ outputs:
   inputs-markdown:
     description: 'Markdown formatted input parameters'
     value: |
-      # Input Parameters for Windows EC2 Runner
+      ### Parameters for EC2 Windows Runner
 
-      | Parameter | Description | Value |
-      |-----------|-------------|--------|
-      | aws-access-key-id | AWS Access Key ID | `************` |
-      | aws-secret-access-key | AWS Secret Access Key | `************` |
-      | aws-region | AWS Region | `${{ inputs.aws-region }}` |
-      | github-token | GitHub Personal Access Token | `************` |
-      | ami-id | Windows AMI ID | `${{ inputs.ami-id }}` |
-      | instance-type | EC2 Instance Type | `${{ inputs.instance-type }}` |
-      | subnet-id | Subnet ID | `${{ inputs.subnet-id }}` |
-      | security-group-id | Security Group ID | `${{ inputs.security-group-id }}` |
-      | iam-instance-profile | IAM Instance Profile | `${{ inputs.iam-instance-profile }}` |
-      | ebs-volume-size | EBS Volume Size in GB | `${{ inputs.ebs-volume-size }}` |
-      | shutdown-behavior | Instance Shutdown Behavior | `${{ inputs.shutdown-behavior }}` |
-      | key-name | SSH Key Pair Name | `${{ inputs.key-name }}` |
-      | github-repository | GitHub Repository | `${{ inputs.github-repository }}` |
-      | runner-labels | Labels for the GitHub runner | `${{ inputs.runner-labels }}` |
+      | Parameter | Value | Description |
+      |-----------|-------|-------------|
+      | aws-access-key-id | ************ | AWS Access Key ID |
+      | aws-secret-access-key | ************ | AWS Secret Access Key |
+      | aws-region | ${{ inputs.aws-region }} | AWS Region |
+      | github-token | ************ | GitHub Personal Access Token |
+      | ami-id | ${{ inputs.ami-id }} | Windows AMI ID |
+      | instance-type | ${{ inputs.instance-type }} | EC2 Instance Type |
+      | subnet-id | ${{ inputs.subnet-id }} | Subnet ID |
+      | security-group-id | ${{ inputs.security-group-id }} | Security Group ID |
+      | iam-instance-profile | ${{ inputs.iam-instance-profile }} | IAM Instance Profile |
+      | ebs-volume-size | ${{ inputs.ebs-volume-size }} | EBS Volume Size in GB |
+      | shutdown-behavior | ${{ inputs.shutdown-behavior }} | Instance Shutdown Behavior |
+      | key-name | ${{ inputs.key-name }} | SSH Key Pair Name |
+      | github-repository | ${{ inputs.github-repository }} | GitHub Repository |
+      | runner-labels | ${{ inputs.runner-labels }} | Labels for the GitHub runner |
 
 runs:
   using: "composite"
