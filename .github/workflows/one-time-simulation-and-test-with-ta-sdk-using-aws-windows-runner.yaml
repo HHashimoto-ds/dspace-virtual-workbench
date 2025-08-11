@@ -111,16 +111,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Hello dSPACE World
-        shell: powershell
-        run: |
-          Write-Host "Hello dSPACE World!"
-          # exit 1 # exit with failure
-          # exit 0 # exit with success
-
+          
       - name: Run pytest with Allure reporting
         shell: powershell
         run: |
+          Write-Host "Hello dSPACE World!"
+
           powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
           $env:Path = "C:\Users\Administrator\.local\bin;$env:Path"
           
@@ -131,6 +127,9 @@ jobs:
           cd "${{ inputs.uv }}"
           uv sync
           uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
+
+          # exit 1    # means failure result
+          # exit 0    # means success result
 
       - name: Add Test Information to Summary
         shell: powershell
