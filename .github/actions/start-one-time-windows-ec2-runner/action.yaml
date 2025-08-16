@@ -146,14 +146,39 @@ runs:
         Set-Location -Path "C:\\actions-runner"
 
         Start-Transcript -Path "C:\\actions-runner\\startup.log" -Append
-        Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-win-x64-2.326.0.zip -OutFile actions-runner-win-x64-2.326.0.zip
 
-        if ((Get-FileHash -Path actions-runner-win-x64-2.326.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '539d48815f8ecda6903755025d5b578f919a32692b731d85a9a24419fe4dbd9e'.ToUpper()) {
-          throw 'Computed checksum did not match'
+        # Get latest runner version
+        Write-Host "Getting latest runner version..."
+        \$latestRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/actions/runner/releases/latest"
+        \$latestVersion = \$latestRelease.tag_name.TrimStart('v')
+        Write-Host "Latest runner version: \$latestVersion"
+
+        # Download latest runner
+        \$runnerFile = "actions-runner-win-x64-\${latestVersion}.zip"
+        \$runnerUrl = "https://github.com/actions/runner/releases/download/v\${latestVersion}/\${runnerFile}"
+        Write-Host "Downloading runner from: \$runnerUrl"
+        Invoke-WebRequest -Uri \$runnerUrl -OutFile \$runnerFile
+
+        # Get and verify checksum
+        Write-Host "Verifying download..."
+        \$assets = \$latestRelease.assets | Where-Object { \$_.name -eq \$runnerFile }
+        if (\$assets) {
+            \$checksumUrl = "https://github.com/actions/runner/releases/download/v\${latestVersion}/\${runnerFile}.sha256"
+            \$expectedHash = (Invoke-WebRequest -Uri \$checksumUrl).Content.Split(' ')[0]
+            \$actualHash = (Get-FileHash -Path \$runnerFile -Algorithm SHA256).Hash
+            
+            if (\$actualHash.ToUpper() -ne \$expectedHash.ToUpper()) {
+                throw "Checksum verification failed. Expected: \$expectedHash, Got: \$actualHash"
+            }
+            Write-Host "Checksum verification successful"
+        } else {
+            throw "Could not find checksum for runner version \$latestVersion"
         }
 
+        # Extract runner
+        Write-Host "Extracting runner..."
         Add-Type -AssemblyName System.IO.Compression.FileSystem
-        [System.IO.Compression.ZipFile]::ExtractToDirectory("\$PWD\\actions-runner-win-x64-2.326.0.zip", "\$PWD")
+        [System.IO.Compression.ZipFile]::ExtractToDirectory("\$PWD\\\${runnerFile}", "\$PWD")
 
         # With --ephemeral option, the runner will be removed after the job is done
         # With --unattended option, the runner will not prompt for any input

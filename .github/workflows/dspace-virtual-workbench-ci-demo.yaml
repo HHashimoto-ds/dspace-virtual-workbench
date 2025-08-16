@@ -417,10 +417,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-          subnet-id: subnet-011f87ebb7a15fd7b # ${{ vars.AWS_VPC_SUBNET_ID }}
-          security-group-id: "sg-03aa61710262686b2 sg-024c16ce1ce623651 sg-027c6aa7aeb00eb25" # ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          subnet-id: subnet-011f87ebb7a15fd7b   # ${{ vars.AWS_VPC_SUBNET_ID }}
+          security-group-id: "sg-03aa61710262686b2 sg-024c16ce1ce623651 sg-027c6aa7aeb00eb25"   # ${{ vars.AWS_SECURITY_GROUP_IDS }}
           iam-instance-profile: SSMInstanceProfile # ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
-          key-name: TMC_SYNECT # ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
+          key-name: TMC_SYNECT    # ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           ami-id: ami-0b61740a996730ce5   # dSPACE_ToolChainDemo_Client
           instance-type: c7a.2xlarge
           ebs-volume-size: 150
@@ -445,19 +445,19 @@ jobs:
           fetch-depth: 1
 
       - name: Add Test Information to Summary
-        shell: bash
+        shell: powershell
         run: |
-          {
-            echo "### 🧪 Test Information"
-            echo "| Parameter | Value |"
-            echo "|-----------|-------|"
-            echo "| 📝 Zipped dSPACE Files  | \`LegacyToolChain/Git_dSPACE_ToolChainDemo.zip\` |"
-            echo "| 📝 AutomationDesk Project File | `LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx\` |"
-            echo "| 📝 MainTestDataFilePath | \`TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData\` |"
-            echo "| 📝 TAConfigurationFilePath | \`TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration\` |"
-            echo "| ⚙️ ScenarioName | \`MOTMAN-01\` |"
-            echo "| ⚙️ OptionalApplName | \`DummyPlant_Motor\` |"
-          } >> $GITHUB_STEP_SUMMARY
+          @"
+          ### 🧪 Test Information
+          | Parameter | Value |
+          |-----------|-------|
+          | 📝 Zipped dSPACE Files  | ``LegacyToolChain/Git_dSPACE_ToolChainDemo.zip`` |
+          | 📝 AutomationDesk Project File | ``LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx`` |
+          | 📝 MainTestDataFilePath | ``TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData`` |
+          | 📝 TAConfigurationFilePath | ``TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration`` |
+          | ⚙️ ScenarioName | ``MOTMAN-01`` |
+          | ⚙️ OptionalApplName | ``DummyPlant_Motor`` |
+          "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
                     
       - name: Run AutomationDesk
         shell: powershell
