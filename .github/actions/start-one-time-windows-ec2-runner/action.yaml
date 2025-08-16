@@ -148,7 +148,7 @@ runs:
           --image-id "${{ inputs.ami-id }}" \
           --instance-type "${{ inputs.instance-type }}" \
           --subnet-id "${{ inputs.subnet-id }}" \
-          --security-group-ids "${{ inputs.security-group-id }}" \
+          --security-group-ids ${{ inputs.security-group-id }} \
           --associate-public-ip-address \
           --iam-instance-profile "Name=${{ inputs.iam-instance-profile }}" \
           --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
