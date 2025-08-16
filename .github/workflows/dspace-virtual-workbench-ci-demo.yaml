@@ -418,7 +418,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
           subnet-id: subnet-011f87ebb7a15fd7b # ${{ vars.AWS_VPC_SUBNET_ID }}
-          security-group-id: sg-03aa61710262686b2,sg-024c16ce1ce623651,sg-027c6aa7aeb00eb25 # ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          security-group-id: "sg-03aa61710262686b2 sg-024c16ce1ce623651 sg-027c6aa7aeb00eb25" # ${{ vars.AWS_SECURITY_GROUP_IDS }}
           iam-instance-profile: SSMInstanceProfile # ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
           key-name: TMC_SYNECT # ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           ami-id: ami-0b61740a996730ce5   # dSPACE_ToolChainDemo_Client
@@ -478,10 +478,6 @@ jobs:
               format='%(asctime)s - %(levelname)s - %(message)s'
           )
 
-          # Get parameters from environment variables
-          ZippedDspaceFiles = os.environ['ZIPPED_DSPACE_FILES']
-          AutomationDeskProjectFile = os.environ['AUD_PROJECT_FILE']
-
           # Get GITHUB WORKSPACE Path
           github_workspace = os.environ['GITHUB_WORKSPACE']
 
@@ -506,28 +502,27 @@ jobs:
                   sys.exit(1)
 
               # Convert relative path to absolute path and normalize slashes
-              zip_abspath = os.path.abspath(os.path.join(github_workspace, ZippedDspaceFiles))
-              zip_abspath = zip_abspath.replace('/', '\\')  # Convert to Windows path format
-              
+              zip_abspath = os.path.abspath(os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['ZIPPED_DSPACE_FILES'])).replace('/', '\\')
+              project_abspath = os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['AUD_PROJECT_FILE']).replace('/', '\\')
+
               # ZIP ファイルと同じディレクトリに展開
               logging.info(f"Extracting zip: {zip_abspath}")
               extract_dir = os.path.dirname(zip_abspath)
               with zipfile.ZipFile(zip_abspath, 'r') as zip_ref:
                   zip_ref.extractall(extract_dir)
-             
+              
               # Open AUD Project
               logging.info(f"Opening AUD Project: {project_abspath}")
-              project_abspath = os.path.join(github_workspace, AutomationDeskProjectFile)
-              project_abspath = project_abspath.replace('/', '\\')  # Convert to Windows path format
-              aud_project = aud_app.Projects.ImportEx(project_abspath, 0, 1, False)
+              aud_project = aud_app.Projects.Load(project_abspath, False)
               
               # Set Data Object Values in AUD Sequence
               logging.info(f"Setting Data Object in AUD Project: {project_abspath}")
               aud_sequence = aud_project.SubBlocks.Item('AutomatedSequence')
-              aud_sequence.DataObjects.item('MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
-              aud_sequence.DataObjects.item('TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
-              aud_sequence.DataObjects.item('ScenarioName').Value = os.environ['CSENARIO_NAME']
-              aud_sequence.DataObjects.item('OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
+              aud_sequence.DataObjects.item('SYNECT_Connection.UseSYNECT').Value = False
+              aud_sequence.DataObjects.item('SYNECT_Connection.MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
+              aud_sequence.DataObjects.item('SYNECT_Connection.TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
+              aud_sequence.DataObjects.item('SYNECT_Connection.ScenarioName').Value = os.environ['CSENARIO_NAME']
+              aud_sequence.DataObjects.item('SYNECT_Connection.OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
               
               # Run AUD Sequence
               logging.info(f"Running Sequence in AUD Project: {project_abspath}")
