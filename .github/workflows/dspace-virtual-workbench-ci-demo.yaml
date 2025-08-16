@@ -417,10 +417,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-          subnet-id: ${{ vars.AWS_VPC_SUBNET_ID }}
-          security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
-          iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
-          key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
+          subnet-id: subnet-011f87ebb7a15fd7b # ${{ vars.AWS_VPC_SUBNET_ID }}
+          security-group-id: sg-03aa61710262686b2,sg-024c16ce1ce623651,sg-027c6aa7aeb00eb25 # ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          iam-instance-profile: SSMInstanceProfile # ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
+          key-name: TMC_SYNECT # ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           ami-id: ami-0b61740a996730ce5   # dSPACE_ToolChainDemo_Client
           instance-type: c7a.2xlarge
           ebs-volume-size: 150
