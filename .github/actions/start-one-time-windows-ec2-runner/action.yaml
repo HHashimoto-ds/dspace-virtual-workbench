@@ -96,28 +96,51 @@ runs:
         # Create user-data powershell script
         USER_DATA=$(cat <<EOF
         <powershell>
-        # Install Git
+        # Set target Git version
         \$GitVersion = "2.43.0"
-        \$GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v\${GitVersion}.windows.1/Git-\${GitVersion}-64-bit.exe"
-        \$GitInstallerPath = "C:\\Git-\${GitVersion}-64-bit.exe"
         
-        Write-Host "Downloading Git installer..."
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        \$webClient = New-Object System.Net.WebClient
-        \$webClient.Headers.Add("User-Agent", "PowerShell")
-        Write-Host "Download started..."
-        \$webClient.DownloadFile(\$GitInstallerUrl, \$GitInstallerPath)
-        Write-Host "Download completed."
+        # Check if Git is installed and get its version
+        \$needsGitInstall = \$true
+        try {
+            \$installedGitVersion = (git --version) -replace 'git version '
+            Write-Host "Found Git version: \$installedGitVersion"
+            
+            # Compare versions
+            \$installed = [System.Version](\$installedGitVersion -replace '\.windows\.\d+$')
+            \$target = [System.Version]\$GitVersion
+            
+            if (\$installed -ge \$target) {
+                Write-Host "Installed Git version (\$installedGitVersion) is equal to or newer than target version (\$GitVersion). Skipping installation."
+                \$needsGitInstall = \$false
+            } else {
+                Write-Host "Installed Git version (\$installedGitVersion) is older than target version (\$GitVersion). Will upgrade."
+            }
+        } catch {
+            Write-Host "Git is not installed or not in PATH. Will install version \$GitVersion"
+        }
         
-        Write-Host "Installing Git..."
-        Start-Process -FilePath \$GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
-        
-        Write-Host "Adding Git to PATH..."
-        \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
-        [System.Environment]::SetEnvironmentVariable("Path", \$env:Path, "Machine")
-        
-        # Refresh environment variables
-        \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+        if (\$needsGitInstall) {
+            \$GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v\${GitVersion}.windows.1/Git-\${GitVersion}-64-bit.exe"
+            \$GitInstallerPath = "C:\\Git-\${GitVersion}-64-bit.exe"
+            
+            Write-Host "Downloading Git installer..."
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            \$webClient = New-Object System.Net.WebClient
+            \$webClient.Headers.Add("User-Agent", "PowerShell")
+            Write-Host "Download started..."
+            \$webClient.DownloadFile(\$GitInstallerUrl, \$GitInstallerPath)
+            Write-Host "Download completed."
+            
+            Write-Host "Installing Git..."
+            Start-Process -FilePath \$GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
+            
+            Write-Host "Adding Git to PATH..."
+            \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
+            [System.Environment]::SetEnvironmentVariable("Path", \$env:Path, "Machine")
+            
+            # Refresh environment variables
+            \$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+        }
         
         New-Item -ItemType Directory -Path "C:\\actions-runner" -Force
         Set-Location -Path "C:\\actions-runner"
