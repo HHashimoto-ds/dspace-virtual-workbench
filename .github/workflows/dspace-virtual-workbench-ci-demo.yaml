@@ -76,7 +76,6 @@ jobs:
           ami-id: ami-0dc0f13e8dbac09d4   # Windows TA_SDK AMI
           instance-type: t3.2xlarge
           ebs-volume-size: 500
-          shutdown-behavior: terminate
           
       - name: Add Runner Information to Summary
         run: |
@@ -104,7 +103,7 @@ jobs:
             echo "### 🧪 Test Information"
             echo
             echo "| Parameter | Value |"
-            echo "|-----------|--------|"
+            echo "|-----------|-------|"
             echo "| 📂 Python uv directory | \`PythonSDK/Turnlamp\` |"
             echo "| 📝 Python test script path | \`tests/test_turnlamp.py\` |"
             echo "| ⚙️ OpenTA test environment config | \`tests/testdata_turnlamp/testenv_veos.yaml\` |"
@@ -160,7 +159,7 @@ jobs:
           instance-id: ${{ needs.job-1-start-runner.outputs.ec2-instance-id }}
           job-result: ${{ needs.job-1-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
-          failed-job-not-terminate: true
+          failed-job-not-terminate: false # true
 
 
   job-2-start-runner:
@@ -193,7 +192,6 @@ jobs:
           ami-id: ami-0dc0f13e8dbac09d4   # Windows TA_SDK AMI
           instance-type: t3.2xlarge
           ebs-volume-size: 500
-          shutdown-behavior: terminate
           
       - name: Add Runner Information to Summary
         run: |
@@ -221,7 +219,7 @@ jobs:
             echo "### 🧪 Test Information"
             echo
             echo "| Parameter | Value |"
-            echo "|-----------|--------|"
+            echo "|-----------|-------|"
             echo "| 📂 Python uv directory | \`PythonSDK/ScbT\` |"
             echo "| 📝 Python test script path | \`tests/test_scbt.py\` |"
             echo "| ⚙️ OpenTA test environment config | \`tests/testdata_scbt/testenv_asm_veos.yaml\` |"
@@ -277,7 +275,7 @@ jobs:
           instance-id: ${{ needs.job-2-start-runner.outputs.ec2-instance-id }}
           job-result: ${{ needs.job-2-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
-          failed-job-not-terminate: true
+          failed-job-not-terminate: false # true
 
 
   job-3-start-runner:
@@ -310,7 +308,6 @@ jobs:
           ami-id: ami-0dc0f13e8dbac09d4   # Windows TA_SDK AMI
           instance-type: t3.2xlarge
           ebs-volume-size: 500
-          shutdown-behavior: terminate
           
       - name: Add Runner Information to Summary
         run: |
@@ -394,6 +391,216 @@ jobs:
           instance-id: ${{ needs.job-3-start-runner.outputs.ec2-instance-id }}
           job-result: ${{ needs.job-3-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
+          failed-job-not-terminate: false # true
+
+
+  job-4-start-runner:
+    name: Job 4 - Start One-Time EC2 Windows Runner
+    needs:
+      - build-controller-model
+      - build-plant-model
+    runs-on: ubuntu-latest
+    outputs:
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start One-Time EC2 Windows Runner
+        id: start-ec2-runner
+        uses: ./.github/actions/start-one-time-windows-ec2-runner
+        with:
+          runner-labels: job-4-dspace-simulation-and-test-${{ github.run_id }}
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          github-repository: ${{ github.repository }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+          subnet-id: ${{ vars.AWS_VPC_SUBNET_ID }}
+          security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
+          key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
+          ami-id: ami-0b61740a996730ce5   # dSPACE_ToolChainDemo_Client
+          instance-type: c7a.2xlarge
+          ebs-volume-size: 150
+          
+      - name: Add Runner Information to Summary
+        run: |
+          echo "${{ steps.start-ec2-runner.outputs.inputs-markdown }}" >> $GITHUB_STEP_SUMMARY
+      - name: Add EC2 Instance Link to Summary
+        run: |
+          echo "### 🖥️ EC2 Instance Details" >> $GITHUB_STEP_SUMMARY
+          echo "📌 <a href=\"https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }}\" target=\"_blank\">View in AWS Console</a>" >> $GITHUB_STEP_SUMMARY
+
+  job-4-dspace-simulation-and-test:
+    name: Job 4 - dSPACE Simulation and Test (Legacy)
+    needs:
+      - job-4-start-runner
+    runs-on: job-4-dspace-simulation-and-test-${{ github.run_id }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Add Test Information to Summary
+        shell: bash
+        run: |
+          {
+            echo "### 🧪 Test Information"
+            echo "| Parameter | Value |"
+            echo "|-----------|-------|"
+            echo "| 📝 Zipped dSPACE Files  | \`LegacyToolChain/Git_dSPACE_ToolChainDemo.zip\` |"
+            echo "| 📝 AutomationDesk Project File | `LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx\` |"
+            echo "| 📝 MainTestDataFilePath | \`TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData\` |"
+            echo "| 📝 TAConfigurationFilePath | \`TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration\` |"
+            echo "| ⚙️ ScenarioName | \`MOTMAN-01\` |"
+            echo "| ⚙️ OptionalApplName | \`DummyPlant_Motor\` |"
+          } >> $GITHUB_STEP_SUMMARY
+                    
+      - name: Run AutomationDesk
+        shell: powershell
+        run: |
+          Write-Host "Hello dSPACE World!"
+
+          $script = @"
+          import win32com.client
+          import pythoncom
+          import os
+          import sys
+          import logging
+          import zipfile
+
+          # Configure logging
+          logging.basicConfig(
+              level=logging.INFO,
+              format='%(asctime)s - %(levelname)s - %(message)s'
+          )
+
+          # Get parameters from environment variables
+          ZippedDspaceFiles = os.environ['ZIPPED_DSPACE_FILES']
+          AutomationDeskProjectFile = os.environ['AUD_PROJECT_FILE']
+
+          # Get GITHUB WORKSPACE Path
+          github_workspace = os.environ['GITHUB_WORKSPACE']
+
+          try:
+              logging.info(f"Starting AutomationDesk")
+              logging.info(f"Project ZIP subpath: {project_subpath}")
+              logging.info(f"Parameters: param1={param1}, param2={param2}")
+              
+              pythoncom.CoInitialize()
+              aud_app = None
+
+              logging.info("Initializing AutomationDesk application")
+              for i in range(3):  # Retry up to 3 times
+                  logging.info(f"Attempt {i+1} to start AutomationDesk")
+                  try:
+                      aud_app = win32com.client.Dispatch('AutomationDesk.TAM')
+                      break  # Exit loop if successful
+                  except Exception as e:
+                      logging.error(f"Failed to start AutomationDesk: {e}")
+              else:
+                  logging.error("Could not start AutomationDesk after 3 attempts")
+                  sys.exit(1)
+
+              # Convert relative path to absolute path and normalize slashes
+              zip_abspath = os.path.abspath(os.path.join(github_workspace, ZippedDspaceFiles))
+              zip_abspath = zip_abspath.replace('/', '\\')  # Convert to Windows path format
+              
+              # ZIP ファイルと同じディレクトリに展開
+              logging.info(f"Extracting zip: {zip_abspath}")
+              extract_dir = os.path.dirname(zip_abspath)
+              with zipfile.ZipFile(zip_abspath, 'r') as zip_ref:
+                  zip_ref.extractall(extract_dir)
+             
+              # Open AUD Project
+              logging.info(f"Opening AUD Project: {project_abspath}")
+              project_abspath = os.path.join(github_workspace, AutomationDeskProjectFile)
+              project_abspath = project_abspath.replace('/', '\\')  # Convert to Windows path format
+              aud_project = aud_app.Projects.ImportEx(project_abspath, 0, 1, False)
+              
+              # Set Data Object Values in AUD Sequence
+              logging.info(f"Setting Data Object in AUD Project: {project_abspath}")
+              aud_sequence = aud_project.SubBlocks.Item('AutomatedSequence')
+              aud_sequence.DataObjects.item('MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
+              aud_sequence.DataObjects.item('TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
+              aud_sequence.DataObjects.item('ScenarioName').Value = os.environ['CSENARIO_NAME']
+              aud_sequence.DataObjects.item('OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
+              
+              # Run AUD Sequence
+              logging.info(f"Running Sequence in AUD Project: {project_abspath}")
+              aud_app.Options.Execution.CreateResult = True
+              audResult = aud_sequence.Execute()
+              audVerdict = audResult.ResultState.Verdict
+              aud_project.Save()
+              aud_project.Close()
+
+              # Close AUD              
+              logging.info("Closing AutomationDesk")
+              aud_app.Quit(True)  # True: save changes,  False: don't save changes
+              aud_app = None
+              
+          except Exception as e:
+              logging.error(f"Error in AutomationDesk: {e}")
+              import traceback
+              traceback.print_exc()
+              sys.exit(1)
+              
+          finally:
+              pythoncom.CoUninitialize()
+          "@
+
+          # Set environment variables for the Python script
+
+          #
+          $env:ZIPPED_DSPACE_FILES = "LegacyToolChain/Git_dSPACE_ToolChainDemo.zip"
+          $env:AUD_PROJECT_FILE = "LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx"
+          $env:MAIN_TEST_DATA_FILE_PATH = "TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData"
+          $env:TA_CONFIGURATION_FILE_PATH = "TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration"
+          $env:CSENARIO_NAME = "MOTMAN-01"
+          $env:OPTIONAL_APPL_NAME = "DummyPlant_Motor"
+          
+          # Run Python script
+          $scriptPath = "$env:GITHUB_WORKSPACE\\start_aud.py"
+          $script | Out-File -FilePath $scriptPath -Encoding UTF8
+          python $scriptPath
+
+          # exit 1    # means failure result
+          # exit 0    # means success result
+
+      # - name: Upload Allure Results
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   continue-on-error: true
+      #   with:
+      #     name: job-4-allure-results
+      #     path: PythonSDK/ScbT/allure-results
+      #     retention-days: 30
+      #     if-no-files-found: warn
+
+  job-4-stop-runner:
+    name: Job 4 - Stop EC2 Runner
+    needs:
+      - job-4-start-runner
+      - job-4-dspace-simulation-and-test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Stop EC2 runner
+        uses: ./.github/actions/stop-ec2-runner
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+          instance-id: ${{ needs.job-4-start-runner.outputs.ec2-instance-id }}
+          job-result: ${{ needs.job-4-dspace-simulation-and-test.result }}
+          shutdown-behavior: terminate
           failed-job-not-terminate: true
 
 
@@ -421,12 +628,19 @@ jobs:
           name: job-3-allure-results
           path: allure-results/job3
 
+      # - name: Download Job 4 Allure Results
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: job-4-allure-results
+      #     path: allure-results/job4
+
       - name: Merge Allure Results
         run: |
           mkdir -p merged-results
           cp -r allure-results/job1/* merged-results/
           cp -r allure-results/job2/* merged-results/
           cp -r allure-results/job3/* merged-results/
+      #    cp -r allure-results/job4/* merged-results/
 
       - name: Generate Allure Report
         run: |

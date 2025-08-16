@@ -32,9 +32,6 @@ inputs:
   ebs-volume-size:
     description: 'EBS Volume Size in GB'
     required: true
-  shutdown-behavior:
-    description: 'Instance Shutdown Behavior'
-    required: true
   key-name:
     description: 'SSH Key Pair Name'
     required: true
@@ -66,7 +63,6 @@ outputs:
       | security-group-id | \`${{ inputs.security-group-id }}\` | Security Group ID |
       | iam-instance-profile | \`${{ inputs.iam-instance-profile }}\` | IAM Instance Profile |
       | ebs-volume-size | \`${{ inputs.ebs-volume-size }}\` | EBS Volume Size in GB |
-      | shutdown-behavior | \`${{ inputs.shutdown-behavior }}\` | Instance Shutdown Behavior |
       | key-name | \`${{ inputs.key-name }}\` | SSH Key Pair Name |
       | github-repository | \`${{ inputs.github-repository }}\` | GitHub Repository |
       | runner-labels | \`${{ inputs.runner-labels }}\` | Runner's Labels |
@@ -158,7 +154,7 @@ runs:
           --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
           --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABELS}},{Key=GitHubRepository,Value=${{ inputs.github-repository }}}]" \
           --query 'Instances[0].InstanceId' \
-          --instance-initiated-shutdown-behavior "${{ inputs.shutdown-behavior }}" \
+          --instance-initiated-shutdown-behavior stop \
           --key-name "${{ inputs.key-name }}" \
           --user-data "${USER_DATA}" \
           --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
