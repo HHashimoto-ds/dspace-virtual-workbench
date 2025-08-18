@@ -159,7 +159,7 @@ jobs:
           instance-id: ${{ needs.job-1-start-runner.outputs.ec2-instance-id }}
           job-result: ${{ needs.job-1-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
-          failed-job-not-terminate: false # true
+          failed-job-not-terminate: true
 
 
   job-2-start-runner:
@@ -275,7 +275,7 @@ jobs:
           instance-id: ${{ needs.job-2-start-runner.outputs.ec2-instance-id }}
           job-result: ${{ needs.job-2-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
-          failed-job-not-terminate: false # true
+          failed-job-not-terminate: true
 
 
   job-3-start-runner:
@@ -391,7 +391,7 @@ jobs:
           instance-id: ${{ needs.job-3-start-runner.outputs.ec2-instance-id }}
           job-result: ${{ needs.job-3-dspace-simulation-and-test.result }}
           shutdown-behavior: terminate
-          failed-job-not-terminate: false # true
+          failed-job-not-terminate: true
 
 
   job-4-start-runner:
@@ -473,11 +473,11 @@ jobs:
           import logging
           import zipfile
 
-          # Add reference to assembly and import it:
-          import clr
-          clr.AddReference('dSPACE.Common.MessageReader')
-          from dSPACE.Common.MessageHandler.Logging import *
-          import System
+          # # Add reference to assembly and import it:
+          # import clr
+          # clr.AddReference('dSPACE.Common.MessageReader')
+          # from dSPACE.Common.MessageHandler.Logging import *
+          # import System
 
           # Configure logging
           logging.basicConfig(
@@ -485,13 +485,13 @@ jobs:
               format='%(asctime)s - %(levelname)s - %(message)s'
           )
 
-          # dSPACE Release log configuration
-          # Configure products and start time whose messages to read
-          settings = MessageReaderSettings()
-          settings.SetProducts(['ControlDesk', 'AutomationDesk', 'VEOS'])
-          settings.MessageTimeAfter = System.DateTime.UtcNow
-          # Create message reader
-          reader = MessageReader(settings)
+          # # dSPACE Release log configuration
+          # # Configure products and start time whose messages to read
+          # settings = MessageReaderSettings()
+          # settings.SetProducts(['ControlDesk', 'AutomationDesk', 'VEOS'])
+          # settings.MessageTimeAfter = System.DateTime.UtcNow
+          # # Create message reader
+          # reader = MessageReader(settings)
 
           # Get GITHUB WORKSPACE Path
           github_workspace = os.environ['GITHUB_WORKSPACE']
@@ -597,13 +597,13 @@ jobs:
           finally:
               pythoncom.CoUninitialize()
 
-          # print time and text of each dSPACE Release message
-          SEVERITY_ENUM = {0: 'Trace', 1: 'Info', 2: 'Warning', 3: 'Error', 4: 'SevereError', 5: 'SystemError', 6: 'Question', 7: 'Advice'}
-          msgs = '\n'.join([''] + ['[%s][%s][%s] %s' % (msg.TimeStamp, msg.Session.ProductName, SEVERITY_ENUM[msg.Severity], str(msg.MessageText.encode('utf-8'))) 
-                        for msg in reader.ReadMessages()])
-          logging.info(msgs)
-          # dispose AUD message reader
-          reader.Dispose()
+          # # print time and text of each dSPACE Release message
+          # SEVERITY_ENUM = {0: 'Trace', 1: 'Info', 2: 'Warning', 3: 'Error', 4: 'SevereError', 5: 'SystemError', 6: 'Question', 7: 'Advice'}
+          # msgs = '\n'.join([''] + ['[%s][%s][%s] %s' % (msg.TimeStamp, msg.Session.ProductName, SEVERITY_ENUM[msg.Severity], str(msg.MessageText.encode('utf-8'))) 
+          #               for msg in reader.ReadMessages()])
+          # logging.info(msgs)
+          # # dispose AUD message reader
+          # reader.Dispose()
           "@
 
           # Set environment variables for the Python script
