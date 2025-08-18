@@ -551,7 +551,7 @@ jobs:
               aud_sequence.DataObjects.FindElement('SYNECT_Connection.UseSYNECT').Value = False
               aud_sequence.DataObjects.FindElement('SYNECT_Connection.MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
               aud_sequence.DataObjects.FindElement('SYNECT_Connection.TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
-              aud_sequence.DataObjects.FindElement('SYNECT_Connection.ScenarioName').Value = os.environ['CSENARIO_NAME']
+              aud_sequence.DataObjects.FindElement('SYNECT_Connection.ScenarioName').Value = os.environ['SCENARIO_NAME']
               aud_sequence.DataObjects.FindElement('SYNECT_Connection.OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
 
               # Start Online Calibration in CDN
