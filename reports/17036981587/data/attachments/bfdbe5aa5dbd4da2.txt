@@ -1,0 +1,2 @@
+INFO     openta:testenv.py:45 XIL create ports
+INFO     openta:ma_port.py:78 Connect maport 'Model'
