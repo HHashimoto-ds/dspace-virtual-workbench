@@ -88,7 +88,6 @@ jobs:
           security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
           iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
           ebs-volume-size: ${{ inputs.ebs-volume-size }}
-          shutdown-behavior: ${{ inputs.shutdown-behavior }}
           key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           github-repository: ${{ github.repository }}
           runner-labels: ${{ github.run_id }}-run-dspace-simulation-and-test
