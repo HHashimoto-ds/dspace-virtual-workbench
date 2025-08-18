@@ -117,7 +117,7 @@ jobs:
             echo "### 🧪 Test Information"
             echo
             echo "| Parameter | Value |"
-            echo "|-----------|--------|"
+            echo "|-----------|-------|"
             echo "| 📂 Python uv directory | \`${{ inputs.uv }}\` |"
             echo "| 📝 Python test script path | \`${{ inputs.test }}\` |"
             echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |"

@@ -457,6 +457,7 @@ jobs:
           | 📝 TAConfigurationFilePath | ``TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration`` |
           | ⚙️ ScenarioName | ``MOTMAN-01`` |
           | ⚙️ OptionalApplName | ``DummyPlant_Motor`` |
+          | ⚙️ ExperimentName | ``Experiment_MotorECU`` |
           "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
                     
       - name: Run AutomationDesk
@@ -472,22 +473,47 @@ jobs:
           import logging
           import zipfile
 
+          # Add reference to assembly and import it:
+          import clr
+          clr.AddReference('dSPACE.Common.MessageReader')
+          from dSPACE.Common.MessageHandler.Logging import *
+          import System
+
           # Configure logging
           logging.basicConfig(
               level=logging.INFO,
               format='%(asctime)s - %(levelname)s - %(message)s'
           )
 
+          # dSPACE Release log configuration
+          # Configure products and start time whose messages to read
+          settings = MessageReaderSettings()
+          settings.SetProducts(['ControlDesk', 'AutomationDesk', 'VEOS'])
+          settings.MessageTimeAfter = System.DateTime.UtcNow
+          # Create message reader
+          reader = MessageReader(settings)
+
           # Get GITHUB WORKSPACE Path
           github_workspace = os.environ['GITHUB_WORKSPACE']
 
           try:
-              logging.info(f"Starting AutomationDesk")
-              
               pythoncom.CoInitialize()
-              aud_app = None
 
-              logging.info("Initializing AutomationDesk application")
+              logging.info(f"Starting ControlDesk")
+              cdn_app = None
+              for i in range(3):  # Retry up to 3 times
+                  logging.info(f"Attempt {i+1} to start ControlDesk")
+                  try:
+                      cdn_app = win32com.client.Dispatch('ControlDeskNG.Application')
+                      break  # Exit loop if successful
+                  except Exception as e:
+                      logging.error(f"Failed to start ControlDesk: {e}")
+              else:
+                  logging.error("Could not start AutomationDesk after 3 attempts")
+                  sys.exit(1)
+            
+              logging.info(f"Starting AutomationDesk")
+              aud_app = None
               for i in range(3):  # Retry up to 3 times
                   logging.info(f"Attempt {i+1} to start AutomationDesk")
                   try:
@@ -501,39 +527,66 @@ jobs:
 
               # Convert relative path to absolute path and normalize slashes
               zip_abspath = os.path.abspath(os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['ZIPPED_DSPACE_FILES'])).replace('/', '\\')
-              project_abspath = os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['AUD_PROJECT_FILE']).replace('/', '\\')
-
+              aud_project_abspath = os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['AUD_PROJECT_FILE']).replace('/', '\\')
+              cdn_project_abspath = os.path.join(os.environ['GITHUB_WORKSPACE'], 'LegacyToolChain/Instrumentation/Project/Project.CDP').replace('/', '\\')
+              
               # ZIP ファイルと同じディレクトリに展開
               logging.info(f"Extracting zip: {zip_abspath}")
               extract_dir = os.path.dirname(zip_abspath)
               with zipfile.ZipFile(zip_abspath, 'r') as zip_ref:
                   zip_ref.extractall(extract_dir)
+
+              # Open CDN Project and activate Experiment
+              logging.info(f"Opening CDN Project: {cdn_project_abspath}")
+              cdn_app.OpenProject(cdn_project_abspath)
+              cdn_app.ActiveProject.Experiments.Item(os.environ['EXPERIMENT_NAME']).Activate()
               
               # Open AUD Project
-              logging.info(f"Opening AUD Project: {project_abspath}")
-              aud_project = aud_app.Projects.Load(project_abspath, False)
+              logging.info(f"Opening AUD Project: {aud_project_abspath}")
+              aud_project = aud_app.Projects.Load(aud_project_abspath)
               
               # Set Data Object Values in AUD Sequence
-              logging.info(f"Setting Data Object in AUD Project: {project_abspath}")
+              logging.info(f"Setting Data Object in AUD Project: {aud_project_abspath}")
               aud_sequence = aud_project.SubBlocks.Item('AutomatedSequence')
-              aud_sequence.DataObjects.item('SYNECT_Connection.UseSYNECT').Value = False
-              aud_sequence.DataObjects.item('SYNECT_Connection.MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
-              aud_sequence.DataObjects.item('SYNECT_Connection.TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
-              aud_sequence.DataObjects.item('SYNECT_Connection.ScenarioName').Value = os.environ['CSENARIO_NAME']
-              aud_sequence.DataObjects.item('SYNECT_Connection.OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
-              
+              aud_sequence.DataObjects.FindElement('SYNECT_Connection.UseSYNECT').Value = False
+              aud_sequence.DataObjects.FindElement('SYNECT_Connection.MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
+              aud_sequence.DataObjects.FindElement('SYNECT_Connection.TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
+              aud_sequence.DataObjects.FindElement('SYNECT_Connection.ScenarioName').Value = os.environ['CSENARIO_NAME']
+              aud_sequence.DataObjects.FindElement('SYNECT_Connection.OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
+
+              # Start Online Calibration in CDN
+              logging.info(f"Starting Online Calibration in CDN")
+              cdn_app.CalibrationManagement.StartOnlineCalibration()
+
               # Run AUD Sequence
-              logging.info(f"Running Sequence in AUD Project: {project_abspath}")
+              logging.info(f"Running Sequence in AUD Project: {aud_project_abspath}")
               aud_app.Options.Execution.CreateResult = True
               audResult = aud_sequence.Execute()
               audVerdict = audResult.ResultState.Verdict
               aud_project.Save()
               aud_project.Close()
 
+              # Stop Online Calibration in CDN
+              logging.info(f"Stopping Online Calibration in CDN")
+              cdn_app.CalibrationManagement.StopOnlineCalibration()
+
               # Close AUD              
               logging.info("Closing AutomationDesk")
-              aud_app.Quit(True)  # True: save changes,  False: don't save changes
+              aud_app.Quit()
               aud_app = None
+
+              # Close CDN
+              logging.info("Closing ControlDesk")
+              cdn_app.Quit(True)  # True = save changes
+              cdn_app = None
+
+              # Verdict
+              VERDICT_MAP = ['Executed', 'Passed', 'Undefined', 'Failed', 'Error']
+              logging.info(f'AutomationDesk verdict is {VERDICT_MAP[audVerdict]}')
+              if audVerdict in (0, 1): # if AUD verdict is 'Executed' or 'Passed'
+                  sys.exit(0)
+              else: # (2, 3, 4) # elif 'Undefined' or 'Failed' or 'Error'
+                  sys.exit(1)
               
           except Exception as e:
               logging.error(f"Error in AutomationDesk: {e}")
@@ -543,17 +596,24 @@ jobs:
               
           finally:
               pythoncom.CoUninitialize()
+
+          # print time and text of each dSPACE Release message
+          SEVERITY_ENUM = {0: 'Trace', 1: 'Info', 2: 'Warning', 3: 'Error', 4: 'SevereError', 5: 'SystemError', 6: 'Question', 7: 'Advice'}
+          msgs = '\n'.join([''] + ['[%s][%s][%s] %s' % (msg.TimeStamp, msg.Session.ProductName, SEVERITY_ENUM[msg.Severity], str(msg.MessageText.encode('utf-8'))) 
+                        for msg in reader.ReadMessages()])
+          logging.info(msgs)
+          # dispose AUD message reader
+          reader.Dispose()
           "@
 
           # Set environment variables for the Python script
-
-          #
           $env:ZIPPED_DSPACE_FILES = "LegacyToolChain/Git_dSPACE_ToolChainDemo.zip"
           $env:AUD_PROJECT_FILE = "LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx"
           $env:MAIN_TEST_DATA_FILE_PATH = "TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData"
           $env:TA_CONFIGURATION_FILE_PATH = "TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration"
-          $env:CSENARIO_NAME = "MOTMAN-01"
+          $env:SCENARIO_NAME = "MOTMAN-01"
           $env:OPTIONAL_APPL_NAME = "DummyPlant_Motor"
+          $env:EXPERIMENT_NAME = "Experiment_MotorECU"
           
           # Run Python script
           $scriptPath = "$env:GITHUB_WORKSPACE\\start_aud.py"
