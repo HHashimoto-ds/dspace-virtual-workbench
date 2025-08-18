@@ -483,8 +483,6 @@ jobs:
 
           try:
               logging.info(f"Starting AutomationDesk")
-              logging.info(f"Project ZIP subpath: {project_subpath}")
-              logging.info(f"Parameters: param1={param1}, param2={param2}")
               
               pythoncom.CoInitialize()
               aud_app = None
