@@ -1,0 +1,45 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3619","test_turnlamp_synchronflash[12]","tests","Mon Aug 18 01:26:19 UTC 2025","passed","Mon Aug 18 01:26:22 UTC 2025","","test_turnlamp_all_pass","",""
+"","3509","test_turnlamp_synchronflash[9]","tests","Mon Aug 18 01:28:23 UTC 2025","passed","Mon Aug 18 01:28:26 UTC 2025","","test_turnlamp","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0.1-60]","tests","Mon Aug 18 01:25:54 UTC 2025","broken","Mon Aug 18 01:25:54 UTC 2025","","test_scbt","",""
+"","3575","test_turnlamp_synchronflash[12]","tests","Mon Aug 18 01:28:33 UTC 2025","passed","Mon Aug 18 01:28:37 UTC 2025","","test_turnlamp","",""
+"","3640","test_turnlamp_synchronflash[9]","tests","Mon Aug 18 01:26:08 UTC 2025","passed","Mon Aug 18 01:26:11 UTC 2025","","test_turnlamp_all_pass","",""
+"","3601","test_turnlamp_synchronflash[10]","tests","Mon Aug 18 01:26:11 UTC 2025","passed","Mon Aug 18 01:26:15 UTC 2025","","test_turnlamp_all_pass","",""
+"","3565","test_turnlamp_synchronflash[13]","tests","Mon Aug 18 01:28:37 UTC 2025","passed","Mon Aug 18 01:28:40 UTC 2025","","test_turnlamp","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0-60]","tests","Mon Aug 18 01:25:54 UTC 2025","broken","Mon Aug 18 01:25:54 UTC 2025","","test_scbt","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0-50]","tests","Mon Aug 18 01:25:26 UTC 2025","broken","Mon Aug 18 01:25:26 UTC 2025","","test_scbt","",""
+"","4726","test_turnlamp_synchronflash_alternative[12]","tests","Mon Aug 18 01:26:51 UTC 2025","passed","Mon Aug 18 01:26:56 UTC 2025","","test_turnlamp_all_pass","",""
+"","3631","test_turnlamp_synchronflash[14]","tests","Mon Aug 18 01:26:26 UTC 2025","passed","Mon Aug 18 01:26:29 UTC 2025","","test_turnlamp_all_pass","",""
+"","3630","test_turnlamp_synchronflash[8]","tests","Mon Aug 18 01:28:19 UTC 2025","passed","Mon Aug 18 01:28:23 UTC 2025","","test_turnlamp","",""
+"
+    Test of Autonomous Emergency Braking, in the Car to car rear braking scenario.
+    The scenario parameters for the ego vehicle velocity and the distance to its fellow vehicle is parameterized.
+    Parameter Variation is full factorial. All combinations of specified parameter values are applied by pytest.
+    ","0","test_NCAP_AEB_CCRb_1_explicit_parameters[0.1-50]","tests","Mon Aug 18 01:25:54 UTC 2025","broken","Mon Aug 18 01:25:54 UTC 2025","","test_scbt","",""
+"","3539","test_turnlamp_synchronflash[13]","tests","Mon Aug 18 01:26:22 UTC 2025","passed","Mon Aug 18 01:26:26 UTC 2025","","test_turnlamp_all_pass","",""
+"","3730","test_turnlamp_synchronflash[14]","tests","Mon Aug 18 01:28:40 UTC 2025","passed","Mon Aug 18 01:28:44 UTC 2025","","test_turnlamp","",""
+"","10872","test_turnlamp_triggered_mf4file[14]","tests","Mon Aug 18 01:28:55 UTC 2025","passed","Mon Aug 18 01:29:06 UTC 2025","","test_turnlamp","",""
+"","3604","test_turnlamp_synchronflash[7]","tests","Mon Aug 18 01:28:15 UTC 2025","failed","Mon Aug 18 01:28:19 UTC 2025","","test_turnlamp","",""
+"","10754","test_turnlamp_triggered_mf4file[14]","tests","Mon Aug 18 01:26:40 UTC 2025","passed","Mon Aug 18 01:26:51 UTC 2025","","test_turnlamp_all_pass","",""
+"","3505","test_turnlamp_synchronflash[8]","tests","Mon Aug 18 01:26:04 UTC 2025","passed","Mon Aug 18 01:26:08 UTC 2025","","test_turnlamp_all_pass","",""
+"","4844","test_turnlamp_synchronflash[6]","tests","Mon Aug 18 01:28:10 UTC 2025","failed","Mon Aug 18 01:28:15 UTC 2025","","test_turnlamp","",""
+"","10763","test_turnlamp_triggered_synchronflash[12]","tests","Mon Aug 18 01:26:29 UTC 2025","passed","Mon Aug 18 01:26:40 UTC 2025","","test_turnlamp_all_pass","",""
+"","3530","test_turnlamp_synchronflash[11]","tests","Mon Aug 18 01:26:15 UTC 2025","passed","Mon Aug 18 01:26:19 UTC 2025","","test_turnlamp_all_pass","",""
+"","3673","test_turnlamp_synchronflash[11]","tests","Mon Aug 18 01:28:30 UTC 2025","passed","Mon Aug 18 01:28:33 UTC 2025","","test_turnlamp","",""
+"","4891","test_turnlamp_synchronflash_alternative[12]","tests","Mon Aug 18 01:29:06 UTC 2025","passed","Mon Aug 18 01:29:11 UTC 2025","","test_turnlamp","",""
+"","10783","test_turnlamp_triggered_synchronflash[12]","tests","Mon Aug 18 01:28:44 UTC 2025","passed","Mon Aug 18 01:28:55 UTC 2025","","test_turnlamp","",""
+"","4345","test_turnlamp_synchronflash[6]","tests","Mon Aug 18 01:25:56 UTC 2025","passed","Mon Aug 18 01:26:01 UTC 2025","","test_turnlamp_all_pass","",""
+"","3522","test_turnlamp_synchronflash[7]","tests","Mon Aug 18 01:26:01 UTC 2025","passed","Mon Aug 18 01:26:04 UTC 2025","","test_turnlamp_all_pass","",""
+"","3525","test_turnlamp_synchronflash[10]","tests","Mon Aug 18 01:28:26 UTC 2025","passed","Mon Aug 18 01:28:30 UTC 2025","","test_turnlamp","",""
