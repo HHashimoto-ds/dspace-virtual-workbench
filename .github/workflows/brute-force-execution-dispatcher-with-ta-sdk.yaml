@@ -1,4 +1,4 @@
-name: Brute Force Execution Dispatcher TA SDK
+name: Brute Force Execution Dispatcher with TA SDK
 
 on:
   workflow_dispatch:
@@ -18,11 +18,11 @@ jobs:
         ebs-volume-size: [500] # EBS volume size in GB
         failed-job-not-terminate: [true] # Do NOT terminate EC2 Instance when the job fails
         uv: ['PythonSDK/Turnlamp']
-        test: ['tests/test_turnlamp.py']
+        test: ['tests/test_turnlamp.py', 'tests/test_turnlamp_all_pass.py']
         openta-testenv-config: ['tests/testdata_turnlamp/testenv_veos.yaml']
-
       # Allow all combinations to run even if one fails
       fail-fast: false
+
     steps:
       - name: Call dSPACE Windows Runner
         uses: actions/github-script@v6
@@ -32,7 +32,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'dspace-aws-on-demand-windows-runner-ta-sdk.yaml',
+              workflow_id: 'one-time-simulation-and-test-with-ta-sdk-using-aws-windows-runner.yaml',
               ref: context.ref,
               inputs: {
                 'ami-id': '${{ matrix.ami-id }}',
