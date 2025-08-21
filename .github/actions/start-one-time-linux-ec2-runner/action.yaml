@@ -1,0 +1,373 @@
+name: 'Start One-Time EC2 Linux Runner'
+description: 'Start a self-hosted EC2 Linux Runner with Git installation for one-time use'
+
+inputs:
+  aws-access-key-id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws-region:
+    description: 'AWS Region'
+    required: true
+  github-token:
+    description: 'GitHub Personal Access Token'
+    required: true
+  ami-id:
+    description: 'Linux AMI ID'
+    required: true
+  instance-type:
+    description: 'EC2 Instance Type'
+    required: true
+  subnet-id:
+    description: 'Subnet ID'
+    required: true
+  security-group-id:
+    description: 'Security Group ID'
+    required: true
+  iam-instance-profile:
+    description: 'IAM Instance Profile'
+    required: true
+  ebs-volume-size:
+    description: 'EBS Volume Size in GB'
+    required: true
+  key-name:
+    description: 'SSH Key Pair Name'
+    required: true
+  github-repository:
+    description: 'GitHub Repository'
+    required: true
+  runner-labels:
+    description: 'Labels for the GitHub runner'
+    required: true
+
+outputs:
+  ec2-instance-id:
+    description: 'ID of the created EC2 instance'
+    value: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+  inputs-markdown:
+    description: 'Markdown formatted input parameters'
+    value: |
+      ### ⚙️ Parameters for EC2 Linux Runner
+
+      | Parameter | Value | Description |
+      |-----------|-------|-------------|
+      | aws-access-key-id | `************` | AWS Access Key ID |
+      | aws-secret-access-key | `************` | AWS Secret Access Key |
+      | aws-region | `${{ inputs.aws-region }}` | AWS Region |
+      | github-token | `************` | GitHub Personal Access Token |
+      | ami-id | `${{ inputs.ami-id }}` | Linux AMI ID |
+      | instance-type | `${{ inputs.instance-type }}` | EC2 Instance Type |
+      | subnet-id | `${{ inputs.subnet-id }}` | Subnet ID |
+      | security-group-id | `${{ inputs.security-group-id }}` | Security Group ID |
+      | iam-instance-profile | `${{ inputs.iam-instance-profile }}` | IAM Instance Profile |
+      | ebs-volume-size | `${{ inputs.ebs-volume-size }}` | EBS Volume Size in GB |
+      | key-name | `${{ inputs.key-name }}` | SSH Key Pair Name |
+      | github-repository | `${{ inputs.github-repository }}` | GitHub Repository |
+      | runner-labels | `${{ inputs.runner-labels }}` | Runner's Labels |
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Start EC2 runner
+      id: start-ec2-runner
+      shell: bash
+      run: |
+        # Function to retry commands
+        function retry {
+          local retries=$1
+          shift
+          local count=0
+          until "$@"; do
+            exit=$?
+            count=$((count + 1))
+            if [ $count -lt $retries ]; then
+              echo "Command failed. Attempt $count/$retries. Retrying..."
+              sleep 5
+            else
+              echo "Command failed after $retries attempts."
+              return $exit
+            fi
+          done
+          return 0
+        }
+
+        # Get GitHub runner registration token
+        get_token() {
+          local response
+          response=$(curl -sL \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ inputs.github-token }}" \
+            "https://api.github.com/repos/${{ inputs.github-repository }}/actions/runners/registration-token")
+          
+          # Check if response contains token
+          if ! echo "$response" | jq -e .token > /dev/null; then
+            echo "Failed to get registration token. Response: $response" >&2
+            return 1
+          fi
+          echo "$response"
+        }
+
+        echo "Getting runner registration token..."
+        TOKEN_RESPONSE=$(retry 3 get_token)
+        if [ $? -ne 0 ]; then
+          echo "Failed to get runner registration token after 3 attempts"
+          exit 1
+        fi
+        REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
+
+        # Set runner label and repository
+        RUNNER_LABELS="${{ inputs.runner-labels }}"
+        GITHUB_REPOSITORY="${{ inputs.github-repository }}"
+        echo "RUNNER_LABELS=$RUNNER_LABELS" >> $GITHUB_ENV
+
+        # Create user-data script
+        USER_DATA=$(cat <<EOF
+        #!/bin/bash
+        set -e
+
+        # Create and set permissions for log file
+        sudo touch /var/log/user-data.log
+        sudo chown $(whoami):$(whoami) /var/log/user-data.log
+        sudo chmod 644 /var/log/user-data.log
+
+        # Start logging
+        exec 1> >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+        # Function to retry commands
+        function retry {
+          local retries=$1
+          shift
+          local count=0
+          until "$@"; do
+            exit=$?
+            count=$((count + 1))
+            if [ $count -lt $retries ]; then
+              echo "Command failed. Attempt $count/$retries. Retrying..."
+              sleep 5
+            else
+              echo "Command failed after $retries attempts."
+              return $exit
+            fi
+          done
+          return 0
+        }
+
+        # Install required packages
+        if [ -f /etc/debian_version ]; then
+          # Debian/Ubuntu
+          retry 3 sudo apt-get update
+          retry 3 sudo apt-get install -y curl jq git
+        elif [ -f /etc/redhat-release ]; then
+          # RHEL/CentOS/Amazon Linux
+          retry 3 sudo yum clean all
+          retry 3 sudo yum makecache
+          retry 3 sudo yum install -y curl jq git
+        else
+          echo "Unsupported Linux distribution"
+          exit 1
+        fi
+
+        # Set environment variables from EC2 instance metadata
+        TOKEN='${REGISTRATION_TOKEN}'
+        LABELS='${RUNNER_LABELS}'
+        REPO='${GITHUB_REPOSITORY}'
+
+        # Create runner directory
+        sudo mkdir -p /opt/actions-runner
+        sudo chown -R $(whoami):$(whoami) /opt/actions-runner
+        cd /opt/actions-runner
+
+        # Get latest runner version
+        echo "Getting latest runner version..."
+        get_version() {
+          local response
+          response=$(curl -sL https://api.github.com/repos/actions/runner/releases/latest)
+          
+          # Check if response contains tag_name
+          if ! echo "$response" | jq -e .tag_name > /dev/null; then
+            echo "Failed to get latest version. Response: $response" >&2
+            return 1
+          fi
+          
+          echo "$response" | jq -r .tag_name | sed 's/^v//'
+        }
+        
+        LATEST_VERSION=$(retry 3 get_version)
+        if [ $? -ne 0 ] || [ -z "$LATEST_VERSION" ]; then
+          echo "Failed to get latest runner version"
+          exit 1
+        fi
+        echo "Latest runner version: ${LATEST_VERSION}"
+
+        # Download runner
+        RUNNER_FILE="actions-runner-linux-x64-${LATEST_VERSION}.tar.gz"
+        RUNNER_URL="https://github.com/actions/runner/releases/download/v${LATEST_VERSION}/${RUNNER_FILE}"
+        echo "Downloading runner from: ${RUNNER_URL}"
+        download_runner() {
+          local http_code
+          http_code=$(curl -w '%{http_code}' -o "${RUNNER_FILE}" -L "${RUNNER_URL}")
+          if [ "$http_code" != "200" ]; then
+            echo "Failed to download runner. HTTP status: $http_code" >&2
+            return 1
+          fi
+          if [ ! -s "${RUNNER_FILE}" ]; then
+            echo "Downloaded runner file is empty" >&2
+            return 1
+          fi
+        }
+        if ! retry 3 download_runner; then
+          echo "Failed to download runner after 3 attempts"
+          exit 1
+        fi
+
+        # Verify checksum
+        echo "Downloading checksum..."
+        download_checksum() {
+          local http_code
+          http_code=$(curl -w '%{http_code}' -o "${RUNNER_FILE}.sha256" -L "${RUNNER_URL}.sha256")
+          if [ "$http_code" != "200" ]; then
+            echo "Failed to download checksum. HTTP status: $http_code" >&2
+            return 1
+          fi
+          if [ ! -s "${RUNNER_FILE}.sha256" ]; then
+            echo "Downloaded checksum file is empty" >&2
+            return 1
+          fi
+        }
+        if ! retry 3 download_checksum; then
+          echo "Failed to download checksum after 3 attempts"
+          exit 1
+        fi
+        
+        echo "Verifying download..."
+        if [ ! -f "${RUNNER_FILE}.sha256" ]; then
+          echo "Checksum file not found"
+          exit 1
+        fi
+        EXPECTED_SHA=$(cat "${RUNNER_FILE}.sha256" | cut -d' ' -f1)
+        if [ -z "$EXPECTED_SHA" ]; then
+          echo "Failed to extract expected checksum"
+          exit 1
+        fi
+        ACTUAL_SHA=$(sha256sum "${RUNNER_FILE}" | cut -d' ' -f1)
+        if [ -z "$ACTUAL_SHA" ]; then
+          echo "Failed to calculate actual checksum"
+          exit 1
+        fi
+        if [ "${EXPECTED_SHA}" != "${ACTUAL_SHA}" ]; then
+          echo "Checksum verification failed"
+          echo "Expected: ${EXPECTED_SHA}"
+          echo "Actual: ${ACTUAL_SHA}"
+          exit 1
+        fi
+        echo "Checksum verification successful"
+
+        # Extract runner
+        echo "Extracting runner..."
+        if ! tar xzf "${RUNNER_FILE}"; then
+          echo "Failed to extract runner archive"
+          exit 1
+        fi
+        
+        # Verify extraction and set permissions
+        for script in config.sh run.sh svc.sh; do
+          if [ ! -f "./$script" ]; then
+            echo "Runner file $script is missing after extraction"
+            exit 1
+          fi
+          if ! chmod +x "./$script"; then
+            echo "Failed to set execute permission on $script"
+            exit 1
+          fi
+        done
+        echo "Runner extracted successfully and permissions set"
+
+        # Configure runner
+        # With --ephemeral option, the runner will be removed after the job is done
+        # With --unattended option, the runner will not prompt for any input
+        echo "Configuring runner..."
+        if ! ./config.sh --url https://github.com/${REPO} --token ${TOKEN} --labels ${LABELS} --unattended --ephemeral; then
+          echo "Failed to configure runner"
+          exit 1
+        fi
+        echo "Runner configured successfully"
+
+        # Install and start runner service
+        echo "Installing runner service..."
+        if ! sudo ./svc.sh install; then
+          echo "Failed to install runner service"
+          exit 1
+        fi
+        echo "Runner service installed successfully"
+
+        echo "Starting runner service..."
+        if ! sudo ./svc.sh start; then
+          echo "Failed to start runner service"
+          exit 1
+        fi
+        echo "Runner service started successfully"
+
+        EOF
+        )
+
+        # Launch EC2 instance
+        launch_instance() {
+          aws ec2 run-instances \
+            --image-id "${{ inputs.ami-id }}" \
+            --instance-type "${{ inputs.instance-type }}" \
+            --subnet-id "${{ inputs.subnet-id }}" \
+            --security-group-ids ${{ inputs.security-group-id }} \
+            --associate-public-ip-address \
+            --iam-instance-profile "Name=${{ inputs.iam-instance-profile }}" \
+            --block-device-mappings "[{\"DeviceName\":\"/dev/xvda\",\"Ebs\":{\"VolumeSize\":${{ inputs.ebs-volume-size }},\"VolumeType\":\"gp3\"}}]" \
+            --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${RUNNER_LABELS}},{Key=GitHubRepository,Value=${{ inputs.github-repository }}}]" \
+            --query 'Instances[0].InstanceId' \
+            --instance-initiated-shutdown-behavior stop \
+            --key-name "${{ inputs.key-name }}" \
+            --user-data "${USER_DATA}" \
+            --metadata-options "HttpTokens=required,HttpEndpoint=enabled" \
+            --output text
+        }
+
+        echo "Launching EC2 instance..."
+        INSTANCE_ID=$(retry 3 launch_instance)
+        if [ $? -ne 0 ] || [ -z "$INSTANCE_ID" ]; then
+          echo "Failed to launch EC2 instance"
+          exit 1
+        fi
+        echo "Successfully launched EC2 instance: ${INSTANCE_ID}"
+
+        # Wait for instance to be running (with timeout)
+        echo "Waiting for instance to be running..."
+        wait_instance() {
+          timeout 300 aws ec2 wait instance-running --instance-ids "$INSTANCE_ID"
+        }
+        if ! retry 3 wait_instance; then
+          echo "Timeout waiting for instance to be running"
+          exit 1
+        fi
+
+        # Wait for status checks to pass (with timeout)
+        echo "Waiting for status checks..."
+        wait_status() {
+          timeout 300 aws ec2 wait instance-status-ok --instance-ids "$INSTANCE_ID"
+        }
+        if ! retry 3 wait_status; then
+          echo "Timeout waiting for status checks"
+          exit 1
+        fi
+
+        echo "EC2 instance is ready and running"
+
+        # Set output
+        echo "ec2-instance-id=${INSTANCE_ID}" >> $GITHUB_OUTPUT

@@ -21,7 +21,7 @@ inputs:
     description: 'Result of the job that ran on the runner'
     required: true
   failed-job-not-terminate:
-    description: 'Whether to not terminate the instance on job failure'
+    description: 'Whether to not terminate (delete) the instance on job failure'
     required: true
 
 runs:

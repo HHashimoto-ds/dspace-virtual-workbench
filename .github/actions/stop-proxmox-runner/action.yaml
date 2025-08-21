@@ -1,0 +1,113 @@
+name: 'Stop Proxmox Runner'
+description: 'Stop or delete a Proxmox runner VM based on conditions'
+
+inputs:
+  proxmox-host:
+    description: 'Proxmox host URL (e.g., https://proxmox.example.com:8006)'
+    required: true
+  proxmox-token-id:
+    description: 'Proxmox API Token ID'
+    required: true
+  proxmox-token-secret:
+    description: 'Proxmox API Token Secret'
+    required: true
+  proxmox-node:
+    description: 'Proxmox node name'
+    required: true
+  vm-id:
+    description: 'Proxmox VM ID to stop/delete'
+    required: true
+  shutdown-behavior:
+    description: 'Shutdown behavior (stop or delete)'
+    required: true
+  job-result:
+    description: 'Result of the job that ran on the runner'
+    required: true
+  failed-job-not-terminate:
+    description: 'Whether to not terminate (delete) the VM on job failure'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Stop Proxmox runner
+      shell: bash
+      run: |
+        # Function to wait for VM to stop
+        wait_for_vm_stop() {
+          echo "Waiting for VM to stop..."
+          while true; do
+            STATUS=$(curl -k -s \
+              -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+              "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}/status/current" \
+              | jq -r '.data.status')
+            
+            if [ "$STATUS" = "stopped" ]; then
+              break
+            fi
+            echo "VM status: $STATUS, waiting..."
+            sleep 5
+          done
+        }
+
+        # Handle VM based on conditions
+        if [ "${{ inputs.shutdown-behavior }}" == "stop" ] || \
+           ([ "${{ inputs.job-result }}" == "failure" ] && ${{ inputs.failed-job-not-terminate }}); then
+          echo "Stopping Proxmox VM..."
+          
+          # Try graceful shutdown first
+          curl -k -s \
+            -X POST \
+            -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+            "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}/status/shutdown"
+
+          # Wait up to 60 seconds for graceful shutdown
+          TIMEOUT=60
+          while [ $TIMEOUT -gt 0 ]; do
+            STATUS=$(curl -k -s \
+              -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+              "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}/status/current" \
+              | jq -r '.data.status')
+            
+            if [ "$STATUS" = "stopped" ]; then
+              echo "VM stopped gracefully"
+              break
+            fi
+            
+            TIMEOUT=$((TIMEOUT - 5))
+            if [ $TIMEOUT -le 0 ]; then
+              echo "Graceful shutdown timed out, forcing stop..."
+              curl -k -s \
+                -X POST \
+                -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+                "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}/status/stop"
+              
+              wait_for_vm_stop
+            fi
+            sleep 5
+          done
+        else
+          echo "Deleting Proxmox VM..."
+          
+          # Stop VM first if running
+          STATUS=$(curl -k -s \
+            -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+            "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}/status/current" \
+            | jq -r '.data.status')
+          
+          if [ "$STATUS" != "stopped" ]; then
+            echo "Stopping VM before deletion..."
+            curl -k -s \
+              -X POST \
+              -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+              "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}/status/stop"
+            
+            wait_for_vm_stop
+          fi
+
+          # Delete the VM
+          curl -k -s \
+            -X DELETE \
+            -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+            "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${{ inputs.vm-id }}"
+        fi

@@ -1,0 +1,244 @@
+name: 'Start One-Time Proxmox Windows Runner'
+description: 'Start a self-hosted Proxmox Windows Runner with Git installation for one-time use'
+
+inputs:
+  proxmox-host:
+    description: 'Proxmox host URL (e.g., https://proxmox.example.com:8006)'
+    required: true
+  proxmox-token-id:
+    description: 'Proxmox API Token ID'
+    required: true
+  proxmox-token-secret:
+    description: 'Proxmox API Token Secret'
+    required: true
+  proxmox-node:
+    description: 'Proxmox node name'
+    required: true
+  template-vmid:
+    description: 'Template VM ID to clone from'
+    required: true
+  vm-name:
+    description: 'Name for the new VM'
+    required: true
+  cpu-cores:
+    description: 'Number of CPU cores'
+    required: true
+  memory:
+    description: 'Memory size in MB'
+    required: true
+  disk-size:
+    description: 'Disk size in GB'
+    required: true
+  github-token:
+    description: 'GitHub Personal Access Token'
+    required: true
+  github-repository:
+    description: 'GitHub Repository'
+    required: true
+  runner-labels:
+    description: 'Labels for the GitHub runner'
+    required: true
+
+outputs:
+  vm-id:
+    description: 'ID of the created Proxmox VM'
+    value: ${{ steps.start-proxmox-runner.outputs.vm-id }}
+  inputs-markdown:
+    description: 'Markdown formatted input parameters'
+    value: |
+      ### ⚙️ Parameters for Proxmox Windows Runner
+
+      | Parameter | Value | Description |
+      |-----------|-------|-------------|
+      | proxmox-host | \`${{ inputs.proxmox-host }}\` | Proxmox Host URL |
+      | proxmox-token-id | \`************\` | Proxmox API Token ID |
+      | proxmox-token-secret | \`************\` | Proxmox API Token Secret |
+      | proxmox-node | \`${{ inputs.proxmox-node }}\` | Proxmox Node Name |
+      | template-vmid | \`${{ inputs.template-vmid }}\` | Template VM ID |
+      | vm-name | \`${{ inputs.vm-name }}\` | VM Name |
+      | cpu-cores | \`${{ inputs.cpu-cores }}\` | CPU Cores |
+      | memory | \`${{ inputs.memory }}\` | Memory Size (MB) |
+      | disk-size | \`${{ inputs.disk-size }}\` | Disk Size (GB) |
+      | github-token | \`************\` | GitHub Personal Access Token |
+      | github-repository | \`${{ inputs.github-repository }}\` | GitHub Repository |
+      | runner-labels | \`${{ inputs.runner-labels }}\` | Runner's Labels |
+
+runs:
+  using: "composite"
+  steps:
+    - name: Start Proxmox runner
+      id: start-proxmox-runner
+      shell: bash
+      run: |
+        # Get GitHub runner registration token
+        TOKEN_RESPONSE=$(curl -sL \
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ inputs.github-token }}" \
+          "https://api.github.com/repos/${{ inputs.github-repository }}/actions/runners/registration-token")
+        REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
+
+        # Set runner label
+        RUNNER_LABELS="${{ inputs.runner-labels }}"
+        echo "RUNNER_LABELS=$RUNNER_LABELS" >> $GITHUB_ENV
+
+        # Create VM from template using Proxmox API
+        VM_ID=$(curl -k -s \
+          -X POST \
+          -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+          "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu" \
+          -d "newid=${{ inputs.template-vmid }}" \
+          -d "name=${{ inputs.vm-name }}" \
+          -d "cores=${{ inputs.cpu-cores }}" \
+          -d "memory=${{ inputs.memory }}" \
+          -d "disk=scsi0,size=${{ inputs.disk-size }}G" \
+          -d "description=GitHub Runner for ${{ inputs.github-repository }}" \
+          | jq -r '.data')
+
+        # Start the VM
+        curl -k -s \
+          -X POST \
+          -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+          "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${VM_ID}/status/start"
+
+        # Wait for VM to be running
+        echo "Waiting for VM to be running..."
+        while true; do
+          STATUS=$(curl -k -s \
+            -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+            "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${VM_ID}/status/current" \
+            | jq -r '.data.status')
+          
+          if [ "$STATUS" = "running" ]; then
+            break
+          fi
+          echo "VM status: $STATUS, waiting..."
+          sleep 5
+        done
+
+        # Wait for QEMU guest agent to be ready
+        echo "Waiting for QEMU guest agent to be ready..."
+        while true; do
+          AGENT_STATUS=$(curl -k -s \
+            -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+            "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${VM_ID}/agent/ping" \
+            | jq -r '.data')
+          
+          if [ "$AGENT_STATUS" = "1" ]; then
+            break
+          fi
+          echo "QEMU guest agent not ready, waiting..."
+          sleep 5
+        done
+
+        # Get VM IP address
+        VM_IP=$(curl -k -s \
+          -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+          "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${VM_ID}/agent/network-get-interfaces" \
+          | jq -r '.data[0].ip-addresses[0].ip-address')
+
+        # Create and upload PowerShell script for runner setup
+        cat > runner-setup.ps1 << 'EOF'
+        # Set target Git version
+        $GitVersion = "2.43.0"
+        
+        # Check if Git is installed and get its version
+        $needsGitInstall = $true
+        try {
+            $installedGitVersion = (git --version) -replace 'git version '
+            Write-Host "Found Git version: $installedGitVersion"
+            
+            # Compare versions
+            $installed = [System.Version]($installedGitVersion -replace '\.windows\.\d+$')
+            $target = [System.Version]$GitVersion
+            
+            if ($installed -ge $target) {
+                Write-Host "Installed Git version ($installedGitVersion) is equal to or newer than target version ($GitVersion). Skipping installation."
+                $needsGitInstall = $false
+            } else {
+                Write-Host "Installed Git version ($installedGitVersion) is older than target version ($GitVersion). Will upgrade."
+            }
+        } catch {
+            Write-Host "Git is not installed or not in PATH. Will install version $GitVersion"
+        }
+        
+        if ($needsGitInstall) {
+            $GitInstallerUrl = "https://github.com/git-for-windows/git/releases/download/v${GitVersion}.windows.1/Git-${GitVersion}-64-bit.exe"
+            $GitInstallerPath = "C:\Git-${GitVersion}-64-bit.exe"
+            
+            Write-Host "Downloading Git installer..."
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            $webClient = New-Object System.Net.WebClient
+            $webClient.Headers.Add("User-Agent", "PowerShell")
+            Write-Host "Download started..."
+            $webClient.DownloadFile($GitInstallerUrl, $GitInstallerPath)
+            Write-Host "Download completed."
+            
+            Write-Host "Installing Git..."
+            Start-Process -FilePath $GitInstallerPath -ArgumentList "/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS=icons,ext\reg\shellhere,assoc,assoc_sh" -Wait
+            
+            Write-Host "Adding Git to PATH..."
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";C:\Program Files\Git\bin"
+            [System.Environment]::SetEnvironmentVariable("Path", $env:Path, "Machine")
+            
+            # Refresh environment variables
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+        }
+        
+        New-Item -ItemType Directory -Path "C:\actions-runner" -Force
+        Set-Location -Path "C:\actions-runner"
+
+        Start-Transcript -Path "C:\actions-runner\startup.log" -Append
+
+        # Get latest runner version
+        Write-Host "Getting latest runner version..."
+        $latestRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/actions/runner/releases/latest"
+        $latestVersion = $latestRelease.tag_name.TrimStart('v')
+        Write-Host "Latest runner version: $latestVersion"
+
+        # Download latest runner
+        $runnerFile = "actions-runner-win-x64-${latestVersion}.zip"
+        $runnerUrl = "https://github.com/actions/runner/releases/download/v${latestVersion}/${runnerFile}"
+        Write-Host "Downloading runner from: $runnerUrl"
+        Invoke-WebRequest -Uri $runnerUrl -OutFile $runnerFile
+
+        # Get and verify checksum
+        Write-Host "Verifying download..."
+        $assets = $latestRelease.assets | Where-Object { $_.name -eq $runnerFile }
+        if ($assets) {
+            $checksumUrl = "https://github.com/actions/runner/releases/download/v${latestVersion}/${runnerFile}.sha256"
+            $expectedHash = (Invoke-WebRequest -Uri $checksumUrl).Content.Split(' ')[0]
+            $actualHash = (Get-FileHash -Path $runnerFile -Algorithm SHA256).Hash
+            
+            if ($actualHash.ToUpper() -ne $expectedHash.ToUpper()) {
+                throw "Checksum verification failed. Expected: $expectedHash, Got: $actualHash"
+            }
+            Write-Host "Checksum verification successful"
+        } else {
+            throw "Could not find checksum for runner version $latestVersion"
+        }
+
+        # Extract runner
+        Write-Host "Extracting runner..."
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD\${runnerFile}", "$PWD")
+
+        # Configure and start runner
+        .\config.cmd --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABELS} --unattended --ephemeral
+        Start-Process -FilePath ".\run.cmd" -WindowStyle Hidden
+
+        Stop-Transcript
+        EOF
+
+        # Execute runner setup script on VM using QEMU Guest Agent
+        # Use base64 encoding to avoid issues with special characters and line breaks
+        SCRIPT_CONTENT=$(cat runner-setup.ps1 | base64 -w 0)
+        curl -k -s \
+          -X POST \
+          -H "Authorization: PVEAPIToken=${{ inputs.proxmox-token-id }}=${{ inputs.proxmox-token-secret }}" \
+          "${{ inputs.proxmox-host }}/api2/json/nodes/${{ inputs.proxmox-node }}/qemu/${VM_ID}/agent/exec" \
+          -d "command=powershell.exe" \
+          -d "input-data=$(echo $SCRIPT_CONTENT | base64 -d)"
+
+        # Set output
+        echo "vm-id=${VM_ID}" >> $GITHUB_OUTPUT
