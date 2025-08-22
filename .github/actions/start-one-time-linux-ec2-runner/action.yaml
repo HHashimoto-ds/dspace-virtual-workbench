@@ -98,8 +98,8 @@ runs:
         #!/bin/bash
         
         # Install required packages
-        sudo apt-get update
-        sudo apt-get install -y jq curl
+        apt-get update
+        apt-get install -y jq curl
         
         # Create runner user and directory
         useradd -m runner
