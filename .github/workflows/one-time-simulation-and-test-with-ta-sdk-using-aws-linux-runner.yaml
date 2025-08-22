@@ -7,9 +7,9 @@ name: One-Time Simulation and Test with TA SDK using AWS Linux Runner
         description: Linux AMI ID
         type: choice
         required: false
-        default: ami-0729a050dcb3a0796
+        default: ami-0bb50ff1709190a42
         options:
-          - ami-0729a050dcb3a0796 # Linux TA_SDK AMI
+          - ami-0bb50ff1709190a42 # Linux TA_SDK AMI
       instance-type:
         description: 'EC2 Instance Type (recommended: t3.large or larger)'
         type: choice
