@@ -118,19 +118,16 @@ runs:
         echo "Downloading runner from: $RUNNER_URL"
         curl -o ${RUNNER_FILE} -L ${RUNNER_URL}
 
-        # Get and verify checksum
+        # Get and verify checksum from release assets
         echo "Verifying download..."
-        CHECKSUM_URL="https://github.com/actions/runner/releases/download/v${LATEST_VERSION}/${RUNNER_FILE}.sha256"
-        curl -sL "${CHECKSUM_URL}" -o "${RUNNER_FILE}.sha256"
+        RELEASE_INFO=$(curl -s "https://api.github.com/repos/actions/runner/releases/latest")
+        EXPECTED_HASH=$(echo "$RELEASE_INFO" | jq -r ".assets[] | select(.name == \"${RUNNER_FILE}.sha256\") | .browser_download_url" | xargs curl -sL | cut -d' ' -f1)
+        ACTUAL_HASH=$(sha256sum ${RUNNER_FILE} | cut -d' ' -f1)
         
-        # Display both checksums for debugging
-        echo "Expected checksum from file:"
-        cat "${RUNNER_FILE}.sha256"
-        echo "Actual checksum:"
-        sha256sum "${RUNNER_FILE}"
+        echo "Expected hash: ${EXPECTED_HASH}"
+        echo "Actual hash: ${ACTUAL_HASH}"
         
-        # Verify using sha256sum -c
-        if ! echo "$(cat ${RUNNER_FILE}.sha256)  ${RUNNER_FILE}" | sha256sum -c; then
+        if [ "$ACTUAL_HASH" != "$EXPECTED_HASH" ]; then
             echo "Checksum verification failed"
             exit 1
         fi
