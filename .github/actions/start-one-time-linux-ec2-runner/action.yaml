@@ -121,11 +121,17 @@ runs:
         # Get and verify checksum
         echo "Verifying download..."
         CHECKSUM_URL="https://github.com/actions/runner/releases/download/v${LATEST_VERSION}/${RUNNER_FILE}.sha256"
-        EXPECTED_HASH=$(curl -sL "${CHECKSUM_URL}" | cut -d' ' -f1)
-        ACTUAL_HASH=$(sha256sum ${RUNNER_FILE} | cut -d' ' -f1)
-
-        if [ "$ACTUAL_HASH" != "$EXPECTED_HASH" ]; then
-            echo "Checksum verification failed. Expected: $EXPECTED_HASH, Got: $ACTUAL_HASH"
+        curl -sL "${CHECKSUM_URL}" -o "${RUNNER_FILE}.sha256"
+        
+        # Display both checksums for debugging
+        echo "Expected checksum from file:"
+        cat "${RUNNER_FILE}.sha256"
+        echo "Actual checksum:"
+        sha256sum "${RUNNER_FILE}"
+        
+        # Verify using sha256sum -c
+        if ! echo "$(cat ${RUNNER_FILE}.sha256)  ${RUNNER_FILE}" | sha256sum -c; then
+            echo "Checksum verification failed"
             exit 1
         fi
         echo "Checksum verification successful"
