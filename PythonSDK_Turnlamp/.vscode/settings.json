@@ -1,0 +1,15 @@
+
+{
+    "python.testing.pytestArgs": [
+        "tests",
+        "--openta-testenv-config=testdata/testenv_veos.yaml",
+        "--alluredir=allure-results"
+        // alternative test environment configuration yaml files are:
+        // testdata/testenv_veos.yaml  -  VEOS (MAPort Only)
+        // testdata/testenv_veos_vecu.yaml  -  VEOS (Access via ControlDesk, MAPort for download and start only)
+        // testdata/testenv_veos_controldesk.yaml  -  VEOS VECU Hybrid, ECU Access via dSPACE (XIL API) ECU(M&C)Port
+        // testdata/testenv_veos_vecu_controldesk  -  VEOS VECU Hybrid, ECU Access via ControlDesk
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
