@@ -97,7 +97,7 @@ jobs:
           disk-size: ${{ inputs.disk-size }}
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           github-repository: ${{ github.repository }}
-          runner-labels: ${{ github.run_id }}-run-dspace-simulation-and-test
+          runner-labels: one-time-dspace-simulation-and-test-${{ github.run_id }}
       - name: Add Runner Information to Summary
         run: |
           echo "${{ steps.start-proxmox-runner.outputs.inputs-markdown }}" >> $GITHUB_STEP_SUMMARY
@@ -105,7 +105,7 @@ jobs:
   run-dspace-simulation-and-test:
     name: Run dSPACE Simulation and Test
     needs: start-runner
-    runs-on: ${{ github.run_id }}-run-dspace-simulation-and-test
+    runs-on: one-time-dspace-simulation-and-test-${{ github.run_id }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

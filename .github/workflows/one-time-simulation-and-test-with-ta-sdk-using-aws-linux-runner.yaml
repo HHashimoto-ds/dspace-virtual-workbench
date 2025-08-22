@@ -1,60 +1,60 @@
 name: One-Time Simulation and Test with TA SDK using AWS Linux Runner
 
-on:
+'on':
   workflow_dispatch:
     inputs:
       ami-id:
-        description: 'Linux AMI ID'
+        description: Linux AMI ID
         type: choice
         required: false
-        default: 'ami-****************'
+        default: ami-****************
         options:
-          - 'ami-****************' # Linux TA_SDK AMI
+          - ami-**************** # Linux TA_SDK AMI
       instance-type:
         description: 'EC2 Instance Type (recommended: t3.large or larger)'
         type: choice
         required: false
-        default: 't3.2xlarge'
+        default: t3.2xlarge
         options:
-          - 't3.large'
-          - 't3.xlarge'
-          - 't3.2xlarge'
-          - 'm5.large'
-          - 'm5.xlarge'
+          - t3.large
+          - t3.xlarge
+          - t3.2xlarge
+          - m5.large
+          - m5.xlarge
       shutdown-behavior:
-        description: 'Shutdown Behavior for EC2 Instance'
+        description: Shutdown Behavior for EC2 Instance
         type: choice
         required: false
-        default: 'terminate'
+        default: terminate
         options:
-          - 'terminate'
-          - 'stop'
+          - terminate
+          - stop
       ebs-volume-size:
         description: 'EBS Volume Size in GB (default: 500)'
         type: number
         required: false
         default: 500
       failed-job-not-terminate:
-        description: 'Do NOT terminate EC2 Instance when the job fails'
+        description: Do NOT terminate EC2 Instance when the job fails
         type: boolean
         required: false
         default: true
       # Add any additional parameters needed for your dSPACE job
       uv:
-        description: 'Python uv directory'
+        description: Python uv directory
         type: string
         required: false
-        default: 'PythonSDK/Turnlamp' # Replace with your default value
+        default: PythonSDK/Turnlamp # Replace with your default value
       test:
-        description: 'Python test script parh'
+        description: Python test script parh
         type: string
         required: false
-        default: 'tests/test_turnlamp.py' # Replace with your default value
+        default: tests/test_turnlamp.py # Replace with your default value
       openta-testenv-config:
-        description: 'OpenTA test environment config path'
+        description: OpenTA test environment config path
         type: string
         required: false
-        default: 'tests/testdata_turnlamp/testenv_veos_linux.yaml' # Replace with your default value  
+        default: tests/testdata_turnlamp/testenv_veos_linux.yaml # Replace with your default value  
 
 permissions:
   contents: write
@@ -90,7 +90,7 @@ jobs:
           ebs-volume-size: ${{ inputs.ebs-volume-size }}
           key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           github-repository: ${{ github.repository }}
-          runner-labels: ${{ github.run_id }}-run-dspace-simulation-and-test
+          runner-labels: one-time-dspace-simulation-and-test-${{ github.run_id }}
       - name: Add Runner Information to Summary
         run: |
           echo "${{ steps.start-ec2-runner.outputs.inputs-markdown }}" >> $GITHUB_STEP_SUMMARY
@@ -99,11 +99,10 @@ jobs:
           echo "### 🖥️ EC2 Instance Details" >> $GITHUB_STEP_SUMMARY
           echo "📌 <a href=\"https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }}\" target=\"_blank\">View in AWS Console</a>" >> $GITHUB_STEP_SUMMARY
 
-
   run-dspace-simulation-and-test:
     name: Run dSPACE Simulation and Test
     needs: start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ github.run_id }}-run-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    runs-on: one-time-dspace-simulation-and-test-${{ github.run_id }} # run the job on the newly created runner with the same label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -122,7 +121,6 @@ jobs:
             echo "| 📝 Python test script path | \`${{ inputs.test }}\` |"
             echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |"
           } >> $GITHUB_STEP_SUMMARY
-                    
       - name: Run pytest with Allure reporting
         shell: bash
         run: |
@@ -135,10 +133,10 @@ jobs:
           # Install uv
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="/root/.cargo/bin:$PATH"
-          
+
           # Start VEOS
           /opt/dspace/common/docker-rt/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start
-          
+
           # Run pytest with Allure Results
           cd "${{ inputs.uv }}"
           uv sync
@@ -156,7 +154,6 @@ jobs:
           path: ${{ inputs.uv }}/allure-results
           retention-days: 30
           if-no-files-found: warn
-
 
   stop-runner:
     name: Stop EC2 Runner
@@ -180,7 +177,6 @@ jobs:
           shutdown-behavior: ${{ inputs.shutdown-behavior }}
           job-result: ${{ needs.run-dspace-simulation-and-test.result }}
           failed-job-not-terminate: ${{ inputs.failed-job-not-terminate }}
-
 
   generate-allure-report:
     name: Generate Allure Report

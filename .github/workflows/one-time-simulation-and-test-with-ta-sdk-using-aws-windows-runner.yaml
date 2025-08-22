@@ -90,7 +90,7 @@ jobs:
           ebs-volume-size: ${{ inputs.ebs-volume-size }}
           key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
           github-repository: ${{ github.repository }}
-          runner-labels: ${{ github.run_id }}-run-dspace-simulation-and-test
+          runner-labels: one-time-dspace-simulation-and-test-${{ github.run_id }}
       - name: Add Runner Information to Summary
         run: |
           echo "${{ steps.start-ec2-runner.outputs.inputs-markdown }}" >> $GITHUB_STEP_SUMMARY
@@ -103,7 +103,7 @@ jobs:
   run-dspace-simulation-and-test:
     name: Run dSPACE Simulation and Test
     needs: start-runner # required to start the main job when the runner is ready
-    runs-on: ${{ github.run_id }}-run-dspace-simulation-and-test # run the job on the newly created runner with the same label
+    runs-on: one-time-dspace-simulation-and-test-${{ github.run_id }} # run the job on the newly created runner with the same label
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
