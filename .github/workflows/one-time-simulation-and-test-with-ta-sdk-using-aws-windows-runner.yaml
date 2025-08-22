@@ -128,6 +128,11 @@ jobs:
         run: |
           Write-Host "Hello dSPACE World!"
 
+          # Add dSPACE license server to CodeMeter Server Search List
+          Write-Host "Adding dSPACE license server to CodeMeter Server Search List ..."
+          Start-Process -FilePath "C:\Program Files (x86)\CodeMeter\Runtime\bin\cmu32.exe" -ArgumentList "--add-server ${{ vars.AWS_DSPACE_LICENSE_SERVER }}" -Wait -NoNewWindow
+
+          # Install uv
           powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
           $env:Path = "C:\Users\Administrator\.local\bin;$env:Path"
           
