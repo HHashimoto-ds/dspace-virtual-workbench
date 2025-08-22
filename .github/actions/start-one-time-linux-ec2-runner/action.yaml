@@ -98,15 +98,17 @@ runs:
         #!/bin/bash
         
         # Install required packages
-        suo apt-get update
+        sudo apt-get update
         sudo apt-get install -y jq curl
         
-        # Create actions-runner directory
-        mkdir -p /actions-runner
-        cd /actions-runner
+        # Create runner user and directory
+        useradd -m runner
+        RUNNER_DIR="/home/runner/actions-runner"
+        mkdir -p $RUNNER_DIR
+        cd $RUNNER_DIR
 
         # Start logging
-        exec 1> >(tee -a /actions-runner/startup.log) 2>&1
+        exec 1> >(tee -a $RUNNER_DIR/startup.log) 2>&1
         
         echo "Getting latest runner version..."
         LATEST_VERSION=$(curl -s https://api.github.com/repos/actions/runner/releases/latest | jq -r .tag_name | sed 's/^v//')
@@ -122,13 +124,11 @@ runs:
         echo "Extracting runner..."
         tar xzf ${RUNNER_FILE}
 
-        # Configure and start runner
-        # With --ephemeral option, the runner will be removed after the job is done
-        # With --unattended option, the runner will not prompt for any input
-        ./config.sh --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABELS} --unattended --ephemeral
-
-        # Install the runner service and start it
-        ./run.sh
+        # Set ownership and permissions
+        chown -R runner:runner .
+        
+        # Switch to runner user and configure/start runner
+        su - runner -c "cd $RUNNER_DIR && ./config.sh --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABELS} --unattended --ephemeral && ./run.sh"
         EOF
         )
 
