@@ -48,21 +48,16 @@ on:
         required: false
         default: true
       # Add any additional parameters needed for your dSPACE job
-      uv:
-        description: 'Python uv directory'
+      python-sdk-dir:
+        description: 'Python SDK Directory'
         type: string
         required: false
-        default: 'PythonSDK/Turnlamp'
-      test:
-        description: 'Python test script parh'
+        default: 'PythonSDK_Turnlamp' # Replace with your default value
+      openta-testenv-config-file:
+        description: 'OpenTA TestEnv Config File'
         type: string
         required: false
-        default: 'tests/test_turnlamp.py'
-      openta-testenv-config:
-        description: 'OpenTA test environment config path'
-        type: string
-        required: false
-        default: 'tests/testdata_turnlamp/testenv_veos.yaml'
+        default: 'testdata/testenv_veos.yaml' # Replace with your default value
 
 permissions:
   contents: write
@@ -120,9 +115,8 @@ jobs:
             echo
             echo "| Parameter | Value |"
             echo "|-----------|-------|"
-            echo "| 📂 Python uv directory | \`${{ inputs.uv }}\` |"
-            echo "| 📝 Python test script path | \`${{ inputs.test }}\` |"
-            echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |"
+            echo "| 📂 Python SDK Directory | \`${{ inputs.python-sdk-dir}}\` |"
+            echo "| ⚙️ OpenTA TestEnv Config File | \`${{ inputs.openta-testenv-config-file }}\` |"
           } >> $GITHUB_STEP_SUMMARY
                     
       - name: Run pytest with Allure reporting
@@ -142,9 +136,9 @@ jobs:
           & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
           
           # Run pytest with Allure Results
-          cd "${{ inputs.uv }}"
+          cd "${{ inputs.python-sdk-dir }}"
           uv sync
-          uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
+          uv run pytest .\tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=allure-results
 
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
@@ -152,7 +146,7 @@ jobs:
         continue-on-error: true
         with:
           name: allure-results
-          path: ${{ inputs.uv }}/allure-results
+          path: ${{ inputs.python-sdk-dir }}/allure-results
           retention-days: 30
           if-no-files-found: warn
 

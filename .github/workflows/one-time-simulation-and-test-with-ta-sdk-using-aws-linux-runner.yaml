@@ -7,9 +7,9 @@ name: One-Time Simulation and Test with TA SDK using AWS Linux Runner
         description: Linux AMI ID
         type: choice
         required: false
-        default: ami-****************
+        default: ami-0729a050dcb3a0796
         options:
-          - ami-**************** # Linux TA_SDK AMI
+          - ami-0729a050dcb3a0796 # Linux TA_SDK AMI
       instance-type:
         description: 'EC2 Instance Type (recommended: t3.large or larger)'
         type: choice
@@ -40,21 +40,16 @@ name: One-Time Simulation and Test with TA SDK using AWS Linux Runner
         required: false
         default: true
       # Add any additional parameters needed for your dSPACE job
-      uv:
-        description: Python uv directory
+      python-sdk-dir:
+        description: 'Python SDK Directory'
         type: string
         required: false
-        default: PythonSDK/Turnlamp # Replace with your default value
-      test:
-        description: Python test script parh
+        default: 'PythonSDK_Turnlamp' # Replace with your default value
+      openta-testenv-config-file:
+        description: 'OpenTA TestEnv Config File'
         type: string
         required: false
-        default: tests/test_turnlamp.py # Replace with your default value
-      openta-testenv-config:
-        description: OpenTA test environment config path
-        type: string
-        required: false
-        default: tests/testdata_turnlamp/testenv_veos_linux.yaml # Replace with your default value  
+        default: 'testdata/testenv_veos_linux.yaml' # Replace with your default value
 
 permissions:
   contents: write
@@ -117,9 +112,8 @@ jobs:
             echo
             echo "| Parameter | Value |"
             echo "|-----------|-------|"
-            echo "| 📂 Python uv directory | \`${{ inputs.uv }}\` |"
-            echo "| 📝 Python test script path | \`${{ inputs.test }}\` |"
-            echo "| ⚙️ OpenTA test environment config | \`${{ inputs.openta-testenv-config }}\` |"
+            echo "| 📂 Python SDK Directory | \`${{ inputs.python-sdk-dir}}\` |"
+            echo "| ⚙️ OpenTA TestEnv Config File | \`${{ inputs.openta-testenv-config-file }}\` |"
           } >> $GITHUB_STEP_SUMMARY
       - name: Run pytest with Allure reporting
         shell: bash
@@ -135,12 +129,12 @@ jobs:
           export PATH="/root/.cargo/bin:$PATH"
 
           # Start VEOS
-          /opt/dspace/common/docker-rt/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start
 
           # Run pytest with Allure Results
-          cd "${{ inputs.uv }}"
+          cd "${{ inputs.python-sdk-dir }}"
           uv sync
-          uv run pytest "${{ inputs.test }}" --openta-testenv-config="${{ inputs.openta-testenv-config }}" --alluredir=allure-results
+          uv run pytest .\tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=allure-results
 
           # exit 1    # means failure result
           # exit 0    # means success result
@@ -151,7 +145,7 @@ jobs:
         continue-on-error: true
         with:
           name: allure-results
-          path: ${{ inputs.uv }}/allure-results
+          path: ${{ inputs.python-sdk-dir }}/allure-results
           retention-days: 30
           if-no-files-found: warn
 
