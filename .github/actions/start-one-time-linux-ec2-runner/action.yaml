@@ -94,7 +94,7 @@ runs:
         echo "RUNNER_LABELS=$RUNNER_LABELS" >> $GITHUB_ENV
 
         # Create user-data shell script
-        USER_DATA=$(cat <<'EOF'
+        USER_DATA=$(cat <<EOF
         #!/bin/bash
         
         # Start logging
@@ -103,8 +103,8 @@ runs:
         # Create runner user and directory
         useradd -m runner
         RUNNER_DIR="/home/runner/actions-runner"
-        mkdir -p $RUNNER_DIR
-        cd $RUNNER_DIR
+        mkdir -p \$RUNNER_DIR
+        cd \$RUNNER_DIR
 
         # Setup GitHub Runner
         echo "Setting up GitHub Runner..."
@@ -116,8 +116,8 @@ runs:
         
         # Switch to runner user and configure/start runner
         echo "REG TOKEN = ${REGISTRATION_TOKEN}"
-        su - runner -c "cd $RUNNER_DIR && \
-        ./config.sh --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels ${RUNNER_LABELS} --unattended --ephemeral && \
+        su - runner -c "cd \$RUNNER_DIR && \
+        ./config.sh --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels \${RUNNER_LABELS} --unattended --ephemeral && \
         ./run.sh"
         
         EOF
