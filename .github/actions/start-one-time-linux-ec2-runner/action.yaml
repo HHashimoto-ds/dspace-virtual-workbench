@@ -89,6 +89,8 @@ runs:
           "https://api.github.com/repos/${{ inputs.github-repository }}/actions/runners/registration-token")
         REGISTRATION_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .token)
 
+        echo ${REGISTRATION_TOKEN}
+
         # Set runner label
         RUNNER_LABELS="${{ inputs.runner-labels }}"
         echo "RUNNER_LABELS=$RUNNER_LABELS" >> $GITHUB_ENV
