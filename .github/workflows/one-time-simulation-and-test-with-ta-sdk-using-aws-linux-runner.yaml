@@ -129,7 +129,7 @@ jobs:
           export PATH="/root/.cargo/bin:$PATH"
 
           # Start VEOS
-          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start &
 
           # Run pytest with Allure Results
           cd "${{ inputs.python-sdk-dir }}"
