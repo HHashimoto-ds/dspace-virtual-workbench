@@ -135,7 +135,7 @@ jobs:
           # Run pytest with Allure Results
           cd "${{ inputs.python-sdk-dir }}"
           uv sync
-          uv run pytest .\tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=allure-results
+          uv run pytest ./tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=allure-results
 
           # exit 1    # means failure result
           # exit 0    # means success result
