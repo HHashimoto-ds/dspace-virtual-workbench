@@ -115,9 +115,8 @@ runs:
         chown -R runner:runner .
         
         # Switch to runner user and configure/start runner
-        echo "REG TOKEN = ${REGISTRATION_TOKEN}"
         su - runner -c "cd \$RUNNER_DIR && \
-        ./config.sh --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels \${RUNNER_LABELS} --unattended --ephemeral && \
+        ./config.sh --url https://github.com/${{ inputs.github-repository }} --token ${REGISTRATION_TOKEN} --labels "\${RUNNER_LABELS}" --unattended --ephemeral && \
         ./run.sh"
         
         EOF
