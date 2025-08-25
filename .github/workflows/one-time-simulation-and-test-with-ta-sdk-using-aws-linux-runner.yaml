@@ -129,7 +129,8 @@ jobs:
           source $HOME/.local/bin/env 
 
           # Register & Start VEOS
-          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start &
+          echo "Registering & Starting VEOS ..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start || true
 
           # Run pytest with Allure Results
           cd "${{ inputs.python-sdk-dir }}"
