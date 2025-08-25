@@ -126,9 +126,9 @@ jobs:
 
           # Install uv
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="/root/.cargo/bin:$PATH"
+          source $HOME/.local/bin/env 
 
-          # Start VEOS
+          # Register & Start VEOS
           /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start &
 
           # Run pytest with Allure Results
