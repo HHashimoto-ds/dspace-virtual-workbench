@@ -177,12 +177,7 @@ jobs:
     needs: run-dspace-simulation-and-test
     if: always()
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
       - name: Download Allure Results
         uses: actions/download-artifact@v4
         with:
