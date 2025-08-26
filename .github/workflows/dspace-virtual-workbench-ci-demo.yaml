@@ -688,24 +688,28 @@ jobs:
     steps:
       - name: Download Job 1 Allure Results
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: job-1-allure-results
           path: allure-results/job1
 
       - name: Download Job 2 Allure Results
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: job-2-allure-results
           path: allure-results/job2
 
       - name: Download Job 3 Allure Results
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: job-3-allure-results
           path: allure-results/job3
 
       # - name: Download Job 4 Allure Results
       #   uses: actions/download-artifact@v4
+      #   continue-on-error: true
       #   with:
       #     name: job-4-allure-results
       #     path: allure-results/job4
@@ -713,10 +717,13 @@ jobs:
       - name: Merge Allure Results
         run: |
           mkdir -p merged-results
-          cp -r allure-results/job1/* merged-results/
-          cp -r allure-results/job2/* merged-results/
-          cp -r allure-results/job3/* merged-results/
-      #    cp -r allure-results/job4/* merged-results/
+          for job in job1 job2 job3; do
+            if [ -d "allure-results/$job" ] && [ -n "$(ls -A allure-results/$job 2>/dev/null)" ]; then
+              cp -r allure-results/$job/* merged-results/
+            else
+              echo "No results found for $job or directory is empty"
+            fi
+          done
 
       - name: Generate Allure Report
         run: |
