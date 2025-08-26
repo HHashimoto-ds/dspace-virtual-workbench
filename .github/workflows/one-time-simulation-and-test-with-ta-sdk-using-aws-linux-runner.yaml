@@ -182,16 +182,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: allure-results
-          path: ${{ inputs.python-sdk-dir }}/allure-results
+          path: ./allure-results
       - name: Generate Allure Report
         run: |
           npm install -g allure-commandline --save-dev
-          allure generate ${{ inputs.python-sdk-dir }}/allure-results -o allure-report --clean
+          allure generate ./allure-results -o ./allure-report --clean
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
+          publish_dir: ./allure-report
           destination_dir: reports/${{ github.run_id }}
           keep_files: true
       - name: Add Report Link to Summary
