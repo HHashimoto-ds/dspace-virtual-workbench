@@ -103,7 +103,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
       - name: Add Test Information to Summary
         shell: bash
         run: |
@@ -135,10 +134,9 @@ jobs:
           # Run pytest with Allure Results
           cd "${{ inputs.python-sdk-dir }}"
           uv sync
-          uv run pytest ./tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=allure-results
-
-          # exit 1    # means failure result
-          # exit 0    # means success result
+          uv run pytest ./tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=./allure-results
+          # exit 1  # failed
+          # exit 0  # success
 
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
@@ -183,12 +181,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: allure-results
-          path: allure-results
+          path: ${{ inputs.python-sdk-dir }}/allure-results
       - name: Generate Allure Report
         run: |
           npm install -g allure-commandline --save-dev
-          allure generate allure-results -o allure-report --clean
-
+          allure generate ${{ inputs.python-sdk-dir }}/allure-results -o allure-report --clean
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
