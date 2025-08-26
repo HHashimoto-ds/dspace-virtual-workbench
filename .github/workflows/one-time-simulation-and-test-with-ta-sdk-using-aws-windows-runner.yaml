@@ -137,10 +137,9 @@ jobs:
           # Run pytest with Allure Results
           cd "${{ inputs.python-sdk-dir }}"
           uv sync
-          uv run pytest .\tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=allure-results
-
-          # exit 1    # means failure result
-          # exit 0    # means success result
+          uv run pytest .\tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=.\allure-results
+          # exit 1  # failed
+          # exit 0  # success
 
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
@@ -151,7 +150,6 @@ jobs:
           path: ${{ inputs.python-sdk-dir }}/allure-results
           retention-days: 30
           if-no-files-found: warn
-
 
   stop-runner:
     name: Stop EC2 Runner
@@ -176,33 +174,26 @@ jobs:
           job-result: ${{ needs.run-dspace-simulation-and-test.result }}
           failed-job-not-terminate: ${{ inputs.failed-job-not-terminate }}
 
-
   generate-allure-report:
     name: Generate Allure Report
     needs: run-dspace-simulation-and-test
     if: always()
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
       - name: Download Allure Results
         uses: actions/download-artifact@v4
         with:
           name: allure-results
-          path: allure-results
+          path: ./allure-results
       - name: Generate Allure Report
         run: |
           npm install -g allure-commandline --save-dev
-          allure generate allure-results -o allure-report --clean
-
+          allure generate ./allure-results -o ./allure-report --clean
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
+          publish_dir: ./allure-report
           destination_dir: reports/${{ github.run_id }}
           keep_files: true
       - name: Add Report Link to Summary
