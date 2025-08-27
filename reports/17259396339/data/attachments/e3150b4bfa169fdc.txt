@@ -1,0 +1,31 @@
+06:48:01.931000 INFO    : openta.common.config.testenv_reader :: Load test environment configuration: 'testdata/testenv_veos_linux.yaml'
+06:48:01.946000 INFO    : openta.common.config.testenv_reader :: Analyze ports ...
+06:48:01.947000 INFO    : openta.common.config.testenv_reader :: Register 'Model' XIL API MAPort port.
+06:48:01.947000 INFO    : openta.common.config.testenv_reader :: Analyze mappings ...
+06:48:01.947000 INFO    : openta.common.config.testenv_reader :: Process XIL API Mapping file 'VEOS_Linux/TurnLampMapping.xml' .
+06:48:02.038000 INFO    : openta.testing.testenv :: Setup Ports
+06:48:02.039000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Create
+06:48:02.039000 INFO    : openta.ports.xilapi_modelaccess :: create 'Model' XilModelAccessPort
+06:48:02.039000 INFO    : openta.ports.xilapi_base :: load ASAM testbench factory assemblies for XIL version: 2.2.0
+06:48:12.488000 WARNING : openta.ports.xilapi_modelaccess :: create 'Model' XilModelAccessPort: Exception occured: ASAM.XIL.Implementation.Testbench.MAPort.Error.MAPortException_impl: No valid license found. Vendor Description: The user maximum of the CodeMeter license is reached, Error 212.
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CheckAndThrowException(ServiceException exception)
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CreateInstance(InstanceType instanceType, Object[] args)
+   at dSPACE.XIL.Testbench.Client.Testbench.MAPort.MAPortFactory.CreateMAPort(String name)
+␤Failed to create 'Model' XilModelAccessPort
+06:48:12.489000 ERROR   : openta.testing.testenv :: Setup Ports Failed: ASAM.XIL.Implementation.Testbench.MAPort.Error.MAPortException_impl: No valid license found. Vendor Description: The user maximum of the CodeMeter license is reached, Error 212.
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CheckAndThrowException(ServiceException exception)
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CreateInstance(InstanceType instanceType, Object[] args)
+   at dSPACE.XIL.Testbench.Client.Testbench.MAPort.MAPortFactory.CreateMAPort(String name)
+␤Failed to create 'Model' XilModelAccessPort
+Traceback (most recent call last):
+  File "/home/runner/actions-runner/_work/dspace-virtual-workbench/dspace-virtual-workbench/PythonSDK_Turnlamp_AllPass/.venv/lib/python3.11/site-packages/openta/testing/testenv.py", line 162, in setup
+    port.create()
+  File "/home/runner/actions-runner/_work/dspace-virtual-workbench/dspace-virtual-workbench/PythonSDK_Turnlamp_AllPass/.venv/lib/python3.11/site-packages/openta/ports/xilapi_modelaccess.py", line 140, in create
+    self._port = self.testbench.MAPortFactory.CreateMAPort(self.name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ASAM.XIL.Implementation.Testbench.MAPort.Error.MAPortException_impl: No valid license found. Vendor Description: The user maximum of the CodeMeter license is reached, Error 212.
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CheckAndThrowException(ServiceException exception)
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CreateInstance(InstanceType instanceType, Object[] args)
+   at dSPACE.XIL.Testbench.Client.Testbench.MAPort.MAPortFactory.CreateMAPort(String name)
+Failed to create 'Model' XilModelAccessPort
+06:48:12.490000 INFO    : openta.testing.testenv :: Teardown Ports
