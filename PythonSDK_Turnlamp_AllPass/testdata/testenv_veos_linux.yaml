@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=../../../../libs/openta/src/openta/data/testenv_schema.json
+
+ports:
+  - type: XIL API MAPort
+    name: Model
+    order: 1
+    target_state: STARTED
+    config:
+      factory:
+        vendor_name: dSPACE GmbH
+        product_name: XIL API
+        product_version: 2024-A
+      port_config_file: VEOS_Linux/MAPortConfig.xml
+      force_config: true
+
+mappings:
+  - file: VEOS_Linux/TurnLampMapping.xml
+    type: XIL API Mapping

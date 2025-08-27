@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Root>
+	<creator type="key">ControlDesk 24.1</creator>
+	<majorversion type="key">24</majorversion>
+	<minorversion type="key">1</minorversion>
+	<maintenanceversion type="key">0</maintenanceversion>
+	<specialbuildversion type="key"/>
+	<releasename type="key">2024-A</releasename>
+	<project>
+		<Creator type="key">ControlDesk</Creator>
+		<MigrationHistory type="key"/>
+		<Name type="key">TurnSignal_VEOSHYBRID.CDP</Name>
+		<DisplayName type="key">TurnSignal_VEOSHYBRID</DisplayName>
+		<Flags type="key">4096</Flags>
+		<Type type="key">1</Type>
+		<UniqueID type="key">497159315</UniqueID>
+		<EntityID type="key">{FE813AD3-1F77-47E1-A2F2-4C47C91C5459}</EntityID>
+		<item>
+			<Targets type="key">project</Targets>
+			<Name type="key">VEOSVECU</Name>
+			<DisplayName type="key">TurnSignal_VEOSHYBRID</DisplayName>
+			<Path type="key">..</Path>
+			<Flags type="key">4100</Flags>
+			<Type type="key">3</Type>
+			<UniqueID type="key">531820029</UniqueID>
+			<EntityID type="key">{DF36CFBF-95DB-49B5-9416-9E59BEC59832}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			<item>
+				<Docs type="key">.doc,.docx,.pdf</Docs>
+				<Name type="key">Specifications</Name>
+				<DisplayName type="key">Specifications</DisplayName>
+				<Path type="key">.</Path>
+				<Type type="key">3</Type>
+				<UniqueID type="key">405529058</UniqueID>
+				<EntityID type="key">{5B5D05A2-2C3A-4BEB-815E-25FA0A70A478}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDocs type="key">.doc,.docx,.pdf</ItemInfoDocs>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Docs type="key">.mpp</Docs>
+				<Name type="key">Project Plans</Name>
+				<DisplayName type="key">Project Plans</DisplayName>
+				<Path type="key">.</Path>
+				<Type type="key">3</Type>
+				<UniqueID type="key">653943064</UniqueID>
+				<EntityID type="key">{52D4EBAB-BA9C-4F50-8DFD-2C207AB02CCB}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDocs type="key">.mpp</ItemInfoDocs>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">pythonscriptcomponent</Targets>
+				<Name type="key">Python Scripts</Name>
+				<DisplayName type="key">Python Scripts</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<ExtendedFlags type="key">4224</ExtendedFlags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">195165490</UniqueID>
+				<EntityID type="key">{C3848600-C934-4B2B-92E2-8D859CBE39D2}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">signaleditor</Targets>
+				<Name type="key">Signal Description Sets</Name>
+				<DisplayName type="key">Signal Description Sets</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">808555749</UniqueID>
+				<EntityID type="key">{93209C62-0EAD-473F-BDA5-C82638086F15}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Docs type="key">.slx,.m</Docs>
+				<Name type="key">Models</Name>
+				<DisplayName type="key">Models</DisplayName>
+				<Path type="key">.</Path>
+				<Type type="key">3</Type>
+				<UniqueID type="key">42703374</UniqueID>
+				<EntityID type="key">{460ACC91-98ED-4AC9-A5C8-2507FE0CFD94}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDocs type="key">.slx,.m</ItemInfoDocs>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+		</item>
+		<item>
+			<Name type="key">AutomationCustomData.json</Name>
+			<DisplayName type="key">AutomationCustomData.json</DisplayName>
+			<Path type="key">.</Path>
+			<Flags type="key">4</Flags>
+			<Type type="key">4</Type>
+			<UniqueID type="key">911260153</UniqueID>
+			<EntityID type="key">{5ED3C69D-6BD3-4044-BE67-A2BCBE4F07EF}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+		</item>
+		<item>
+			<Name type="key">Events</Name>
+			<DisplayName type="key">Events</DisplayName>
+			<Path type="key">.</Path>
+			<Flags type="key">4</Flags>
+			<ExtendedFlags type="key">4</ExtendedFlags>
+			<Type type="key">3</Type>
+			<UniqueID type="key">883531070</UniqueID>
+			<EntityID type="key">{0189BB9B-AD96-49F7-AF53-B84DBBA3F479}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			<item>
+				<Name type="key">Project.events</Name>
+				<DisplayName type="key">Project.events</DisplayName>
+				<Path type="key">.\Events</Path>
+				<Flags type="key">4</Flags>
+				<Type type="key">52</Type>
+				<UniqueID type="key">830920235</UniqueID>
+				<EntityID type="key">{6F017656-6586-40C6-BDF8-0DAEEF6EA59A}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+		</item>
+	</project>
+	<experiments>
+		<experiment>
+			<Creator type="key">ControlDesk</Creator>
+			<MigrationHistory type="key"/>
+			<Name type="key">turnlamp.CDE</Name>
+			<DisplayName type="key">turnlamp</DisplayName>
+			<Path type="key">.\turnlamp</Path>
+			<Flags type="key">4096</Flags>
+			<Type type="key">2</Type>
+			<UniqueID type="key">969671398</UniqueID>
+			<EntityID type="key">{03D8FF41-2DDC-4F11-A853-9D4580461C30}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:29:09</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+		</experiment>
+	</experiments>
+	<ProjectExperiment>
+		<LastActiveExperiment type="key">turnlamp</LastActiveExperiment>
+	</ProjectExperiment>
+	<DataSetManager>
+		<Version>
+			<Version type="key">2</Version>
+		</Version>
+		<Work/>
+		<ActiveWork/>
+		<Reference/>
+		<ActiveReference/>
+		<Master/>
+		<ActiveMaster/>
+		<InitialMaster/>
+		<Incomplete/>
+		<IncompleteReadonly/>
+		<DataSet/>
+		<Readonly/>
+		<AutomaticDownload/>
+	</DataSetManager>
+	<DiagnosticsManagement/>
+	<Instrumentation Version="1">
+		<UniqueIds Version="3">
+			<Count type="key">1</Count>
+			<File1 type="key">turnlamp/turnlamp</File1>
+			<Id1 type="key">1</Id1>
+		</UniqueIds>
+	</Instrumentation>
+	<VariablesManagement/>
+	<MeasureDataManagement/>
+	<MeasurementConfiguration/>
+	<BusNavigator/>
+	<SignalEditor/>
+	<XILAPIEESPort/>
+	<PythonScriptComponent/>
+	<PlatformManagement/>
+</Root>

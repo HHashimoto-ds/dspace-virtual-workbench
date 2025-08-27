@@ -1,0 +1,983 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Root>
+	<creator type="key">ControlDesk 24.1p3</creator>
+	<majorversion type="key">24</majorversion>
+	<minorversion type="key">1</minorversion>
+	<maintenanceversion type="key">0</maintenanceversion>
+	<specialbuildversion type="key"/>
+	<releasename type="key">2024-A</releasename>
+	<experiment>
+		<Creator type="key">ControlDesk</Creator>
+		<MigrationHistory type="key"/>
+		<Name type="key">turnlamp.CDE</Name>
+		<DisplayName type="key">turnlamp</DisplayName>
+		<Path type="key">.\turnlamp</Path>
+		<Flags type="key">4096</Flags>
+		<Type type="key">2</Type>
+		<UniqueID type="key">702512230</UniqueID>
+		<EntityID type="key">{95C4B06C-1378-4968-B7C9-20BD2D2FA3B9}</EntityID>
+		<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+		<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+		<ItemInfoDescr type="key"/>
+		<ItemInfoAddInfoDb type="key"/>
+		<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+		<item>
+			<Component type="key">VariablesManagement</Component>
+			<Name type="key">CalculatedVariables.vdp</Name>
+			<DisplayName type="key">CalculatedVariables.vdp</DisplayName>
+			<Path type="key">.</Path>
+			<Flags type="key">18692</Flags>
+			<Type type="key">4</Type>
+			<UniqueID type="key">945892035</UniqueID>
+			<EntityID type="key">{3944F3E1-1D36-491E-B71F-97C449959E9A}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+		</item>
+		<item>
+			<Targets type="key">experiment</Targets>
+			<Name type="key">turnlamp</Name>
+			<DisplayName type="key">turnlamp</DisplayName>
+			<Path type="key">..</Path>
+			<Flags type="key">4100</Flags>
+			<Type type="key">3</Type>
+			<UniqueID type="key">402768060</UniqueID>
+			<EntityID type="key">{12C805A8-A2BA-4F0C-BE64-A304AEEF7952}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			<item>
+				<Component type="key">Instrumentation</Component>
+				<Targets type="key">instrumentation</Targets>
+				<Name type="key">Experiment Layouts</Name>
+				<DisplayName type="key">Experiment Layouts</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<ExtendedFlags type="key">4224</ExtendedFlags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">442509296</UniqueID>
+				<EntityID type="key">{30E49D01-4E85-4966-A74C-E7BE57D94A13}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+				<item>
+					<Name type="key">turnlamp.cdc</Name>
+					<DisplayName type="key">turnlamp.cdc</DisplayName>
+					<Path type="key">.\Experiment Layouts</Path>
+					<Flags type="key">4100</Flags>
+					<Type type="key">4</Type>
+					<UniqueID type="key">564169369</UniqueID>
+					<EntityID type="key">{854BFDA2-DC95-443B-9902-AD7A37421320}</EntityID>
+					<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+					<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+					<ItemInfoDescr type="key"/>
+					<ItemInfoAddInfoDb type="key"/>
+					<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+				</item>
+				<item>
+					<Component type="key">Instrumentation</Component>
+					<Name type="key">turnlamp.lay</Name>
+					<DisplayName type="key">turnlamp.lay</DisplayName>
+					<Path type="key">.\Experiment Layouts</Path>
+					<Flags type="key">16448</Flags>
+					<Type type="key">10</Type>
+					<UniqueID type="key">128239488</UniqueID>
+					<EntityID type="key">{AC7ECCAB-F8A2-4E82-A5FC-836E1371DA2A}</EntityID>
+					<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+					<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+					<ItemInfoDescr type="key"/>
+					<ItemInfoAddInfoDb type="key"/>
+					<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+				</item>
+			</item>
+			<item>
+				<Targets type="key">devicemanagement,platformmanagement,diagnosticsmanagement</Targets>
+				<Name type="key">Hardware Configurations</Name>
+				<DisplayName type="key">Hardware Configurations</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">54558583</UniqueID>
+				<EntityID type="key">{ECABE944-3DA0-4CD4-ABC7-28C4FE16503D}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+				<item>
+					<Component type="key">PlatformManagement</Component>
+					<Targets type="key">Device::cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Targets>
+					<RestoreInfopmdn type="key">Platform</RestoreInfopmdn>
+					<RestoreInfopmid type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</RestoreInfopmid>
+					<Name type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Name>
+					<DisplayName type="key">Platform [VEOS, assigned to 'VEOS']</DisplayName>
+					<Flags type="key">128</Flags>
+					<ExtendedFlags type="key">3072</ExtendedFlags>
+					<Type type="key">6</Type>
+					<UniqueID type="key">261144706</UniqueID>
+					<EntityID type="key">{5676C275-7BBD-49E8-8230-B741CAD3BC78}</EntityID>
+					<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+					<ItemInfoDescr type="key"/>
+					<ItemInfoAddInfoDb type="key"/>
+					<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+					<item>
+						<Component type="key">VariablesManagement</Component>
+						<Name type="key">turnlamp.sdf</Name>
+						<DisplayName type="key">turnlamp.sdf</DisplayName>
+						<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+						<Flags type="key">18704</Flags>
+						<Type type="key">7</Type>
+						<UniqueID type="key">57102509</UniqueID>
+						<EntityID type="key">{E3FCEE17-FDA1-4D40-AB9B-18841DF1F673}</EntityID>
+						<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+						<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+						<ItemInfoDescr type="key"/>
+						<ItemInfoAddInfoDb type="key"/>
+						<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						<item>
+							<Component type="key">VariablesManagement</Component>
+							<Name type="key">turnlamp.vdp</Name>
+							<DisplayName type="key">turnlamp.vdp</DisplayName>
+							<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+							<Flags type="key">18692</Flags>
+							<Type type="key">4</Type>
+							<UniqueID type="key">134212979</UniqueID>
+							<EntityID type="key">{B0574CCA-ADB0-464C-BE24-83F7FCC136DE}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+						<item>
+							<Component type="key">VariablesManagement</Component>
+							<Name type="key">.metadata</Name>
+							<DisplayName type="key">.metadata</DisplayName>
+							<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+							<Flags type="key">18692</Flags>
+							<Type type="key">4</Type>
+							<UniqueID type="key">75030533</UniqueID>
+							<EntityID type="key">{7D364EAF-CCE2-49F1-AF80-4D087360E5DA}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+						<item>
+							<Component type="key">VariablesManagement</Component>
+							<Name type="key">turnlamp.map</Name>
+							<DisplayName type="key">turnlamp.map</DisplayName>
+							<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+							<Flags type="key">18692</Flags>
+							<Type type="key">4</Type>
+							<UniqueID type="key">763670918</UniqueID>
+							<EntityID type="key">{3126DBD8-EC85-4F30-A33D-545F7D696A92}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+						<item>
+							<Component type="key">VariablesManagement</Component>
+							<Name type="key">turnlamp.trc</Name>
+							<DisplayName type="key">turnlamp.trc</DisplayName>
+							<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+							<Flags type="key">18692</Flags>
+							<Type type="key">4</Type>
+							<UniqueID type="key">609190415</UniqueID>
+							<EntityID type="key">{CB1B8B91-6D4A-453C-BEF1-A85AD7A2B06F}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+						<item>
+							<Component type="key">VariablesManagement</Component>
+							<Name type="key">turnlamp.dsbuildinfo</Name>
+							<DisplayName type="key">turnlamp.dsbuildinfo</DisplayName>
+							<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+							<Flags type="key">18692</Flags>
+							<Type type="key">4</Type>
+							<UniqueID type="key">976307737</UniqueID>
+							<EntityID type="key">{6D9D68A1-81C2-4534-96EE-B77643B280BE}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+						<item>
+							<Component type="key">VariablesManagement</Component>
+							<Name type="key">turnlamp.osa</Name>
+							<DisplayName type="key">turnlamp.osa</DisplayName>
+							<Path type="key">.\Variable Descriptions\turnlamp.sdf</Path>
+							<Flags type="key">18692</Flags>
+							<Type type="key">4</Type>
+							<UniqueID type="key">580198645</UniqueID>
+							<EntityID type="key">{453EE9F5-5B61-4854-AD18-4A9E83238135}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+						<item>
+							<Component type="key">DataSetManager</Component>
+							<Name type="key">Data Sets</Name>
+							<DisplayName type="key">Data Sets</DisplayName>
+							<Path type="key">.\Data Sets</Path>
+							<Flags type="key">65798</Flags>
+							<ExtendedFlags type="key">132</ExtendedFlags>
+							<Type type="key">3</Type>
+							<UniqueID type="key">475790327</UniqueID>
+							<EntityID type="key">{06B87A00-502D-4126-A7CB-11556C2AA88D}</EntityID>
+							<ItemInfoDate type="key">2024-03-12 14:29:00</ItemInfoDate>
+							<ItemInfoDescr type="key"/>
+							<ItemInfoAddInfoDb type="key"/>
+							<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+						</item>
+					</item>
+				</item>
+				<item>
+					<Component type="key">PlatformManagement</Component>
+					<Targets type="key">Device::VEOS Simulation Time Group 1</Targets>
+					<Name type="key">41743ca9-85c8-494d-9da6-985582389a6e</Name>
+					<DisplayName type="key">VEOS Simulation Time Group 1</DisplayName>
+					<Flags type="key">128</Flags>
+					<Type type="key">59</Type>
+					<UniqueID type="key">598644653</UniqueID>
+					<EntityID type="key">{6A91177D-6934-428B-B0FD-264FF4C3A5C5}</EntityID>
+					<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+					<ItemInfoDescr type="key"/>
+					<ItemInfoAddInfoDb type="key"/>
+					<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+					<item>
+						<Component type="key">PlatformManagement</Component>
+						<Targets type="key">,Device::cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Targets>
+						<Flags type="key">416</Flags>
+						<ExtendedFlags type="key">3072</ExtendedFlags>
+						<UniqueID type="key">889125734</UniqueID>
+						<LinkedItem type="key">261144706</LinkedItem>
+					</item>
+				</item>
+			</item>
+			<item>
+				<Targets type="key">variablesmanagement</Targets>
+				<Name type="key">Variable Descriptions</Name>
+				<DisplayName type="key">Variable Descriptions</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">260</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">417934280</UniqueID>
+				<EntityID type="key">{711F367C-E338-4462-BCA5-EA89E3FE2623}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">datasetmanager</Targets>
+				<Name type="key">Data Sets</Name>
+				<DisplayName type="key">Data Sets</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">260</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">958654292</UniqueID>
+				<EntityID type="key">{2F42E7BB-B03B-4666-83E3-8AB1F765940B}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">mappings</Targets>
+				<Name type="key">Mappings</Name>
+				<DisplayName type="key">Mappings</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">1022001628</UniqueID>
+				<EntityID type="key">{ECD176AD-511A-4568-AE53-FFD2F54D2506}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+				<item>
+					<Component type="key">VariablesManagement</Component>
+					<Name type="key">.metadata</Name>
+					<DisplayName type="key">.metadata</DisplayName>
+					<Path type="key">.\Mappings</Path>
+					<Flags type="key">18692</Flags>
+					<Type type="key">4</Type>
+					<UniqueID type="key">733872292</UniqueID>
+					<EntityID type="key">{7B8BA07D-59B6-48BC-867F-3863D1383F8A}</EntityID>
+					<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+					<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+					<ItemInfoDescr type="key"/>
+					<ItemInfoAddInfoDb type="key"/>
+					<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+				</item>
+				<item>
+					<Component type="key">VariablesManagement</Component>
+					<Name type="key">TurnLampMapping.xml</Name>
+					<DisplayName type="key">TurnLampMapping.xml</DisplayName>
+					<Path type="key">.\Mappings</Path>
+					<Flags type="key">16640</Flags>
+					<Type type="key">4</Type>
+					<UniqueID type="key">420060915</UniqueID>
+					<EntityID type="key">{E1AA2F80-B992-41BA-8245-C19337EA6F56}</EntityID>
+					<ItemInfoDate type="key">2025-05-23 15:45:47</ItemInfoDate>
+					<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+					<ItemInfoDescr type="key"/>
+					<ItemInfoAddInfoDb type="key"/>
+					<ItemInfoAuthor type="key">DanielRo</ItemInfoAuthor>
+				</item>
+			</item>
+			<item>
+				<Targets type="key">measuredatamanagement</Targets>
+				<Name type="key">Measurement Data</Name>
+				<DisplayName type="key">Measurement Data</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<ExtendedFlags type="key">4224</ExtendedFlags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">1050279366</UniqueID>
+				<EntityID type="key">{E18741D8-0922-4F82-B8D2-4885C4E71413}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">variablefilters,.vfex</Targets>
+				<Docs type="key">.vfex</Docs>
+				<Name type="key">Variable Filters</Name>
+				<DisplayName type="key">Variable Filters</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">735619864</UniqueID>
+				<EntityID type="key">{BCC62B8A-8CB8-4304-8FC6-EA08379B5222}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDocs type="key">.vfex</ItemInfoDocs>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">labellists,.lab</Targets>
+				<Docs type="key">.lab,.txt</Docs>
+				<Name type="key">Label Lists</Name>
+				<DisplayName type="key">Label Lists</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">240336099</UniqueID>
+				<EntityID type="key">{EC8FCAF2-E878-4369-94D9-EF10DFEB2EAC}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDocs type="key">.lab,.txt</ItemInfoDocs>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">diagnosticsmanagement_reports,.rtf,.pdf,.html,.xml,.txt,.csv</Targets>
+				<Docs type="key">.rtf,.pdf,.html,.txt,.csv</Docs>
+				<Name type="key">Reports</Name>
+				<DisplayName type="key">Reports</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">1013344865</UniqueID>
+				<EntityID type="key">{144A6086-EE73-45B9-A712-D1806582ED8A}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDocs type="key">.rtf,.pdf,.html,.txt,.csv</ItemInfoDocs>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">pythonscriptcomponent</Targets>
+				<Name type="key">Python Scripts</Name>
+				<DisplayName type="key">Python Scripts</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<ExtendedFlags type="key">4224</ExtendedFlags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">821892475</UniqueID>
+				<EntityID type="key">{8CC05FCE-4711-4F2E-A044-ED9247A6D5D5}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">signaleditor</Targets>
+				<Name type="key">Signal Generators</Name>
+				<DisplayName type="key">Signal Generators</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">515312585</UniqueID>
+				<EntityID type="key">{BE8E25F8-46AA-405D-A121-31D18F04320F}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">busnavigator,.xml</Targets>
+				<Name type="key">BusNavigator</Name>
+				<DisplayName type="key">BusNavigator</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">260</Flags>
+				<ExtendedFlags type="key">256</ExtendedFlags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">773083902</UniqueID>
+				<EntityID type="key">{E0B1B571-23E0-467F-9629-DFEACC31CBCC}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+			<item>
+				<Targets type="key">xilapieesport</Targets>
+				<Name type="key">XIL API EESPorts</Name>
+				<DisplayName type="key">XIL API EESPorts</DisplayName>
+				<Path type="key">.</Path>
+				<Flags type="key">256</Flags>
+				<Type type="key">3</Type>
+				<UniqueID type="key">607092056</UniqueID>
+				<EntityID type="key">{BF55E23D-AD75-42FD-BB24-22598FC74F60}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+		</item>
+		<item>
+			<Name type="key">AutomationCustomData.json</Name>
+			<DisplayName type="key">AutomationCustomData.json</DisplayName>
+			<Path type="key">.</Path>
+			<Flags type="key">4</Flags>
+			<Type type="key">4</Type>
+			<UniqueID type="key">276745937</UniqueID>
+			<EntityID type="key">{949F7764-F60F-44DF-93D5-DAA9979086E6}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+		</item>
+		<item>
+			<Name type="key">Events</Name>
+			<DisplayName type="key">Events</DisplayName>
+			<Path type="key">.</Path>
+			<Flags type="key">4</Flags>
+			<ExtendedFlags type="key">4</ExtendedFlags>
+			<Type type="key">3</Type>
+			<UniqueID type="key">150526757</UniqueID>
+			<EntityID type="key">{7C6D4278-5589-4141-99E4-D1F313D9A2B6}</EntityID>
+			<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+			<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+			<ItemInfoDescr type="key"/>
+			<ItemInfoAddInfoDb type="key"/>
+			<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			<item>
+				<Name type="key">Experiment.events</Name>
+				<DisplayName type="key">Experiment.events</DisplayName>
+				<Path type="key">.\Events</Path>
+				<Flags type="key">4</Flags>
+				<Type type="key">52</Type>
+				<UniqueID type="key">493252234</UniqueID>
+				<EntityID type="key">{EC1E4E0C-C574-4774-B648-07EE94B3812E}</EntityID>
+				<ItemInfoDate type="key">2024-03-12 14:28:59</ItemInfoDate>
+				<ItemInfoPath type="key">$FPATH$</ItemInfoPath>
+				<ItemInfoDescr type="key"/>
+				<ItemInfoAddInfoDb type="key"/>
+				<ItemInfoAuthor type="key">dSPACE GmbH</ItemInfoAuthor>
+			</item>
+		</item>
+	</experiment>
+	<ProjectExperiment/>
+	<DataSetManager>
+		<Version>
+			<Version type="key">2</Version>
+		</Version>
+		<Work/>
+		<ActiveWork/>
+		<Reference/>
+		<ActiveReference/>
+		<Master/>
+		<ActiveMaster/>
+		<InitialMaster/>
+		<Incomplete/>
+		<IncompleteReadonly/>
+		<DataSet/>
+		<Readonly/>
+		<AutomaticDownload/>
+	</DataSetManager>
+	<DiagnosticsManagement/>
+	<Instrumentation Version="1"/>
+	<VariablesManagement>
+		<Favorites>
+			<Labels/>
+		</Favorites>
+	</VariablesManagement>
+	<MeasureDataManagement>
+		<TriggerRules>
+			<Version type="key">2</Version>
+		</TriggerRules>
+		<BookmarkTypes>
+			<BookmarkType>
+				<TypeID type="key">1</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">2</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">3</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">5</TypeID>
+				<RecordingActive type="key">0</RecordingActive>
+				<VisualizationActive type="key">0</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">6</TypeID>
+				<RecordingActive type="key">0</RecordingActive>
+				<VisualizationActive type="key">0</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">8</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">9</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">12</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">13</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">14</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+			<BookmarkType>
+				<TypeID type="key">15</TypeID>
+				<RecordingActive type="key">1</RecordingActive>
+				<VisualizationActive type="key">1</VisualizationActive>
+			</BookmarkType>
+		</BookmarkTypes>
+		<ProjectExperimentSettings>
+			<ShowMeasurementLinks type="key">0</ShowMeasurementLinks>
+		</ProjectExperimentSettings>
+	</MeasureDataManagement>
+	<MeasurementConfiguration>
+		<NextUniqueKey type="key">63</NextUniqueKey>
+		<SortedColumn type="key">4</SortedColumn>
+		<SortAscending type="key">-1</SortAscending>
+		<SignalList>
+			<Variable>
+				<Name type="key">Model Root/FrontLightEcu/TurnSignalLeft</Name>
+				<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+				<Active type="key">-1</Active>
+				<Signal>
+					<Raster type="key">Periodic Task 1</Raster>
+				</Signal>
+			</Variable>
+			<Variable>
+				<Name type="key">Model Root/FrontLightEcu/TurnSignalRight</Name>
+				<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+				<Active type="key">-1</Active>
+				<Signal>
+					<Raster type="key">Periodic Task 1</Raster>
+				</Signal>
+			</Variable>
+			<Variable>
+				<Name type="key">Model Root/RearLightEcu/TurnSignalLeft</Name>
+				<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+				<Active type="key">-1</Active>
+				<Signal>
+					<Raster type="key">Periodic Task 1</Raster>
+				</Signal>
+			</Variable>
+			<Variable>
+				<Name type="key">Model Root/RearLightEcu/TurnSignalRight</Name>
+				<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+				<Active type="key">-1</Active>
+				<Signal>
+					<Raster type="key">Periodic Task 1</Raster>
+				</Signal>
+			</Variable>
+		</SignalList>
+		<Platforms>
+			<Platform>
+				<Name type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Name>
+				<FilteredRastersView type="key">1</FilteredRastersView>
+				<UseDefaultRasterForParameters type="key">0</UseDefaultRasterForParameters>
+				<DefaultRaster type="key">Periodic Task 1</DefaultRaster>
+				<Rasters>
+					<PlatformTriggered>
+						<Name type="key">Periodic Task 1</Name>
+						<AutoRepeatEnabled type="key">1</AutoRepeatEnabled>
+						<AutoRepeatBehavior type="key">1</AutoRepeatBehavior>
+						<MultiCaptureHistoryEnabled type="key">0</MultiCaptureHistoryEnabled>
+						<DownsamplingFactor type="key">1</DownsamplingFactor>
+						<StartTrigger type="key">59</StartTrigger>
+						<StopTrigger type="key">60</StopTrigger>
+					</PlatformTriggered>
+					<PlatformTriggered>
+						<Name type="key">Periodic Task 2</Name>
+						<AutoRepeatEnabled type="key">1</AutoRepeatEnabled>
+						<AutoRepeatBehavior type="key">1</AutoRepeatBehavior>
+						<MultiCaptureHistoryEnabled type="key">0</MultiCaptureHistoryEnabled>
+						<DownsamplingFactor type="key">1</DownsamplingFactor>
+						<StartTrigger type="key">61</StartTrigger>
+						<StopTrigger type="key">62</StopTrigger>
+					</PlatformTriggered>
+				</Rasters>
+				<EnabledHardwarePollingRasters/>
+				<PlatformTriggers>
+					<PlatformTrigger>
+						<UniqueKey type="key">59</UniqueKey>
+						<Name type="key">Platform Trigger 1</Name>
+						<Condition type="key"/>
+						<Delay type="key">0</Delay>
+						<Enabled type="key">0</Enabled>
+						<Timeout type="key">0</Timeout>
+						<TimeoutEnabled type="key">0</TimeoutEnabled>
+						<VariableMappings>
+							<Platform type="key"/>
+						</VariableMappings>
+					</PlatformTrigger>
+					<PlatformTrigger>
+						<UniqueKey type="key">61</UniqueKey>
+						<Name type="key">Platform Trigger 2</Name>
+						<Condition type="key"/>
+						<Delay type="key">0</Delay>
+						<Enabled type="key">0</Enabled>
+						<Timeout type="key">0</Timeout>
+						<TimeoutEnabled type="key">0</TimeoutEnabled>
+						<VariableMappings>
+							<Platform type="key"/>
+						</VariableMappings>
+					</PlatformTrigger>
+				</PlatformTriggers>
+			</Platform>
+			<Platform>
+				<Name type="key">__Calculated</Name>
+				<FilteredRastersView type="key">1</FilteredRastersView>
+				<UseDefaultRasterForParameters type="key">0</UseDefaultRasterForParameters>
+				<Rasters>
+					<Raster>
+						<Name type="key">Merged</Name>
+						<MinimumSamplingPeriod type="key">0.001</MinimumSamplingPeriod>
+					</Raster>
+				</Rasters>
+				<EnabledHardwarePollingRasters/>
+				<PlatformTriggers/>
+			</Platform>
+		</Platforms>
+		<DurationTriggers>
+			<DurationTrigger>
+				<UniqueKey type="key">60</UniqueKey>
+				<Name type="key">Duration Trigger 1</Name>
+				<Delay type="key">0</Delay>
+				<Duration type="key">1</Duration>
+				<Enabled type="key">0</Enabled>
+			</DurationTrigger>
+			<DurationTrigger>
+				<UniqueKey type="key">62</UniqueKey>
+				<Name type="key">Duration Trigger 2</Name>
+				<Delay type="key">0</Delay>
+				<Duration type="key">1</Duration>
+				<Enabled type="key">0</Enabled>
+			</DurationTrigger>
+		</DurationTriggers>
+		<SampleCountTriggers/>
+		<Acquisition>
+			<MeasurementBufferSize type="key">60</MeasurementBufferSize>
+			<BufferOverflowWarningEnabled type="key">0</BufferOverflowWarningEnabled>
+			<BufferOverflowWarningTime type="key">10</BufferOverflowWarningTime>
+			<SaveMeasurementBuffer>
+				<AddToExperimentEnabled type="key">-1</AddToExperimentEnabled>
+				<AutomaticSaveDialogEnabled type="key">0</AutomaticSaveDialogEnabled>
+				<AutomaticExportEnabled type="key">0</AutomaticExportEnabled>
+				<AutomaticExportFileNamePrefix type="key">bufexp_</AutomaticExportFileNamePrefix>
+				<AutomaticExportFileType type="key">ASAM MDF 4.1 Files (*.mf4)</AutomaticExportFileType>
+				<AutomaticExportFolder type="key"/>
+				<AutomaticNamingEnabled type="key">-1</AutomaticNamingEnabled>
+				<AutomaticNamingMinimunDigits type="key">3</AutomaticNamingMinimunDigits>
+				<AutomaticNamingStartIndex type="key">1</AutomaticNamingStartIndex>
+				<Description type="key"/>
+				<FileNamePrefix type="key">buf_</FileNamePrefix>
+				<OpenInMeasurementDataPoolEnabled type="key">0</OpenInMeasurementDataPoolEnabled>
+				<RecordingFileType type="key">ASAM MDF 4.1 Files (*.mf4)</RecordingFileType>
+				<MeasurementTimestampsEnabled type="key">0</MeasurementTimestampsEnabled>
+			</SaveMeasurementBuffer>
+			<SaveDisplayedData>
+				<AddToExperimentEnabled type="key">-1</AddToExperimentEnabled>
+				<AutomaticSaveDialogEnabled type="key">0</AutomaticSaveDialogEnabled>
+				<AutomaticExportEnabled type="key">0</AutomaticExportEnabled>
+				<AutomaticExportFileNamePrefix type="key">sddexp_</AutomaticExportFileNamePrefix>
+				<AutomaticExportFileType type="key">ASAM MDF 4.1 Files (*.mf4)</AutomaticExportFileType>
+				<AutomaticExportFolder type="key"/>
+				<AutomaticNamingEnabled type="key">-1</AutomaticNamingEnabled>
+				<AutomaticNamingMinimunDigits type="key">3</AutomaticNamingMinimunDigits>
+				<AutomaticNamingStartIndex type="key">1</AutomaticNamingStartIndex>
+				<Description type="key"/>
+				<FileNamePrefix type="key">sdd_</FileNamePrefix>
+				<OpenInMeasurementDataPoolEnabled type="key">0</OpenInMeasurementDataPoolEnabled>
+				<RecordingFileType type="key">ASAM MDF 4.1 Files (*.mf4)</RecordingFileType>
+				<MeasurementTimestampsEnabled type="key">0</MeasurementTimestampsEnabled>
+			</SaveDisplayedData>
+			<SaveFlightRecorderData>
+				<AddToExperimentEnabled type="key">-1</AddToExperimentEnabled>
+				<AutomaticSaveDialogEnabled type="key">0</AutomaticSaveDialogEnabled>
+				<AutomaticExportEnabled type="key">0</AutomaticExportEnabled>
+				<AutomaticExportFileNamePrefix type="key">flightrecexp_</AutomaticExportFileNamePrefix>
+				<AutomaticExportFileType type="key">ASAM MDF 4.1 Files (*.mf4)</AutomaticExportFileType>
+				<AutomaticExportFolder type="key"/>
+				<AutomaticNamingEnabled type="key">-1</AutomaticNamingEnabled>
+				<AutomaticNamingMinimunDigits type="key">3</AutomaticNamingMinimunDigits>
+				<AutomaticNamingStartIndex type="key">1</AutomaticNamingStartIndex>
+				<Description type="key"/>
+				<FileNamePrefix type="key">flightrec_</FileNamePrefix>
+				<OpenInMeasurementDataPoolEnabled type="key">0</OpenInMeasurementDataPoolEnabled>
+				<RecordingFileType type="key">ASAM MDF 4.1 Files (*.mf4)</RecordingFileType>
+			</SaveFlightRecorderData>
+		</Acquisition>
+		<Recorders>
+			<Recorder>
+				<Name type="key">Recorder 1</Name>
+				<UniqueKey type="key">58</UniqueKey>
+				<AutomaticSignalConfigurationEnabled type="key">-1</AutomaticSignalConfigurationEnabled>
+				<WriteToFileEnabled type="key">-1</WriteToFileEnabled>
+				<MeasurementTimestampsEnabled type="key">0</MeasurementTimestampsEnabled>
+				<StartAudioSignalEnabled type="key">0</StartAudioSignalEnabled>
+				<StopAudioSignalEnabled type="key">0</StopAudioSignalEnabled>
+				<Active type="key">-1</Active>
+				<StartCondition>
+					<Enabled type="key">0</Enabled>
+					<RecordingCycleCount type="key">1</RecordingCycleCount>
+					<SelectedTriggerRule type="key"/>
+					<TriggerDelay type="key">0</TriggerDelay>
+				</StartCondition>
+				<StopCondition>
+					<RecordingStopWarningEnabled type="key">0</RecordingStopWarningEnabled>
+					<RecordingStopWarningTime type="key">60</RecordingStopWarningTime>
+					<SelectedTriggerRule type="key"/>
+					<Type type="key">0</Type>
+					<TimeLimit type="key">3600</TimeLimit>
+					<TriggerDelay type="key">0</TriggerDelay>
+				</StopCondition>
+				<StorageInformation>
+					<AddToExperimentEnabled type="key">-1</AddToExperimentEnabled>
+					<AutomaticSaveDialogEnabled type="key">0</AutomaticSaveDialogEnabled>
+					<AutomaticExportEnabled type="key">0</AutomaticExportEnabled>
+					<AutomaticExportFileNamePrefix type="key">exp1_</AutomaticExportFileNamePrefix>
+					<AutomaticExportFileType type="key">ASAM MDF 4.1 Files (*.mf4)</AutomaticExportFileType>
+					<AutomaticExportFolder type="key"/>
+					<AutomaticNamingEnabled type="key">-1</AutomaticNamingEnabled>
+					<AutomaticNamingMinimunDigits type="key">3</AutomaticNamingMinimunDigits>
+					<AutomaticNamingStartIndex type="key">1</AutomaticNamingStartIndex>
+					<Description type="key"/>
+					<FileNamePrefix type="key">rec1_</FileNamePrefix>
+					<OpenInMeasurementDataPoolEnabled type="key">0</OpenInMeasurementDataPoolEnabled>
+					<RecordingFileType type="key">ASAM MDF 4.1 Files (*.mf4)</RecordingFileType>
+				</StorageInformation>
+				<SignalList>
+					<Variable>
+						<Name type="key">Model Root/FrontLightEcu/TurnSignalLeft</Name>
+						<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+						<PlatformDisplayName type="key">Platform</PlatformDisplayName>
+						<Recorded type="key">-1</Recorded>
+						<Signal>
+							<Raster type="key">Periodic Task 1</Raster>
+						</Signal>
+					</Variable>
+					<Variable>
+						<Name type="key">Model Root/FrontLightEcu/TurnSignalRight</Name>
+						<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+						<PlatformDisplayName type="key">Platform</PlatformDisplayName>
+						<Recorded type="key">-1</Recorded>
+						<Signal>
+							<Raster type="key">Periodic Task 1</Raster>
+						</Signal>
+					</Variable>
+					<Variable>
+						<Name type="key">Model Root/RearLightEcu/TurnSignalLeft</Name>
+						<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+						<PlatformDisplayName type="key">Platform</PlatformDisplayName>
+						<Recorded type="key">-1</Recorded>
+						<Signal>
+							<Raster type="key">Periodic Task 1</Raster>
+						</Signal>
+					</Variable>
+					<Variable>
+						<Name type="key">Model Root/RearLightEcu/TurnSignalRight</Name>
+						<Platform type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</Platform>
+						<PlatformDisplayName type="key">Platform</PlatformDisplayName>
+						<Recorded type="key">-1</Recorded>
+						<Signal>
+							<Raster type="key">Periodic Task 1</Raster>
+						</Signal>
+					</Variable>
+				</SignalList>
+			</Recorder>
+		</Recorders>
+	</MeasurementConfiguration>
+	<BusNavigator/>
+	<SignalEditor/>
+	<XILAPIEESPort>
+		<XILAPIEESPort>
+			<EESPorts type="key">&lt;EESPorts /&gt;</EESPorts>
+		</XILAPIEESPort>
+	</XILAPIEESPort>
+	<PythonScriptComponent/>
+	<PlatformManagement>
+		<SimulationTimeGroupSupported type="key">-1</SimulationTimeGroupSupported>
+		<DeviceFactory>
+			<Device>
+				<DeviceName type="key">cec186a2-0abb-4b89-a49c-1dd6a31b6fb1</DeviceName>
+				<DisplayName type="key">Platform</DisplayName>
+				<DeviceType type="key">330</DeviceType>
+				<applications/>
+				<AssignmentConfiguration>
+					<AssignmentInfo>
+						<AliasName type="key"/>
+						<BoardName type="key"/>
+						<ConnectionType type="key">1</ConnectionType>
+						<MACAddress type="key"/>
+						<Mode type="key">0</Mode>
+						<Children type="key">0</Children>
+						<NetClient type="key">127.0.0.1</NetClient>
+						<PlatformType type="key">26</PlatformType>
+						<PortAddress type="key">0</PortAddress>
+						<ProcessorName type="key"/>
+						<SerialNumber type="key"/>
+						<TopologyCheck type="key">0</TopologyCheck>
+						<AssignmentProperties>
+							<AssignmentProperty>
+								<Name type="key">PlatformType</Name>
+								<Value type="key">26</Value>
+								<Type type="key">System.Int32</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">Mode</Name>
+								<Value type="key">0</Value>
+								<Type type="key">System.Int32</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">ConnectionType</Name>
+								<Value type="key">1</Value>
+								<Type type="key">System.Int32</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">Children</Name>
+								<Value type="key">0</Value>
+								<Type type="key">System.Int32</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">BoardName</Name>
+								<Value type="key"/>
+								<Type type="key">System.String</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">MACAddress</Name>
+								<Value type="key"/>
+								<Type type="key">System.String</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">NetClient</Name>
+								<Value type="key">127.0.0.1</Value>
+								<Type type="key">System.String</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">PortAddress</Name>
+								<Value type="key">0</Value>
+								<Type type="key">System.Int32</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">SerialNumber</Name>
+								<Value type="key"/>
+								<Type type="key">System.String</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">ProcessorName</Name>
+								<Value type="key"/>
+								<Type type="key">System.String</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">TopologyCheck</Name>
+								<Value type="key">False</Value>
+								<Type type="key">System.Boolean</Type>
+							</AssignmentProperty>
+							<AssignmentProperty>
+								<Name type="key">AliasName</Name>
+								<Value type="key"/>
+								<Type type="key">System.String</Type>
+							</AssignmentProperty>
+						</AssignmentProperties>
+					</AssignmentInfo>
+				</AssignmentConfiguration>
+				<GeneralSettings>
+					<StartOnlineCalibrationBehavior type="key">5</StartOnlineCalibrationBehavior>
+					<DeviceEnableResynchonisation type="key">1</DeviceEnableResynchonisation>
+					<MeasurementService type="key">1</MeasurementService>
+					<ResumeOnlineCalibrationBehaviour type="key">5</ResumeOnlineCalibrationBehaviour>
+					<DisplayStatusInformation type="key">-1</DisplayStatusInformation>
+					<DisplayAutomaticReconnectBehavior type="key">1</DisplayAutomaticReconnectBehavior>
+					<EnablePlatform type="key">1</EnablePlatform>
+					<StartRTA type="key">1</StartRTA>
+					<EnforceStartingRTA type="key">1</EnforceStartingRTA>
+				</GeneralSettings>
+				<SubstituteFactory/>
+				<SimulationOptions>
+					<SimulationStopTime type="key">Infinity</SimulationStopTime>
+					<SimulationBreakTime type="key">Infinity</SimulationBreakTime>
+					<SingleStepTime type="key">0</SingleStepTime>
+					<RealtimeAccelerationFactor type="key">1</RealtimeAccelerationFactor>
+					<SyncBehaviour type="key">1</SyncBehaviour>
+				</SimulationOptions>
+			</Device>
+		</DeviceFactory>
+	</PlatformManagement>
+</Root>

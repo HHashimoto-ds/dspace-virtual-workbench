@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<PortConfigurations>
+	<MAPortConfig>
+		<SystemDescriptionFile>BuildResult/turnlamp.sdf</SystemDescriptionFile>
+		<PlatformName>VEOS</PlatformName>
+		<VEOSAccelerationFactor>1</VEOSAccelerationFactor>
+	</MAPortConfig>
+</PortConfigurations>

@@ -1,0 +1,2522 @@
+-- ****************************************************************************
+--
+--  Trace file: turnlamp.Extended
+--
+--  (c) Copyright 2024, dSPACE GmbH. All rights reserved.
+--
+-- ****************************************************************************
+
+
+sampling_period[0]
+{
+    alias:     "Periodic Task 1"
+    increment: 0.0
+    unit:      "s"
+    value:     0.001
+}
+
+sampling_period[1]
+{
+    alias:     "Periodic Task 2"
+    increment: 0.0
+    unit:      "s"
+    value:     0.01
+}
+
+typedef VEOS_ARRAY_UInt16_COL_4 col uint(16) [4]
+
+typedef turnlamp_ArrayDT0_2 float(64,IEEE) [2]
+
+typedef turnlamp_ArrayDT6_2 int(32) [2]
+
+typedef turnlamp_ArrayDT8_2 uint(8) [2]
+
+typedef turnlamp_ArrayDT8_8_2_Col col uint(8) [8][2]
+
+group "Diagnostics"
+
+    group "ApplicationProcess"
+
+        group "Runtime"
+
+            g_VEOS_ApplicationId
+            {
+                addr:  0xc7e8
+                alias: "ProcessId"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  uint(32)
+            }
+
+            g_VEOS_SimApi_RealTimeDeviation
+            {
+                addr:  0xc7c0
+                alias: "RealTimeDeviation"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)
+            }
+
+            ga_VEOS_Version
+            {
+                addr:  0x8538
+                alias: "RuntimeVersion"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  VEOS_ARRAY_UInt16_COL_4
+            }
+
+        endgroup
+
+    endgroup
+
+endgroup
+
+group "Model Root"
+
+    group "BatteryVoltage[V]"
+    {
+        block: "Constant"
+    }
+
+        p_1_turnlamp_real_T_2[1]
+        {
+            addr:  0xccc8
+            alias: "Value"
+            flags: PARAM
+            type:  float(64,IEEE)*
+        }
+
+    endgroup
+
+    group "CentralLightEcu"
+
+        p_0_turnlamp_int32_T_1[2]
+        {
+            addr:  0xcc80
+            alias: "TurnSignalMessage[0..3]"
+            flags: OUTPUT|READONLY
+            type:  int(32)*
+        }
+
+        p_0_turnlamp_uint8_T_2[9]
+        {
+            addr:  0xcc88
+            alias: "WarningLightIndicator"
+            flags: OUTPUT|READONLY
+            type:  uint(8)*
+        }
+
+        group "Compare"
+        {
+            block: "RelationalOperator"
+        }
+
+            p_0_turnlamp_uint8_T_2[0]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Compare1"
+        {
+            block: "RelationalOperator"
+        }
+
+            p_0_turnlamp_uint8_T_2[1]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Compare2"
+        {
+            block: "RelationalOperator"
+        }
+
+            p_0_turnlamp_uint8_T_2[9]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Data Type Conversion"
+        {
+            block: "DataTypeConversion"
+        }
+
+            p_0_turnlamp_int32_T_1[0]
+            {
+                addr:  0xcc80
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  int(32)*
+            }
+
+        endgroup
+
+        group "Data Type Conversion1"
+        {
+            block: "DataTypeConversion"
+        }
+
+            p_0_turnlamp_int32_T_1[1]
+            {
+                addr:  0xcc80
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  int(32)*
+            }
+
+        endgroup
+
+        group "Data Type Conversion2"
+        {
+            block: "DataTypeConversion"
+        }
+
+            p_0_turnlamp_int32_T_1[2]
+            {
+                addr:  0xcc80
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  int(32)*
+            }
+
+        endgroup
+
+        group "Detect\nIncrease"
+
+            p_1_turnlamp_uint8_T_1[0]
+            {
+                addr:  0xccc0
+                alias: "vinit"
+                flags: PARAM
+                type:  uint(8)*
+            }
+
+            p_0_turnlamp_boolean_T_3[0]
+            {
+                addr:    0xcc90
+                alias:   "Y"
+                bitmask: 0x1
+                flags:   OUTPUT|READONLY
+                range:   < 0 ; 1 >
+                type:    uint(8)*
+            }
+
+            group "Delay Input1"
+            {
+                block: "UnitDelay"
+                desc:  "\nStore in Global RAM"
+            }
+
+                p_0_turnlamp_uint8_T_2[3]
+                {
+                    addr:  0xcc88
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  uint(8)*
+                }
+
+                trcref0_InitialCondition
+                {
+                    alias:    "InitialCondition"
+                    flags:    DEPRECATED|HIDDEN
+                    refgroup: "/Model Root/CentralLightEcu/Detect\nIncrease"
+                    refvar:   "vinit"
+                }
+
+                trcref0_vinit
+                {
+                    alias:    "vinit"
+                    refgroup: "/Model Root/CentralLightEcu/Detect\nIncrease"
+                    refvar:   "vinit"
+                }
+
+            endgroup
+
+            group "FixPt\nRelational\nOperator"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[0]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+        endgroup
+
+        group "Detect\nIncrease1"
+
+            p_1_turnlamp_uint8_T_1[1]
+            {
+                addr:  0xccc0
+                alias: "vinit"
+                flags: PARAM
+                type:  uint(8)*
+            }
+
+            p_0_turnlamp_boolean_T_3[1]
+            {
+                addr:    0xcc90
+                alias:   "Y"
+                bitmask: 0x1
+                flags:   OUTPUT|READONLY
+                range:   < 0 ; 1 >
+                type:    uint(8)*
+            }
+
+            group "Delay Input1"
+            {
+                block: "UnitDelay"
+                desc:  "\nStore in Global RAM"
+            }
+
+                p_0_turnlamp_uint8_T_2[5]
+                {
+                    addr:  0xcc88
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  uint(8)*
+                }
+
+                trcref0_InitialCondition
+                {
+                    alias:    "InitialCondition"
+                    flags:    DEPRECATED|HIDDEN
+                    refgroup: "/Model Root/CentralLightEcu/Detect\nIncrease1"
+                    refvar:   "vinit"
+                }
+
+                trcref0_vinit
+                {
+                    alias:    "vinit"
+                    refgroup: "/Model Root/CentralLightEcu/Detect\nIncrease1"
+                    refvar:   "vinit"
+                }
+
+            endgroup
+
+            group "FixPt\nRelational\nOperator"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[1]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+        endgroup
+
+        group "Gain"
+        {
+            block: "Gain"
+        }
+
+            p_1_turnlamp_real_T_2[10]
+            {
+                addr:  0xccc8
+                alias: "Gain"
+                flags: PARAM
+                type:  float(64,IEEE)*
+            }
+
+            p_0_turnlamp_real_T_0[5]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+        endgroup
+
+        group "Left"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_int32_T_3[0]
+            {
+                addr:  0xccd0
+                alias: "Value"
+                flags: PARAM
+                type:  int(32)*
+            }
+
+        endgroup
+
+        group "Logical\nOperator"
+        {
+            block: "Logic"
+        }
+
+            p_0_turnlamp_uint8_T_2[2]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Logical\nOperator1"
+        {
+            block: "Logic"
+        }
+
+            p_0_turnlamp_uint8_T_2[4]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Logical\nOperator4"
+        {
+            block: "Logic"
+        }
+
+            p_0_turnlamp_uint8_T_2[7]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Logical\nOperator6"
+        {
+            block: "Logic"
+        }
+
+            p_0_turnlamp_uint8_T_2[8]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Product"
+        {
+            block: "Product"
+        }
+
+            p_0_turnlamp_real_T_0[7]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+        endgroup
+
+        group "PulseGenerator"
+
+            p_0_turnlamp_real_T_0[2]
+            {
+                addr:  0xcc78
+                alias: "Pulse"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            group "Integrator"
+            {
+                block: "Integrator"
+            }
+
+                p_1_turnlamp_real_T_2[7]
+                {
+                    addr:  0xccc8
+                    alias: "InitialCondition"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_0_turnlamp_real_T_0[1]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Logical\nOperator"
+            {
+                block: "Logic"
+            }
+
+                p_0_turnlamp_boolean_T_3[3]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "OffTime"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[13]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "OffValue"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[9]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "One"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[14]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "OnTime"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[8]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "OnValue"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[5]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Relational\nOperator"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[4]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Relational\nOperator1"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[16]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Sum"
+            {
+                block: "Sum"
+            }
+
+                p_0_turnlamp_real_T_0[9]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Switch"
+            {
+                block: "Switch"
+            }
+
+                p_0_turnlamp_real_T_0[2]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Unit Delay"
+            {
+                block: "UnitDelay"
+            }
+
+                p_1_turnlamp_boolean_T_4[0]
+                {
+                    addr:    0xccd8
+                    alias:   "InitialCondition"
+                    bitmask: 0x1
+                    flags:   PARAM
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                p_0_turnlamp_boolean_T_3[2]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+        endgroup
+
+        group "ResetPulse"
+        {
+            block: "Logic"
+        }
+
+            p_0_turnlamp_uint8_T_2[6]
+            {
+                addr:  0xcc88
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  uint(8)*
+            }
+
+        endgroup
+
+        group "Right"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_int32_T_3[1]
+            {
+                addr:  0xccd0
+                alias: "Value"
+                flags: PARAM
+                type:  int(32)*
+            }
+
+        endgroup
+
+        group "S-R"
+
+            p_0_turnlamp_real_T_0[3]
+            {
+                addr:  0xcc78
+                alias: "Q"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            group "Data Type Conversion2"
+            {
+                block: "DataTypeConversion"
+            }
+
+                p_0_turnlamp_boolean_T_3[5]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Data Type Conversion3"
+            {
+                block: "DataTypeConversion"
+            }
+
+                p_0_turnlamp_boolean_T_3[6]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Data Type Conversion4"
+            {
+                block: "DataTypeConversion"
+            }
+
+                p_0_turnlamp_real_T_0[3]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "S-R\nFlip-Flop1"
+
+                p_0_turnlamp_boolean_T_3[9]
+                {
+                    addr:    0xcc90
+                    alias:   "!Q"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                p_1_turnlamp_boolean_T_0[0]
+                {
+                    addr:    0xccb8
+                    alias:   "initial_condition"
+                    bitmask: 0x1
+                    flags:   PARAM
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                p_0_turnlamp_boolean_T_3[8]
+                {
+                    addr:    0xcc90
+                    alias:   "Q"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                group "Logic"
+                {
+                    block: "CombinatorialLogic"
+                }
+
+                    p_0_turnlamp_boolean_T_3[8]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    turnlamp_ArrayDT8_2*
+                    }
+
+                    p_1_turnlamp_boolean_T_4[1]
+                    {
+                        addr:    0xccd8
+                        alias:   "TruthTable"
+                        bitmask: 0x1
+                        flags:   PARAM
+                        range:   < 0 ; 1 >
+                        type:    turnlamp_ArrayDT8_8_2_Col*
+                    }
+
+                endgroup
+
+                group "Memory"
+                {
+                    block: "Memory"
+                }
+
+                    p_0_turnlamp_boolean_T_3[7]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                    trcref0_initial_condition
+                    {
+                        alias:    "initial_condition"
+                        refgroup: "/Model Root/CentralLightEcu/S-R/S-R\nFlip-Flop1"
+                        refvar:   "initial_condition"
+                    }
+
+                    trcref0_InitialCondition
+                    {
+                        alias:    "InitialCondition"
+                        flags:    DEPRECATED|HIDDEN
+                        refgroup: "/Model Root/CentralLightEcu/S-R/S-R\nFlip-Flop1"
+                        refvar:   "initial_condition"
+                    }
+
+                endgroup
+
+            endgroup
+
+        endgroup
+
+        group "S-R1"
+
+            p_0_turnlamp_real_T_0[4]
+            {
+                addr:  0xcc78
+                alias: "Q"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            group "Data Type Conversion2"
+            {
+                block: "DataTypeConversion"
+            }
+
+                p_0_turnlamp_boolean_T_3[10]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Data Type Conversion3"
+            {
+                block: "DataTypeConversion"
+            }
+
+                p_0_turnlamp_boolean_T_3[11]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Data Type Conversion4"
+            {
+                block: "DataTypeConversion"
+            }
+
+                p_0_turnlamp_real_T_0[4]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "S-R\nFlip-Flop1"
+
+                p_0_turnlamp_boolean_T_3[14]
+                {
+                    addr:    0xcc90
+                    alias:   "!Q"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                p_1_turnlamp_boolean_T_0[1]
+                {
+                    addr:    0xccb8
+                    alias:   "initial_condition"
+                    bitmask: 0x1
+                    flags:   PARAM
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                p_0_turnlamp_boolean_T_3[13]
+                {
+                    addr:    0xcc90
+                    alias:   "Q"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+                group "Logic"
+                {
+                    block: "CombinatorialLogic"
+                }
+
+                    p_0_turnlamp_boolean_T_3[13]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    turnlamp_ArrayDT8_2*
+                    }
+
+                    p_1_turnlamp_boolean_T_4[17]
+                    {
+                        addr:    0xccd8
+                        alias:   "TruthTable"
+                        bitmask: 0x1
+                        flags:   PARAM
+                        range:   < 0 ; 1 >
+                        type:    turnlamp_ArrayDT8_8_2_Col*
+                    }
+
+                endgroup
+
+                group "Memory"
+                {
+                    block: "Memory"
+                }
+
+                    p_0_turnlamp_boolean_T_3[12]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                    trcref0_initial_condition
+                    {
+                        alias:    "initial_condition"
+                        refgroup: "/Model Root/CentralLightEcu/S-R1/S-R\nFlip-Flop1"
+                        refvar:   "initial_condition"
+                    }
+
+                    trcref0_InitialCondition
+                    {
+                        alias:    "InitialCondition"
+                        flags:    DEPRECATED|HIDDEN
+                        refgroup: "/Model Root/CentralLightEcu/S-R1/S-R\nFlip-Flop1"
+                        refvar:   "initial_condition"
+                    }
+
+                endgroup
+
+            endgroup
+
+        endgroup
+
+        group "Sum"
+        {
+            block: "Sum"
+        }
+
+            p_0_turnlamp_real_T_0[6]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+        endgroup
+
+        group "UBat_UnderVoltageError"
+
+            p_0_turnlamp_real_T_0[8]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            group "Relational\nOperator"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[15]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Switch"
+            {
+                block: "Switch"
+            }
+
+                p_0_turnlamp_real_T_0[8]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "UBat_CrashLimit"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[11]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Zero"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[12]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+        endgroup
+
+        group "WarningLight"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_int32_T_3[2]
+            {
+                addr:  0xccd0
+                alias: "Value"
+                flags: PARAM
+                type:  int(32)*
+            }
+
+        endgroup
+
+    endgroup
+
+    group "Clock"
+    {
+        block: "Clock"
+    }
+
+        p_0_turnlamp_real_T_0[34]
+        {
+            addr:  0xcc78
+            alias: "Out1"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+    endgroup
+
+    group "FrontLightEcu"
+
+        p_0_turnlamp_real_T_0[19]
+        {
+            addr:  0xcc78
+            alias: "TurnSignalLeft"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+        p_0_turnlamp_real_T_0[20]
+        {
+            addr:  0xcc78
+            alias: "TurnSignalRight"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+        group "Both"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[15]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "BothOff"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[17]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "Data Type Conversion"
+        {
+            block: "DataTypeConversion"
+        }
+
+            p_0_turnlamp_int32_T_1[3]
+            {
+                addr:  0xcc80
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  turnlamp_ArrayDT6_2*
+            }
+
+        endgroup
+
+        group "Multiport\nSwitch"
+        {
+            block: "MultiPortSwitch"
+        }
+
+            p_0_turnlamp_real_T_0[17]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "OnlyLeft"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[29]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "OnlyRight"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[31]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "UBat_UnderVoltageError"
+
+            p_0_turnlamp_real_T_0[19]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+            group "Relational\nOperator"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[19]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Switch"
+            {
+                block: "Switch"
+            }
+
+                p_0_turnlamp_real_T_0[19]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  turnlamp_ArrayDT0_2*
+                }
+
+            endgroup
+
+            group "UBat_CrashLimit"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[33]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Zero"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[34]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+        endgroup
+
+        group "UBat_UnderVoltageError1"
+
+            p_0_turnlamp_real_T_6[0]
+            {
+                addr:  0xcca8
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            group "GapGenerator"
+
+                p_0_turnlamp_real_T_0[15]
+                {
+                    addr:  0xcc78
+                    alias: "Out"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                group "Integrator"
+                {
+                    block: "Integrator"
+                }
+
+                    p_1_turnlamp_real_T_2[20]
+                    {
+                        addr:  0xccc8
+                        alias: "InitialCondition"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                    p_0_turnlamp_real_T_0[10]
+                    {
+                        addr:  0xcc78
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "OffValue"
+                {
+                    block: "Constant"
+                }
+
+                    p_1_turnlamp_real_T_2[28]
+                    {
+                        addr:  0xccc8
+                        alias: "Value"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "One"
+                {
+                    block: "Constant"
+                }
+
+                    p_1_turnlamp_real_T_2[35]
+                    {
+                        addr:  0xccc8
+                        alias: "Value"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "OnValue"
+                {
+                    block: "Constant"
+                }
+
+                    p_1_turnlamp_real_T_2[19]
+                    {
+                        addr:  0xccc8
+                        alias: "Value"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "PassSignal"
+
+                    p_0_turnlamp_real_T_7[0]
+                    {
+                        addr:  0xccb0
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  turnlamp_ArrayDT0_2*
+                    }
+
+                    group "Gain"
+                    {
+                        block: "Gain"
+                    }
+
+                        p_1_turnlamp_real_T_8[2]
+                        {
+                            addr:  0xccf8
+                            alias: "Gain"
+                            flags: PARAM
+                            type:  float(64,IEEE)*
+                        }
+
+                        p_0_turnlamp_real_T_7[0]
+                        {
+                            addr:  0xccb0
+                            alias: "Out1"
+                            flags: OUTPUT|READONLY
+                            type:  turnlamp_ArrayDT0_2*
+                        }
+
+                    endgroup
+
+                endgroup
+
+                group "Relational\nOperator"
+                {
+                    block: "RelationalOperator"
+                }
+
+                    p_0_turnlamp_boolean_T_3[18]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                endgroup
+
+                group "Relational\nOperator1"
+                {
+                    block: "RelationalOperator"
+                }
+
+                    p_0_turnlamp_boolean_T_3[20]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                endgroup
+
+                group "Sum"
+                {
+                    block: "Sum"
+                }
+
+                    p_0_turnlamp_real_T_0[21]
+                    {
+                        addr:  0xcc78
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "Switch"
+                {
+                    block: "Switch"
+                }
+
+                    p_0_turnlamp_real_T_0[15]
+                    {
+                        addr:  0xcc78
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "Unit Delay"
+                {
+                    block: "UnitDelay"
+                }
+
+                    p_1_turnlamp_boolean_T_4[33]
+                    {
+                        addr:    0xccd8
+                        alias:   "InitialCondition"
+                        bitmask: 0x1
+                        flags:   PARAM
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                    p_0_turnlamp_boolean_T_3[17]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                endgroup
+
+            endgroup
+
+            group "OnTime"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[21]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "PassSignal"
+
+                p_0_turnlamp_real_T_6[0]
+                {
+                    addr:  0xcca8
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                group "Data Type Conversion2"
+                {
+                    block: "DataTypeConversion"
+                }
+
+                    p_0_turnlamp_real_T_6[0]
+                    {
+                        addr:  0xcca8
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+            endgroup
+
+            group "Product"
+            {
+                block: "Product"
+            }
+
+                p_0_turnlamp_real_T_0[14]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Saturation"
+            {
+                block: "Saturate"
+            }
+
+                p_1_turnlamp_real_T_2[24]
+                {
+                    addr:  0xccc8
+                    alias: "LowerLimit"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_0_turnlamp_real_T_0[12]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                p_1_turnlamp_real_T_2[23]
+                {
+                    addr:  0xccc8
+                    alias: "UpperLimit"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Sum"
+            {
+                block: "Sum"
+            }
+
+                p_0_turnlamp_real_T_0[11]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "UBat_ReceiveErrorLimit"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[22]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Uniform Random\nNumber"
+            {
+                block: "UniformRandomNumber"
+            }
+
+                p_1_turnlamp_real_T_2[26]
+                {
+                    addr:  0xccc8
+                    alias: "Maximum"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_1_turnlamp_real_T_2[25]
+                {
+                    addr:  0xccc8
+                    alias: "Minimum"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_0_turnlamp_real_T_0[13]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                p_1_turnlamp_real_T_2[27]
+                {
+                    addr:  0xccc8
+                    alias: "Seed"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+        endgroup
+
+    endgroup
+
+    group "info"
+
+    endgroup
+
+    group "LeverMechanic"
+    {
+        block: "RateLimiter"
+    }
+
+        p_1_turnlamp_real_T_2[4]
+        {
+            addr:  0xccc8
+            alias: "FallingSlewLimit"
+            flags: PARAM
+            type:  float(64,IEEE)*
+        }
+
+        p_0_turnlamp_real_T_0[0]
+        {
+            addr:  0xcc78
+            alias: "Out1"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+        p_1_turnlamp_real_T_2[3]
+        {
+            addr:  0xccc8
+            alias: "RisingSlewLimit"
+            flags: PARAM
+            type:  float(64,IEEE)*
+        }
+
+    endgroup
+
+    group "Logo"
+
+    endgroup
+
+    group "RearLightEcu"
+
+        p_0_turnlamp_real_T_0[31]
+        {
+            addr:  0xcc78
+            alias: "TurnSignalLeft"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+        p_0_turnlamp_real_T_0[32]
+        {
+            addr:  0xcc78
+            alias: "TurnSignalRight"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+        group "Both"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[36]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "BothOff"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[38]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "Data Type Conversion"
+        {
+            block: "DataTypeConversion"
+        }
+
+            p_0_turnlamp_int32_T_1[5]
+            {
+                addr:  0xcc80
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  turnlamp_ArrayDT6_2*
+            }
+
+        endgroup
+
+        group "Multiport\nSwitch"
+        {
+            block: "MultiPortSwitch"
+        }
+
+            p_0_turnlamp_real_T_0[29]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "OnlyLeft"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[50]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "OnlyRight"
+        {
+            block: "Constant"
+        }
+
+            p_1_turnlamp_real_T_2[52]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+        endgroup
+
+        group "UBat_UnderVoltageError"
+
+            p_0_turnlamp_real_T_0[31]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  turnlamp_ArrayDT0_2*
+            }
+
+            group "Relational\nOperator"
+            {
+                block: "RelationalOperator"
+            }
+
+                p_0_turnlamp_boolean_T_3[23]
+                {
+                    addr:    0xcc90
+                    alias:   "Out1"
+                    bitmask: 0x1
+                    flags:   OUTPUT|READONLY
+                    range:   < 0 ; 1 >
+                    type:    uint(8)*
+                }
+
+            endgroup
+
+            group "Switch"
+            {
+                block: "Switch"
+            }
+
+                p_0_turnlamp_real_T_0[31]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  turnlamp_ArrayDT0_2*
+                }
+
+            endgroup
+
+            group "UBat_CrashLimit"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[54]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Zero"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[55]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+        endgroup
+
+        group "UBat_UnderVoltageError1"
+
+            p_0_turnlamp_real_T_4[0]
+            {
+                addr:  0xcc98
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            group "GapGenerator"
+
+                p_0_turnlamp_real_T_0[27]
+                {
+                    addr:  0xcc78
+                    alias: "Out"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                group "Integrator"
+                {
+                    block: "Integrator"
+                }
+
+                    p_1_turnlamp_real_T_2[41]
+                    {
+                        addr:  0xccc8
+                        alias: "InitialCondition"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                    p_0_turnlamp_real_T_0[22]
+                    {
+                        addr:  0xcc78
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "OffValue"
+                {
+                    block: "Constant"
+                }
+
+                    p_1_turnlamp_real_T_2[49]
+                    {
+                        addr:  0xccc8
+                        alias: "Value"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "One"
+                {
+                    block: "Constant"
+                }
+
+                    p_1_turnlamp_real_T_2[56]
+                    {
+                        addr:  0xccc8
+                        alias: "Value"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "OnValue"
+                {
+                    block: "Constant"
+                }
+
+                    p_1_turnlamp_real_T_2[40]
+                    {
+                        addr:  0xccc8
+                        alias: "Value"
+                        flags: PARAM
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "PassSignal"
+
+                    p_0_turnlamp_real_T_5[0]
+                    {
+                        addr:  0xcca0
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  turnlamp_ArrayDT0_2*
+                    }
+
+                    group "Gain"
+                    {
+                        block: "Gain"
+                    }
+
+                        p_1_turnlamp_real_T_6[2]
+                        {
+                            addr:  0xcce8
+                            alias: "Gain"
+                            flags: PARAM
+                            type:  float(64,IEEE)*
+                        }
+
+                        p_0_turnlamp_real_T_5[0]
+                        {
+                            addr:  0xcca0
+                            alias: "Out1"
+                            flags: OUTPUT|READONLY
+                            type:  turnlamp_ArrayDT0_2*
+                        }
+
+                    endgroup
+
+                endgroup
+
+                group "Relational\nOperator"
+                {
+                    block: "RelationalOperator"
+                }
+
+                    p_0_turnlamp_boolean_T_3[22]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                endgroup
+
+                group "Relational\nOperator1"
+                {
+                    block: "RelationalOperator"
+                }
+
+                    p_0_turnlamp_boolean_T_3[24]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                endgroup
+
+                group "Sum"
+                {
+                    block: "Sum"
+                }
+
+                    p_0_turnlamp_real_T_0[33]
+                    {
+                        addr:  0xcc78
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "Switch"
+                {
+                    block: "Switch"
+                }
+
+                    p_0_turnlamp_real_T_0[27]
+                    {
+                        addr:  0xcc78
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+                group "Unit Delay"
+                {
+                    block: "UnitDelay"
+                }
+
+                    p_1_turnlamp_boolean_T_4[34]
+                    {
+                        addr:    0xccd8
+                        alias:   "InitialCondition"
+                        bitmask: 0x1
+                        flags:   PARAM
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                    p_0_turnlamp_boolean_T_3[21]
+                    {
+                        addr:    0xcc90
+                        alias:   "Out1"
+                        bitmask: 0x1
+                        flags:   OUTPUT|READONLY
+                        range:   < 0 ; 1 >
+                        type:    uint(8)*
+                    }
+
+                endgroup
+
+            endgroup
+
+            group "OnTime"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[42]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "PassSignal"
+
+                p_0_turnlamp_real_T_4[0]
+                {
+                    addr:  0xcc98
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                group "Data Type Conversion2"
+                {
+                    block: "DataTypeConversion"
+                }
+
+                    p_0_turnlamp_real_T_4[0]
+                    {
+                        addr:  0xcc98
+                        alias: "Out1"
+                        flags: OUTPUT|READONLY
+                        type:  float(64,IEEE)*
+                    }
+
+                endgroup
+
+            endgroup
+
+            group "Product"
+            {
+                block: "Product"
+            }
+
+                p_0_turnlamp_real_T_0[26]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Saturation"
+            {
+                block: "Saturate"
+            }
+
+                p_1_turnlamp_real_T_2[45]
+                {
+                    addr:  0xccc8
+                    alias: "LowerLimit"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_0_turnlamp_real_T_0[24]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                p_1_turnlamp_real_T_2[44]
+                {
+                    addr:  0xccc8
+                    alias: "UpperLimit"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Sum"
+            {
+                block: "Sum"
+            }
+
+                p_0_turnlamp_real_T_0[23]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "UBat_ReceiveErrorLimit"
+            {
+                block: "Constant"
+            }
+
+                p_1_turnlamp_real_T_2[43]
+                {
+                    addr:  0xccc8
+                    alias: "Value"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+            group "Uniform Random\nNumber"
+            {
+                block: "UniformRandomNumber"
+            }
+
+                p_1_turnlamp_real_T_2[47]
+                {
+                    addr:  0xccc8
+                    alias: "Maximum"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_1_turnlamp_real_T_2[46]
+                {
+                    addr:  0xccc8
+                    alias: "Minimum"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+                p_0_turnlamp_real_T_0[25]
+                {
+                    addr:  0xcc78
+                    alias: "Out1"
+                    flags: OUTPUT|READONLY
+                    type:  float(64,IEEE)*
+                }
+
+                p_1_turnlamp_real_T_2[48]
+                {
+                    addr:  0xccc8
+                    alias: "Seed"
+                    flags: PARAM
+                    type:  float(64,IEEE)*
+                }
+
+            endgroup
+
+        endgroup
+
+    endgroup
+
+    group "SampleTimeSubsystem"
+
+        group "A1"
+        {
+            block: "Constant"
+        }
+
+            p_0_turnlamp_real_T_0[36]
+            {
+                addr:  0xcc78
+                alias: "Out1"
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)*
+            }
+
+            p_1_turnlamp_real_T_2[0]
+            {
+                addr:  0xccc8
+                alias: "Value"
+                flags: PARAM
+                type:  float(64,IEEE)*
+            }
+
+        endgroup
+
+        group "info"
+
+        endgroup
+
+    endgroup
+
+    group "Sync"
+    {
+        block: "Constant"
+    }
+
+        p_0_turnlamp_real_T_0[35]
+        {
+            addr:  0xcc78
+            alias: "Out1"
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)*
+        }
+
+        p_1_turnlamp_real_T_2[57]
+        {
+            addr:  0xccc8
+            alias: "Value"
+            flags: PARAM
+            type:  float(64,IEEE)*
+        }
+
+    endgroup
+
+    group "TurnSignalLever[-1..1]"
+    {
+        block: "Constant"
+    }
+
+        p_1_turnlamp_real_T_2[2]
+        {
+            addr:  0xccc8
+            alias: "Value"
+            flags: PARAM
+            type:  float(64,IEEE)*
+        }
+
+    endgroup
+
+    group "WarningLightSwitch[0|1]"
+    {
+        block: "Constant"
+    }
+
+        p_1_turnlamp_real_T_2[6]
+        {
+            addr:  0xccc8
+            alias: "Value"
+            flags: PARAM
+            type:  float(64,IEEE)*
+        }
+
+    endgroup
+
+endgroup
+
+group "Simulation and RTOS"
+
+    group "Simulation"
+
+        g_VEOS_CurrentSimulationCounter_1ns
+        {
+            addr:  0xc7c8
+            alias: "SimulationCounter_1ns"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  int(64)
+        }
+
+        g_VEOS_CurrentSimulationTime
+        {
+            addr:  0xc7d0
+            alias: "SimulationTime"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  float(64,IEEE)
+        }
+
+    endgroup
+
+    group "Task Information Variables"
+
+        group "Periodic Task 2"
+
+            ga_SicAppFrm_TaskOverruns[0]
+            {
+                addr:  0xc760
+                alias: "Overrun Count"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  uint(32)
+            }
+
+            g_SicAppFrm_NumberOfInvocations_Periodic_Task_2
+            {
+                addr:  0xc724
+                alias: "Task Call Counter"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  uint(32)
+            }
+
+            g_SicAppFrm_TaskTurnaroundTime
+            {
+                addr:  0x8338
+                alias: "Task Turnaround Time"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)
+            }
+
+        endgroup
+
+        group "Virtual Task 0"
+
+            ga_SicAppFrm_TaskOverruns[1]
+            {
+                addr:  0xc760
+                alias: "Overrun Count"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  uint(32)
+            }
+
+            g_SicAppFrm_NumberOfInvocations_Virtual_Task_0
+            {
+                addr:  0xc720
+                alias: "Task Call Counter"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  uint(32)
+            }
+
+            g_SicAppFrm_TaskTurnaroundTime
+            {
+                addr:  0x8338
+                alias: "Task Turnaround Time"
+                desc:  ""
+                flags: OUTPUT|READONLY
+                type:  float(64,IEEE)
+            }
+
+        endgroup
+
+    endgroup
+
+endgroup
+
+group "Tunable Parameters"
+
+endgroup
+
+group "XIL API"
+
+    group "EESPort"
+
+        XilApiEesPortActiveErrorSet
+        {
+            addr:  0xc058
+            alias: "Active ErrorSet"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  uint(32)*
+        }
+
+        XilApiEesPortErrorActivated
+        {
+            addr:  0xc050
+            alias: "Error Activated"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  uint(32)*
+        }
+
+        XilApiEesPortErrorSwitching
+        {
+            addr:  0xc048
+            alias: "Error Switching"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  uint(32)*
+        }
+
+        XilApiEesPortFlags
+        {
+            addr:  0xc6d4
+            alias: "Flags"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  uint(32)
+        }
+
+        XilApiEesPortTrigger
+        {
+            addr:  0xc6d0
+            alias: "Trigger"
+            desc:  ""
+            flags: OUTPUT|READONLY
+            type:  uint(32)
+        }
+
+    endgroup
+
+endgroup
+
+

@@ -1,0 +1,30 @@
+
+# yaml-language-server: $schema=../../../../libs/openta/src/openta/data/testenv_schema.json
+
+ports:
+  # The XIL MAPort is merely used to ensure that Application is downloaded on started
+  # while the ControlDeskPort is mapped to the "Model" port-id and all variable access
+  # is done the ControlDEsk port in this setup
+  - type: XIL API MAPort
+    name: <RT Application download and start>
+    order: 1
+    target_state: STARTED
+    config:
+      factory:
+        vendor_name: dSPACE GmbH
+        product_name: XIL API
+        product_version: 2024-A
+      port_config_file: VEOS/turnlamp/Variable Descriptions/MAPortConfig.xml
+      force_config: true
+
+  - type: ControlDesk
+    name: Model
+    order: 2
+    target_state: STARTED
+    config:
+      project_file: VEOS/TurnSignal_VEOS.CDP
+      experiment: turnlamp
+
+mappings:
+  - file: VEOS/turnlamp/Mappings/TurnLampMapping.xml
+    type: XIL API Mapping

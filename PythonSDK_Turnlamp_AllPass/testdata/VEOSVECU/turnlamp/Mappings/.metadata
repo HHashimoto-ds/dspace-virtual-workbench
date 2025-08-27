@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MappingsMetaData SchemaVersion="1">
+  <PortIDMapping>
+    <Entry PortID="ECU" PlatformID="cbfbf510-b4ad-4074-815b-66050d1aaa0a" />
+    <Entry PortID="Model" PlatformID="81714cc6-a3b6-48c9-ac66-7b1cc47c93aa" />
+  </PortIDMapping>
+  <MappingFiles>
+    <MappingFile Name="TurnLampMapping.xml">
+      <SourcePath></SourcePath>
+    </MappingFile>
+  </MappingFiles>
+</MappingsMetaData>

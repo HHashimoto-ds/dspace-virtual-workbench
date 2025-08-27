@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VariableDescriptionMetaData SchemaVersion="1">
+  <SerializedFileName>leaderAppl.vdp</SerializedFileName>
+  <IsActive>true</IsActive>
+  <FileName>leaderAppl.a2l</FileName>
+  <EcuImageSourcePathAndFileName>Models\leaderAppl.hex</EcuImageSourcePathAndFileName>
+  <VariableDescriptionSourcePathAndFileName>Models\leaderAppl.a2l</VariableDescriptionSourcePathAndFileName>
+  <ImportOptions>
+    <IgnoreVariablesAtAddressZero>false</IgnoreVariablesAtAddressZero>
+    <AdditionalIncludeDirectories>
+      <Item>C:\Program Files\dSPACE ControlDesk 2024-A\Main\bin\a2l\aml\</Item>
+    </AdditionalIncludeDirectories>
+  </ImportOptions>
+</VariableDescriptionMetaData>

@@ -1,0 +1,23 @@
+[project]
+name = "pythonsdk"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "~=3.11"
+dependencies = [
+    "openta",
+    "openta-pytest",
+    "pytest>=8.4.1",
+    "matplotlib"
+]
+
+[project.optional-dependencies]
+evaluationlib= ["evaluationlib"]
+
+[tool.uv.sources]
+evaluationlib = { path = "wheels/evaluationlib-24.1.2.post1.dev51-py311-none-any.whl" }
+openta-pytest = { path = "wheels/openta_pytest-0.1.1b3-py3-none-any.whl" }
+openta = { path = "wheels/openta-0.1.1b3-py3-none-any.whl" }
+
+[tool.ruff]
+line-length = 120

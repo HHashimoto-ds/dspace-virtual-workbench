@@ -4,12 +4,14 @@ on:
   workflow_dispatch:
 
 env:
-  JOB_1_PYTHON_SDK_DIR: PythonSDK_Turnlamp # Linux
+  JOB_1_PYTHON_SDK_DIR: PythonSDK_Turnlamp
   JOB_1_OPENTA_TESTENV_CONFIG: testdata/testenv_veos_linux.yaml
-  JOB_2_PYTHON_SDK_DIR: PythonSDK_Turnlamp # Linux
+  JOB_2_PYTHON_SDK_DIR: PythonSDK_Turnlamp_AllPass
   JOB_2_OPENTA_TESTENV_CONFIG: testdata/testenv_veos_linux.yaml
-  JOB_3_PYTHON_SDK_DIR: PythonSDK_Turnlamp # Windows
-  JOB_3_OPENTA_TESTENV_CONFIG: testdata/testenv_veos.yaml
+  JOB_3_PYTHON_SDK_DIR: PythonSDK_Turnlamp
+  JOB_3_OPENTA_TESTENV_CONFIG: testdata/testenv_veos_vecu_linux.yaml
+  JOB_4_PYTHON_SDK_DIR: PythonSDK_Turnlamp_AllPass
+  JOB_4_OPENTA_TESTENV_CONFIG: testdata/testenv_veos_linux.yaml
 
 permissions:
   contents: write
@@ -295,7 +297,7 @@ jobs:
 
 
   job-3-start-runner:
-    name: Job 3 - Start One-Time EC2 Windows Runner
+    name: Job 3 - Start One-Time EC2 Linux Runner
     needs:
       - build-controller-model
       - build-plant-model
@@ -307,9 +309,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Start One-Time EC2 Windows Runner
+      - name: Start One-Time EC2 Linux Runner
         id: start-ec2-runner
-        uses: ./.github/actions/start-one-time-windows-ec2-runner
+        uses: ./.github/actions/start-one-time-linux-ec2-runner
         with:
           runner-labels: job-3-dspace-simulation-and-test-${{ github.run_id }}
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
@@ -321,7 +323,7 @@ jobs:
           security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
           iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
           key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
-          ami-id: ami-0dc0f13e8dbac09d4   # Windows TA_SDK AMI
+          ami-id: ami-0bb50ff1709190a42   # Linux TA_SDK AMI
           instance-type: t3.2xlarge
           ebs-volume-size: 500
           
@@ -337,7 +339,7 @@ jobs:
     name: Job 3 - dSPACE Simulation and Test
     needs:
       - job-3-start-runner
-    runs-on: job-3-dspace-simulation-and-test-${{ github.run_id }} # run the job on the newly created runner with the same label
+    runs-on: job-3-dspace-simulation-and-test-${{ github.run_id }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -357,21 +359,22 @@ jobs:
           } >> $GITHUB_STEP_SUMMARY
                     
       - name: Run pytest with Allure reporting
-        shell: powershell
+        shell: bash
         run: |
-          Write-Host "Hello dSPACE World!"
+          echo "Hello dSPACE World!"
 
           # Add dSPACE license server to CodeMeter Server Search List
-          Write-Host "Adding dSPACE license server to CodeMeter Server Search List ..."
-          Start-Process -FilePath "C:\Program Files (x86)\CodeMeter\Runtime\bin\cmu32.exe" -ArgumentList "--add-server ${{ vars.AWS_DSPACE_LICENSE_SERVER }}" -Wait -NoNewWindow
+          echo "Adding dSPACE license server to CodeMeter Server Search List ..."
+          cmu --add-server ${{ vars.AWS_DSPACE_LICENSE_SERVER }}
 
           # Install uv
-          powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-          $env:Path = "C:\Users\Administrator\.local\bin;$env:Path"
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          source $HOME/.local/bin/env 
           
-          # Start VEOS
-          & 'C:\Program Files\dSPACE XIL API .NET 2024-A\PlatformManagementAPI\Main\bin\CmdLoader.exe' -rnc 127.0.0.1 -t VEOS -af 0 -start
-          
+          # Register & Start VEOS
+          echo "Registering & Starting VEOS ..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start || true          
+
           # Run pytest with Allure Results
           cd "${{ env.JOB_3_PYTHON_SDK_DIR }}"
           uv sync
@@ -414,7 +417,7 @@ jobs:
 
 
   job-4-start-runner:
-    name: Job 4 - Start One-Time EC2 Windows Runner
+    name: Job 4 - Start One-Time EC2 Linux Runner
     needs:
       - build-controller-model
       - build-plant-model
@@ -426,9 +429,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Start One-Time EC2 Windows Runner
+      - name: Start One-Time EC2 Linux Runner
         id: start-ec2-runner
-        uses: ./.github/actions/start-one-time-windows-ec2-runner
+        uses: ./.github/actions/start-one-time-linux-ec2-runner
         with:
           runner-labels: job-4-dspace-simulation-and-test-${{ github.run_id }}
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
@@ -436,13 +439,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-          subnet-id: subnet-011f87ebb7a15fd7b   # ${{ vars.AWS_VPC_SUBNET_ID }}
-          security-group-id: "sg-03aa61710262686b2 sg-024c16ce1ce623651 sg-027c6aa7aeb00eb25"   # ${{ vars.AWS_SECURITY_GROUP_IDS }}
-          iam-instance-profile: SSMInstanceProfile # ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
-          key-name: TMC_SYNECT    # ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
-          ami-id: ami-0b61740a996730ce5   # dSPACE_ToolChainDemo_Client
-          instance-type: c7a.2xlarge
-          ebs-volume-size: 150
+          subnet-id: ${{ vars.AWS_VPC_SUBNET_ID }}
+          security-group-id: ${{ vars.AWS_SECURITY_GROUP_IDS }}
+          iam-instance-profile: ${{ vars.AWS_IAM_INSTANCE_PROFILE_NAME }}
+          key-name: ${{ vars.AWS_SSH_KEY_PAIR_NAME }}
+          ami-id: ami-0bb50ff1709190a42   # Linux TA_SDK AMI
+          instance-type: t3.2xlarge
+          ebs-volume-size: 500
           
       - name: Add Runner Information to Summary
         run: |
@@ -453,7 +456,7 @@ jobs:
           echo "📌 <a href=\"https://${{ vars.AWS_REGION }}.console.aws.amazon.com/ec2/home?region=${{ vars.AWS_REGION }}#InstanceDetails:instanceId=${{ steps.start-ec2-runner.outputs.ec2-instance-id }}\" target=\"_blank\">View in AWS Console</a>" >> $GITHUB_STEP_SUMMARY
 
   job-4-dspace-simulation-and-test:
-    name: Job 4 - dSPACE Simulation and Test (Legacy)
+    name: Job 4 - dSPACE Simulation and Test
     needs:
       - job-4-start-runner
     runs-on: job-4-dspace-simulation-and-test-${{ github.run_id }}
@@ -464,197 +467,50 @@ jobs:
           fetch-depth: 1
 
       - name: Add Test Information to Summary
-        shell: powershell
+        shell: bash
         run: |
-          @"
-          ### 🧪 Test Information
-          | Parameter | Value |
-          |-----------|-------|
-          | 📝 Zipped dSPACE Files  | ``LegacyToolChain/Git_dSPACE_ToolChainDemo.zip`` |
-          | 📝 AutomationDesk Project File | ``LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx`` |
-          | 📝 MainTestDataFilePath | ``TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData`` |
-          | 📝 TAConfigurationFilePath | ``TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration`` |
-          | ⚙️ ScenarioName | ``MOTMAN-01`` |
-          | ⚙️ OptionalApplName | ``DummyPlant_Motor`` |
-          | ⚙️ ExperimentName | ``Experiment_MotorECU`` |
-          "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          {
+            echo "### 🧪 Test Information"
+            echo
+            echo "| Parameter | Value |"
+            echo "|-----------|-------|"
+            echo "| 📂 Python SDK Directory | \`${{ env.JOB_4_PYTHON_SDK_DIR }}\` |"
+            echo "| ⚙️ OpenTA TestEnv Config File | \`${{ env.JOB_4_OPENTA_TESTENV_CONFIG }}\` |"
+          } >> $GITHUB_STEP_SUMMARY
                     
-      - name: Run AutomationDesk
-        shell: powershell
+      - name: Run pytest with Allure reporting
+        shell: bash
         run: |
-          Write-Host "Hello dSPACE World!"
+          echo "Hello dSPACE World!"
 
           # Add dSPACE license server to CodeMeter Server Search List
-          # Write-Host "Adding dSPACE license server to CodeMeter Server Search List ..."
-          # Start-Process -FilePath "C:\Program Files (x86)\CodeMeter\Runtime\bin\cmu32.exe" -ArgumentList "--add-server ${{ vars.AWS_DSPACE_LICENSE_SERVER }}" -Wait -NoNewWindow
+          echo "Adding dSPACE license server to CodeMeter Server Search List ..."
+          cmu --add-server ${{ vars.AWS_DSPACE_LICENSE_SERVER }}
 
-          $script = @"
-          import win32com.client
-          import pythoncom
-          import os
-          import sys
-          import logging
-          import zipfile
-
-          # # Add reference to assembly and import it:
-          # import clr
-          # clr.AddReference('dSPACE.Common.MessageReader')
-          # from dSPACE.Common.MessageHandler.Logging import *
-          # import System
-
-          # Configure logging
-          logging.basicConfig(
-              level=logging.INFO,
-              format='%(asctime)s - %(levelname)s - %(message)s'
-          )
-
-          # # dSPACE Release log configuration
-          # # Configure products and start time whose messages to read
-          # settings = MessageReaderSettings()
-          # settings.SetProducts(['ControlDesk', 'AutomationDesk', 'VEOS'])
-          # settings.MessageTimeAfter = System.DateTime.UtcNow
-          # # Create message reader
-          # reader = MessageReader(settings)
-
-          # Get GITHUB WORKSPACE Path
-          github_workspace = os.environ['GITHUB_WORKSPACE']
-
-          try:
-              pythoncom.CoInitialize()
-
-              logging.info(f"Starting ControlDesk")
-              cdn_app = None
-              for i in range(3):  # Retry up to 3 times
-                  logging.info(f"Attempt {i+1} to start ControlDesk")
-                  try:
-                      cdn_app = win32com.client.Dispatch('ControlDeskNG.Application')
-                      break  # Exit loop if successful
-                  except Exception as e:
-                      logging.error(f"Failed to start ControlDesk: {e}")
-              else:
-                  logging.error("Could not start AutomationDesk after 3 attempts")
-                  sys.exit(1)
-            
-              logging.info(f"Starting AutomationDesk")
-              aud_app = None
-              for i in range(3):  # Retry up to 3 times
-                  logging.info(f"Attempt {i+1} to start AutomationDesk")
-                  try:
-                      aud_app = win32com.client.Dispatch('AutomationDesk.TAM')
-                      break  # Exit loop if successful
-                  except Exception as e:
-                      logging.error(f"Failed to start AutomationDesk: {e}")
-              else:
-                  logging.error("Could not start AutomationDesk after 3 attempts")
-                  sys.exit(1)
-
-              # Convert relative path to absolute path and normalize slashes
-              zip_abspath = os.path.abspath(os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['ZIPPED_DSPACE_FILES'])).replace('/', '\\')
-              aud_project_abspath = os.path.join(os.environ['GITHUB_WORKSPACE'], os.environ['AUD_PROJECT_FILE']).replace('/', '\\')
-              cdn_project_abspath = os.path.join(os.environ['GITHUB_WORKSPACE'], 'LegacyToolChain/Instrumentation/Project/Project.CDP').replace('/', '\\')
-              
-              # ZIP ファイルと同じディレクトリに展開
-              logging.info(f"Extracting zip: {zip_abspath}")
-              extract_dir = os.path.dirname(zip_abspath)
-              with zipfile.ZipFile(zip_abspath, 'r') as zip_ref:
-                  zip_ref.extractall(extract_dir)
-
-              # Open CDN Project and activate Experiment
-              logging.info(f"Opening CDN Project: {cdn_project_abspath}")
-              cdn_app.OpenProject(cdn_project_abspath)
-              cdn_app.ActiveProject.Experiments.Item(os.environ['EXPERIMENT_NAME']).Activate()
-              
-              # Open AUD Project
-              logging.info(f"Opening AUD Project: {aud_project_abspath}")
-              aud_project = aud_app.Projects.Load(aud_project_abspath)
-              
-              # Set Data Object Values in AUD Sequence
-              logging.info(f"Setting Data Object in AUD Project: {aud_project_abspath}")
-              aud_sequence = aud_project.SubBlocks.Item('AutomatedSequence')
-              aud_sequence.DataObjects.FindElement('SYNECT_Connection.UseSYNECT').Value = False
-              aud_sequence.DataObjects.FindElement('SYNECT_Connection.MainTestDataFilePath').Value = os.environ['MAIN_TEST_DATA_FILE_PATH']
-              aud_sequence.DataObjects.FindElement('SYNECT_Connection.TAConfigurationFilePath').Value = os.environ['TA_CONFIGURATION_FILE_PATH']
-              aud_sequence.DataObjects.FindElement('SYNECT_Connection.ScenarioName').Value = os.environ['SCENARIO_NAME']
-              aud_sequence.DataObjects.FindElement('SYNECT_Connection.OptionalApplName').Value = os.environ['OPTIONAL_APPL_NAME']
-
-              # Start Online Calibration in CDN
-              logging.info(f"Starting Online Calibration in CDN")
-              cdn_app.CalibrationManagement.StartOnlineCalibration()
-
-              # Run AUD Sequence
-              logging.info(f"Running Sequence in AUD Project: {aud_project_abspath}")
-              aud_app.Options.Execution.CreateResult = True
-              audResult = aud_sequence.Execute()
-              audVerdict = audResult.ResultState.Verdict
-              aud_project.Save()
-              aud_project.Close()
-
-              # Stop Online Calibration in CDN
-              logging.info(f"Stopping Online Calibration in CDN")
-              cdn_app.CalibrationManagement.StopOnlineCalibration()
-
-              # Close AUD              
-              logging.info("Closing AutomationDesk")
-              aud_app.Quit()
-              aud_app = None
-
-              # Close CDN
-              logging.info("Closing ControlDesk")
-              cdn_app.Quit(True)  # True = save changes
-              cdn_app = None
-
-              # Verdict
-              VERDICT_MAP = ['Executed', 'Passed', 'Undefined', 'Failed', 'Error']
-              logging.info(f'AutomationDesk verdict is {VERDICT_MAP[audVerdict]}')
-              if audVerdict in (0, 1): # if AUD verdict is 'Executed' or 'Passed'
-                  sys.exit(0)
-              else: # (2, 3, 4) # elif 'Undefined' or 'Failed' or 'Error'
-                  sys.exit(1)
-              
-          except Exception as e:
-              logging.error(f"Error in AutomationDesk: {e}")
-              import traceback
-              traceback.print_exc()
-              sys.exit(1)
-              
-          finally:
-              pythoncom.CoUninitialize()
-
-          # # print time and text of each dSPACE Release message
-          # SEVERITY_ENUM = {0: 'Trace', 1: 'Info', 2: 'Warning', 3: 'Error', 4: 'SevereError', 5: 'SystemError', 6: 'Question', 7: 'Advice'}
-          # msgs = '\n'.join([''] + ['[%s][%s][%s] %s' % (msg.TimeStamp, msg.Session.ProductName, SEVERITY_ENUM[msg.Severity], str(msg.MessageText.encode('utf-8'))) 
-          #               for msg in reader.ReadMessages()])
-          # logging.info(msgs)
-          # # dispose AUD message reader
-          # reader.Dispose()
-          "@
-
-          # Set environment variables for the Python script
-          $env:ZIPPED_DSPACE_FILES = "LegacyToolChain/Git_dSPACE_ToolChainDemo.zip"
-          $env:AUD_PROJECT_FILE = "LegacyToolChain/Automation/AUD_ENG_PKG/Project/AUD_PKG.adpx"
-          $env:MAIN_TEST_DATA_FILE_PATH = "TaData/ExcelInputFiles/MOTMAN/MOTMAN_MainTestData"
-          $env:TA_CONFIGURATION_FILE_PATH = "TaData/ExcelInputFiles/MOTMAN/MOTMAN_TA_Configuration"
-          $env:SCENARIO_NAME = "MOTMAN-01"
-          $env:OPTIONAL_APPL_NAME = "DummyPlant_Motor"
-          $env:EXPERIMENT_NAME = "Experiment_MotorECU"
+          # Install uv
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          source $HOME/.local/bin/env 
           
-          # Run Python script
-          $scriptPath = "$env:GITHUB_WORKSPACE\\start_aud.py"
-          $script | Out-File -FilePath $scriptPath -Encoding UTF8
-          python $scriptPath
+          # Register & Start VEOS
+          echo "Registering & Starting VEOS ..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -start || true          
 
-          # exit 1    # means failure result
-          # exit 0    # means success result
+          # Run pytest with Allure Results
+          cd "${{ env.JOB_4_PYTHON_SDK_DIR }}"
+          uv sync
+          uv run pytest ./tests --openta-testenv-config="${{ env.JOB_4_OPENTA_TESTENV_CONFIG }}" --alluredir=./allure-results
+          # exit 1  # failed
+          # exit 0  # success
 
-      # - name: Upload Allure Results
-      #   uses: actions/upload-artifact@v4
-      #   if: always()
-      #   continue-on-error: true
-      #   with:
-      #     name: job-4-allure-results
-      #     path: PythonSDK/ScbT/allure-results
-      #     retention-days: 30
-      #     if-no-files-found: warn
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: job-4-allure-results
+          path: ${{ env.JOB_4_PYTHON_SDK_DIR }}/allure-results
+          retention-days: 30
+          if-no-files-found: warn
 
   job-4-stop-runner:
     name: Job 4 - Stop EC2 Runner
@@ -679,10 +535,9 @@ jobs:
           shutdown-behavior: terminate
           failed-job-not-terminate: true
 
-
   generate-allure-report:
     name: Generate Allure Report
-    needs: [job-1-dspace-simulation-and-test, job-2-dspace-simulation-and-test, job-3-dspace-simulation-and-test]
+    needs: [job-1-dspace-simulation-and-test, job-2-dspace-simulation-and-test, job-3-dspace-simulation-and-test, job-4-dspace-simulation-and-test]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -707,17 +562,17 @@ jobs:
           name: job-3-allure-results
           path: allure-results/job3
 
-      # - name: Download Job 4 Allure Results
-      #   uses: actions/download-artifact@v4
-      #   continue-on-error: true
-      #   with:
-      #     name: job-4-allure-results
-      #     path: allure-results/job4
+      - name: Download Job 4 Allure Results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: job-4-allure-results
+          path: allure-results/job4
 
       - name: Merge Allure Results
         run: |
           mkdir -p merged-results
-          for job in job1 job2 job3; do
+          for job in job1 job2 job3 job4; do
             if [ -d "allure-results/$job" ] && [ -n "$(ls -A allure-results/$job 2>/dev/null)" ]; then
               cp -r allure-results/$job/* merged-results/
             else
