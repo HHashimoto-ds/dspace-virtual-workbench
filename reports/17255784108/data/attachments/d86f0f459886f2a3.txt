@@ -1,0 +1,7 @@
+02:46:01.828000 INFO    : openta.testing.testenv :: Teardown Ports
+02:46:01.829000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Stop
+02:46:01.829000 INFO    : openta.ports.xilapi_modelaccess :: stop 'Model' XilModelAccessPort: Stop Simulation
+02:46:01.845000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Disconnect
+02:46:01.845000 INFO    : openta.ports.xilapi_base :: disconnect 'Model' XilModelAccessPort
+02:46:01.850000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Release
+02:46:01.850000 INFO    : openta.ports.xilapi_base :: release 'Model' XilModelAccessPort
