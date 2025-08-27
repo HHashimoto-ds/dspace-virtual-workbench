@@ -1,0 +1,8 @@
+06:50:39.010000 WARNING : openta.ports.xilapi_base :: start XilModelAccessCapture: The corresponding 'Model' XilModelAccessPort is not started, but in STARTED state
+06:50:46.220000 INFO    : openta.testing.testenv :: Teardown Ports
+06:50:46.221000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Stop
+06:50:46.221000 INFO    : openta.ports.xilapi_modelaccess :: stop 'Model' XilModelAccessPort: Stop Simulation
+06:50:46.236000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Disconnect
+06:50:46.237000 INFO    : openta.ports.xilapi_base :: disconnect 'Model' XilModelAccessPort
+06:50:46.242000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Release
+06:50:46.242000 INFO    : openta.ports.xilapi_base :: release 'Model' XilModelAccessPort
