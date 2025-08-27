@@ -12,7 +12,8 @@ jobs:
     strategy:
       # Add any additional parameters needed for your dSPACE job
       matrix:
-        ami-id: ['ami-0dc0f13e8dbac09d4'] # Windows TA_SDK AMI
+        ami-id: ['ami-0bb50ff1709190a42']   # Linux TA_SDK AMI
+        # ami-id: ['ami-0dc0f13e8dbac09d4'] # Windows TA_SDK AMI
         instance-type: ['t3.2xlarge'] # recommended: t3.large or larger
         shutdown-behavior: ['terminate'] # or 'stop'
         ebs-volume-size: [500] # EBS volume size in GB
