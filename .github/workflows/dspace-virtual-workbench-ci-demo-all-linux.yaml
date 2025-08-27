@@ -1,4 +1,4 @@
-name: dSPACE Virtual Workbench CI Demo
+name: dSPACE Virtual Workbench CI Demo (all Linux)
 
 on:
   workflow_dispatch:
