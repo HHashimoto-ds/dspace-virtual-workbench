@@ -6,8 +6,8 @@ on:
 env:
   JOB_1_PYTHON_SDK_DIR: PythonSDK_Turnlamp
   JOB_1_OPENTA_TESTENV_CONFIG: testdata/testenv_veos_linux.yaml
-  JOB_2_PYTHON_SDK_DIR: PythonSDK_ScbT
-  JOB_2_OPENTA_TESTENV_CONFIG: tests/testdata_scbt/testenv_asm_veos_linux.yaml
+  JOB_2_PYTHON_SDK_DIR: ythonSDK_Turnlamp
+  JOB_2_OPENTA_TESTENV_CONFIG: testdata/testenv_veos_linux.yaml
   JOB_3_PYTHON_SDK_DIR: PythonSDK_Turnlamp
   JOB_3_OPENTA_TESTENV_CONFIG: testdata/testenv_veos.yaml
 
