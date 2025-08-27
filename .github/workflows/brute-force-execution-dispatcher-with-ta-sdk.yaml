@@ -22,7 +22,7 @@ jobs:
         python-sdk-dir: ['PythonSDK_Turnlamp', 'PythonSDK_Turnlamp_AllPass']
         openta-testenv-config-file: ['testdata/testenv_veos_linux.yaml']
         param-1: ['value1', 'value2'] # Example additional parameter
-        param-2: ['valueA', 'valueB'] # Example additional parameter
+        param-2: ['valueA'] # Example additional parameter
       # Allow all combinations to run even if one fails
       fail-fast: false
 
