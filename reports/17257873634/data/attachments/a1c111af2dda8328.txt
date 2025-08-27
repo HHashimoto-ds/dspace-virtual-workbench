@@ -1,0 +1,44 @@
+05:10:56.181000 INFO    : openta.common.config.testenv_reader :: Load test environment configuration: 'testdata/testenv_veos_vecu_linux.yaml'
+05:10:56.191000 INFO    : openta.common.config.testenv_reader :: Analyze ports ...
+05:10:56.191000 INFO    : openta.common.config.testenv_reader :: Register 'Model' XIL API MAPort port.
+05:10:56.191000 INFO    : openta.common.config.testenv_reader :: Register 'ECU' XIL API dSPACE ECUPort port.
+05:10:56.192000 INFO    : openta.common.config.testenv_reader :: Analyze mappings ...
+05:10:56.192000 INFO    : openta.common.config.testenv_reader :: Process XIL API Mapping file 'VEOSVECU/turnlamp/Mappings/TurnLampMapping.xml' .
+05:10:56.266000 INFO    : openta.testing.testenv :: Setup Ports
+05:10:56.266000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Create
+05:10:56.266000 INFO    : openta.ports.xilapi_modelaccess :: create 'Model' XilModelAccessPort
+05:10:56.266000 INFO    : openta.ports.xilapi_base :: load ASAM testbench factory assemblies for XIL version: 2.2.0
+05:11:03.975000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Connect/Configure
+05:11:03.975000 INFO    : openta.ports.xilapi_modelaccess :: connect 'Model' XilModelAccessPort
+05:11:07.220000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Start
+05:11:07.220000 INFO    : openta.ports.xilapi_modelaccess :: start 'Model' XilModelAccessPort: Start Simulation
+05:11:07.268000 INFO    : openta.testing.testenv :: Setup [2] 'ECU' DsEcuPort: Create
+05:11:07.269000 INFO    : openta.ports.xilapi_dspace_ecu :: create 'ECU' DsEcuPort
+05:11:09.335000 WARNING : openta.ports.xilapi_dspace_ecu :: create 'ECU' DsEcuPort: Exception occured: dSPACE.XIL.Testbench.ECUPort.Interfaces.Error.ECUPortException_impl: No valid license found. Vendor Description: CodeMeter License Server not found, Error 101.
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CheckAndThrowException(ServiceException exception)
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CreateInstance(InstanceType instanceType, Object[] args)
+   at dSPACE.XIL.Testbench.Client.Testbench.ECUPort.ECUPortFactory.CreateECUPort(String name)
+␤Failed to create 'ECU' DsEcuPort
+05:11:09.336000 ERROR   : openta.testing.testenv :: Setup Ports Failed: dSPACE.XIL.Testbench.ECUPort.Interfaces.Error.ECUPortException_impl: No valid license found. Vendor Description: CodeMeter License Server not found, Error 101.
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CheckAndThrowException(ServiceException exception)
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CreateInstance(InstanceType instanceType, Object[] args)
+   at dSPACE.XIL.Testbench.Client.Testbench.ECUPort.ECUPortFactory.CreateECUPort(String name)
+␤Failed to create 'ECU' DsEcuPort
+Traceback (most recent call last):
+  File "/home/runner/actions-runner/_work/dspace-virtual-workbench/dspace-virtual-workbench/PythonSDK_Turnlamp/.venv/lib/python3.11/site-packages/openta/testing/testenv.py", line 162, in setup
+    port.create()
+  File "/home/runner/actions-runner/_work/dspace-virtual-workbench/dspace-virtual-workbench/PythonSDK_Turnlamp/.venv/lib/python3.11/site-packages/openta/ports/xilapi_dspace_ecu.py", line 100, in create
+    self._port = ext_int.IDSTestbench(self._testbench).ECUPortFactory.CreateECUPort(self.name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dSPACE.XIL.Testbench.ECUPort.Interfaces.Error.ECUPortException_impl: No valid license found. Vendor Description: CodeMeter License Server not found, Error 101.
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CheckAndThrowException(ServiceException exception)
+   at dSPACE.XIL.Testbench.Client.CommonServiceAccess.CreateInstance(InstanceType instanceType, Object[] args)
+   at dSPACE.XIL.Testbench.Client.Testbench.ECUPort.ECUPortFactory.CreateECUPort(String name)
+Failed to create 'ECU' DsEcuPort
+05:11:09.337000 INFO    : openta.testing.testenv :: Teardown Ports
+05:11:09.339000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Stop
+05:11:09.339000 INFO    : openta.ports.xilapi_modelaccess :: stop 'Model' XilModelAccessPort: Stop Simulation
+05:11:09.380000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Disconnect
+05:11:09.380000 INFO    : openta.ports.xilapi_base :: disconnect 'Model' XilModelAccessPort
+05:11:09.391000 INFO    : openta.testing.testenv :: Teardown [1] 'Model' XilModelAccessPort: Release
+05:11:09.391000 INFO    : openta.ports.xilapi_base :: release 'Model' XilModelAccessPort

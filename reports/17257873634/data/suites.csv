@@ -1,0 +1,98 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","7517","test_turnlamp_triggered_mf4file[13]","tests.turnlamp","Wed Aug 27 05:13:46 UTC 2025","passed","Wed Aug 27 05:13:54 UTC 2025","","test_synchron_flash","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","0","test_turnlamp_synchronflash_with_controldesk_recorder[13]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","7584","test_turnlamp_triggered_synchronflash[14]","tests.turnlamp","Wed Aug 27 05:12:44 UTC 2025","passed","Wed Aug 27 05:12:52 UTC 2025","","test_synchron_flash","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","0","test_turnlamp_synchronflash_with_controldesk_recorder[14]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","3561","test_turnlamp_synchronflash[11]","tests.turnlamp","Wed Aug 27 05:11:40 UTC 2025","passed","Wed Aug 27 05:11:43 UTC 2025","","test_synchron_flash","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","1","test_turnlamp_synchronflash_with_controldesk_recorder[7]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","7776","test_turnlamp_triggered_mf4file[7]","tests.turnlamp","Wed Aug 27 05:13:00 UTC 2025","passed","Wed Aug 27 05:13:07 UTC 2025","","test_synchron_flash","",""
+"","7528","test_turnlamp_triggered_synchronflash[13]","tests.turnlamp","Wed Aug 27 05:12:36 UTC 2025","passed","Wed Aug 27 05:12:44 UTC 2025","","test_synchron_flash","",""
+"","3446","test_turnlamp_synchronflash[9]","tests.turnlamp","Wed Aug 27 05:15:03 UTC 2025","passed","Wed Aug 27 05:15:07 UTC 2025","","test_synchron_flash_multiport","",""
+"","7804","test_turnlamp_triggered_mf4file[11]","tests.turnlamp","Wed Aug 27 05:13:31 UTC 2025","passed","Wed Aug 27 05:13:38 UTC 2025","","test_synchron_flash","",""
+"","4710","test_turnlamp_synchronflash[7]","tests.turnlamp","Wed Aug 27 05:11:24 UTC 2025","passed","Wed Aug 27 05:11:28 UTC 2025","","test_synchron_flash","",""
+"","7756","test_turnlamp_triggered_synchronflash[10]","tests.turnlamp","Wed Aug 27 05:12:13 UTC 2025","passed","Wed Aug 27 05:12:21 UTC 2025","","test_synchron_flash","",""
+"","7563","test_turnlamp_triggered_mf4file[10]","tests.turnlamp","Wed Aug 27 05:13:23 UTC 2025","passed","Wed Aug 27 05:13:31 UTC 2025","","test_synchron_flash","",""
+"","3418","test_turnlamp_synchronflash[8]","tests.turnlamp","Wed Aug 27 05:15:00 UTC 2025","passed","Wed Aug 27 05:15:03 UTC 2025","","test_synchron_flash_multiport","",""
+"","7541","test_turnlamp_triggered_synchronflash[7]","tests.turnlamp","Wed Aug 27 05:11:51 UTC 2025","passed","Wed Aug 27 05:11:58 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7491","test_turnlamp_synchronflash_alternative[10]","tests.turnlamp","Wed Aug 27 05:14:31 UTC 2025","passed","Wed Aug 27 05:14:39 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7437","test_turnlamp_synchronflash_alternative[12]","tests.turnlamp","Wed Aug 27 05:14:46 UTC 2025","passed","Wed Aug 27 05:14:54 UTC 2025","","test_synchron_flash","",""
+"","7535","test_turnlamp_triggered_synchronflash[11]","tests.turnlamp","Wed Aug 27 05:12:21 UTC 2025","passed","Wed Aug 27 05:12:29 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7482","test_turnlamp_synchronflash_alternative[14]","tests.turnlamp","Wed Aug 27 05:15:01 UTC 2025","passed","Wed Aug 27 05:15:09 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7529","test_turnlamp_synchronflash_alternative[11]","tests.turnlamp","Wed Aug 27 05:14:39 UTC 2025","passed","Wed Aug 27 05:14:46 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7430","test_turnlamp_synchronflash_alternative[6]","tests.turnlamp","Wed Aug 27 05:14:01 UTC 2025","passed","Wed Aug 27 05:14:09 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7421","test_turnlamp_synchronflash_alternative[9]","tests.turnlamp","Wed Aug 27 05:14:24 UTC 2025","passed","Wed Aug 27 05:14:31 UTC 2025","","test_synchron_flash","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","0","test_turnlamp_synchronflash_with_controldesk_recorder[6]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","3325","test_turnlamp_synchronflash[14]","tests.turnlamp","Wed Aug 27 05:15:20 UTC 2025","passed","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","3354","test_turnlamp_synchronflash[12]","tests.turnlamp","Wed Aug 27 05:15:14 UTC 2025","passed","Wed Aug 27 05:15:17 UTC 2025","","test_synchron_flash_multiport","",""
+"","3655","test_turnlamp_synchronflash[10]","tests.turnlamp","Wed Aug 27 05:11:36 UTC 2025","passed","Wed Aug 27 05:11:40 UTC 2025","","test_synchron_flash","",""
+"","7990","test_turnlamp_triggered_mf4file[8]","tests.turnlamp","Wed Aug 27 05:13:07 UTC 2025","passed","Wed Aug 27 05:13:15 UTC 2025","","test_synchron_flash","",""
+"","3350","test_turnlamp_synchronflash[6]","tests.turnlamp","Wed Aug 27 05:14:53 UTC 2025","failed","Wed Aug 27 05:14:57 UTC 2025","","test_synchron_flash_multiport","",""
+"","7670","test_turnlamp_triggered_mf4file[9]","tests.turnlamp","Wed Aug 27 05:13:15 UTC 2025","passed","Wed Aug 27 05:13:23 UTC 2025","","test_synchron_flash","",""
+"","7661","test_turnlamp_triggered_synchronflash[12]","tests.turnlamp","Wed Aug 27 05:12:29 UTC 2025","passed","Wed Aug 27 05:12:36 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7442","test_turnlamp_synchronflash_alternative[7]","tests.turnlamp","Wed Aug 27 05:14:09 UTC 2025","passed","Wed Aug 27 05:14:16 UTC 2025","","test_synchron_flash","",""
+"","3336","test_turnlamp_synchronflash[10]","tests.turnlamp","Wed Aug 27 05:15:07 UTC 2025","passed","Wed Aug 27 05:15:10 UTC 2025","","test_synchron_flash_multiport","",""
+"","3683","test_turnlamp_synchronflash[8]","tests.turnlamp","Wed Aug 27 05:11:28 UTC 2025","passed","Wed Aug 27 05:11:32 UTC 2025","","test_synchron_flash","",""
+"","3486","test_turnlamp_synchronflash[13]","tests.turnlamp","Wed Aug 27 05:15:17 UTC 2025","passed","Wed Aug 27 05:15:20 UTC 2025","","test_synchron_flash_multiport","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","0","test_turnlamp_synchronflash_with_controldesk_recorder[10]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7689","test_turnlamp_synchronflash_alternative[13]","tests.turnlamp","Wed Aug 27 05:14:54 UTC 2025","passed","Wed Aug 27 05:15:01 UTC 2025","","test_synchron_flash","",""
+"","7766","test_turnlamp_triggered_mf4file[14]","tests.turnlamp","Wed Aug 27 05:13:54 UTC 2025","passed","Wed Aug 27 05:14:01 UTC 2025","","test_synchron_flash","",""
+"","7586","test_turnlamp_triggered_mf4file[12]","tests.turnlamp","Wed Aug 27 05:13:38 UTC 2025","passed","Wed Aug 27 05:13:46 UTC 2025","","test_synchron_flash","",""
+"","7705","test_turnlamp_triggered_synchronflash[6]","tests.turnlamp","Wed Aug 27 05:11:43 UTC 2025","passed","Wed Aug 27 05:11:51 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7462","test_turnlamp_synchronflash_alternative[8]","tests.turnlamp","Wed Aug 27 05:14:16 UTC 2025","passed","Wed Aug 27 05:14:24 UTC 2025","","test_synchron_flash","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","0","test_turnlamp_synchronflash_with_controldesk_recorder[9]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","8093","test_turnlamp_triggered_mf4file[6]","tests.turnlamp","Wed Aug 27 05:12:52 UTC 2025","passed","Wed Aug 27 05:13:00 UTC 2025","","test_synchron_flash","",""
+"","3837","test_turnlamp_synchronflash[9]","tests.turnlamp","Wed Aug 27 05:11:32 UTC 2025","passed","Wed Aug 27 05:11:36 UTC 2025","","test_synchron_flash","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","1","test_turnlamp_synchronflash_with_controldesk_recorder[8]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","3400","test_turnlamp_synchronflash[7]","tests.turnlamp","Wed Aug 27 05:14:57 UTC 2025","failed","Wed Aug 27 05:15:00 UTC 2025","","test_synchron_flash_multiport","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","0","test_turnlamp_synchronflash_with_controldesk_recorder[12]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","3331","test_turnlamp_synchronflash[11]","tests.turnlamp","Wed Aug 27 05:15:10 UTC 2025","passed","Wed Aug 27 05:15:14 UTC 2025","","test_synchron_flash_multiport","",""
+"","4001","test_turnlamp_synchronflash[6]","tests.turnlamp","Wed Aug 27 05:11:20 UTC 2025","passed","Wed Aug 27 05:11:24 UTC 2025","","test_synchron_flash","",""
+"","3700","test_turnlamp_synchronflash_mf4[10]","tests.turnlamp","Wed Aug 27 05:14:50 UTC 2025","passed","Wed Aug 27 05:14:53 UTC 2025","","test_synchron_flash_multiport","",""
+"
+    The test is similar `test_turnlamp_synchronflash` but instead of capturing via the ports,
+    we directly use controldesk to record all relevant signals, regardles of the openta port.
+    ","1","test_turnlamp_synchronflash_with_controldesk_recorder[11]","tests.turnlamp","Wed Aug 27 05:15:24 UTC 2025","skipped","Wed Aug 27 05:15:24 UTC 2025","","test_synchron_flash_multiport","",""
+"","7475","test_turnlamp_triggered_synchronflash[8]","tests.turnlamp","Wed Aug 27 05:11:58 UTC 2025","passed","Wed Aug 27 05:12:06 UTC 2025","","test_synchron_flash","",""
+"","7561","test_turnlamp_triggered_synchronflash[9]","tests.turnlamp","Wed Aug 27 05:12:06 UTC 2025","passed","Wed Aug 27 05:12:13 UTC 2025","","test_synchron_flash","",""
