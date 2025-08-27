@@ -17,9 +17,11 @@ jobs:
         shutdown-behavior: ['terminate'] # or 'stop'
         ebs-volume-size: [500] # EBS volume size in GB
         failed-job-not-terminate: [true] # Do NOT terminate EC2 Instance when the job fails
-        workflow-id: ['one-time-simulation-and-test-with-ta-sdk-using-aws-windows-runner.yaml']
-        python-sdk-dir: ['PythonSDK_Turnlamp']
-        openta-testenv-config-file: ['testdata/testenv_veos.yaml']
+        workflow-id: ['one-time-simulation-and-test-with-ta-sdk-using-aws-linux-runner.yaml']
+        python-sdk-dir: ['PythonSDK_Turnlamp', 'PythonSDK_Turnlamp_AllPass']
+        openta-testenv-config-file: ['testdata/testenv_veos_linux.yaml']
+        param-1: ['value1', 'value2'] # Example additional parameter
+        param-2: ['valueA', 'valueB'] # Example additional parameter
       # Allow all combinations to run even if one fails
       fail-fast: false
 
