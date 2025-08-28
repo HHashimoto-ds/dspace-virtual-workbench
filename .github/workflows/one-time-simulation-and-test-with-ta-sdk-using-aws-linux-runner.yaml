@@ -136,6 +136,7 @@ jobs:
           cd "${{ inputs.python-sdk-dir }}"
           uv sync
           uv run pytest ./tests --openta-testenv-config="${{ inputs.openta-testenv-config-file }}" --alluredir=./allure-results
+          echo "pytest completed."
           # exit 1  # failed
           # exit 0  # success
 
