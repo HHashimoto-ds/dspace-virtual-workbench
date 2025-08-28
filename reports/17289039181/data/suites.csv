@@ -1,0 +1,7 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3572","test_turnlamp_synchronflash[8]","tests.turnlamp_allpass","Thu Aug 28 07:35:01 UTC 2025","passed","Thu Aug 28 07:35:05 UTC 2025","","test_synchron_flash","",""
+"","3430","test_turnlamp_synchronflash[9]","tests.turnlamp_allpass","Thu Aug 28 07:35:05 UTC 2025","passed","Thu Aug 28 07:35:08 UTC 2025","","test_synchron_flash","",""
+"","3741","test_turnlamp_synchronflash[6]","tests.turnlamp_allpass","Thu Aug 28 07:34:54 UTC 2025","passed","Thu Aug 28 07:34:58 UTC 2025","","test_synchron_flash","",""
+"","3536","test_turnlamp_synchronflash[7]","tests.turnlamp_allpass","Thu Aug 28 07:34:58 UTC 2025","passed","Thu Aug 28 07:35:01 UTC 2025","","test_synchron_flash","",""
+"","3532","test_turnlamp_synchronflash[10]","tests.turnlamp_allpass","Thu Aug 28 07:35:08 UTC 2025","passed","Thu Aug 28 07:35:12 UTC 2025","","test_synchron_flash","",""
+"","3539","test_turnlamp_synchronflash[11]","tests.turnlamp_allpass","Thu Aug 28 07:35:12 UTC 2025","passed","Thu Aug 28 07:35:15 UTC 2025","","test_synchron_flash","",""
