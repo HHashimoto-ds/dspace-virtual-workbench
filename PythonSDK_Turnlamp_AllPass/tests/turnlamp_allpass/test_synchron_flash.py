@@ -24,15 +24,18 @@ active_captures = []
 def signal_handler(signum, frame):
     """Handle system signals to ensure graceful cleanup of captures."""
     signal_name = signal.Signals(signum).name
-    print(f"\nReceived signal {signal_name}. Cleaning up captures...")
+    sys.stderr.write(f"\nReceived signal {signal_name}. Cleaning up captures...\n")
+    sys.stderr.flush()
     
-    for capture in active_captures:
+    while active_captures:
+        capture = active_captures.pop()
         try:
             if capture.is_running():
                 capture.stop()
-            print(f"Successfully stopped capture")
+            sys.stderr.write("Successfully stopped capture\n")
         except Exception as e:
-            print(f"Error stopping capture: {e}")
+            sys.stderr.write(f"Error stopping capture: {e}\n")
+        sys.stderr.flush()
     
     sys.exit(1)
 
@@ -151,10 +154,14 @@ def test_turnlamp_synchronflash(ta: TestEnvironmentAccess, battery_voltage: floa
     )
     active_captures.append(capture)
     with allure.step("Act: Start capture and test"), capture:
-        # Start blinking -> Turn right
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
-        time.sleep(3)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+        try:
+            # Start blinking -> Turn right
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
+            time.sleep(3)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+        finally:
+            if capture in active_captures:
+                active_captures.remove(capture)
 
     # ##########################################
     # Prepare Assert and reporting
@@ -194,18 +201,22 @@ def test_turnlamp_triggered_synchronflash(ta: TestEnvironmentAccess, battery_vol
     )
     active_captures.append(capture)
     with allure.step("Act: Start capture and test"), capture:
-        # Start blinking -> Turn right
-        time.sleep(1)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
-        time.sleep(3)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
-        # the capture is stopped here,
-        # if the following and its reaction, flashing of left lights, is captured
-        # then the test will fail
-        time.sleep(1)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.LEFT
-        time.sleep(2)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+        try:
+            # Start blinking -> Turn right
+            time.sleep(1)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
+            time.sleep(3)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+            # the capture is stopped here,
+            # if the following and its reaction, flashing of left lights, is captured
+            # then the test will fail
+            time.sleep(1)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.LEFT
+            time.sleep(2)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+        finally:
+            if capture in active_captures:
+                active_captures.remove(capture)
 
     # ##########################################
     # Prepare Assert and reporting
@@ -248,18 +259,22 @@ def test_turnlamp_triggered_mf4file(ta: TestEnvironmentAccess, battery_voltage: 
     )
     active_captures.append(capture)
     with allure.step("Act: Start capture and test"), capture:
-        # Start blinking -> Turn right
-        time.sleep(1)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
-        time.sleep(3)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
-        # the capture is stopped here,
-        # if the following and its reaction, flashing of left lights, is captured
-        # then the test will fail
-        time.sleep(1)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.LEFT
-        time.sleep(2)
-        ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+        try:
+            # Start blinking -> Turn right
+            time.sleep(1)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
+            time.sleep(3)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+            # the capture is stopped here,
+            # if the following and its reaction, flashing of left lights, is captured
+            # then the test will fail
+            time.sleep(1)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.LEFT
+            time.sleep(2)
+            ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
+        finally:
+            if capture in active_captures:
+                active_captures.remove(capture)
 
     # ##########################################
     # Prepare Assert and reporting
@@ -309,7 +324,7 @@ def test_turnlamp_synchronflash_alternative(
             start_trigger=("TurnSignalLever >= 1", -0.1),
             stop_trigger=("TurnSignalLever <= 0", 0.1),
         )
-
+        active_captures.append(capture)
         capture.start()
         try:
             time.sleep(1)
@@ -326,6 +341,8 @@ def test_turnlamp_synchronflash_alternative(
             ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.OFF
         finally:
             capture.stop()
+            if capture in active_captures:
+                active_captures.remove(capture)
 
     # ##########################################
     # Prepare Assert and reporting
