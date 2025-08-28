@@ -3,6 +3,8 @@ Demo implementation of Turnlamp test with single port capture.
 """
 
 import os
+import signal
+import sys
 import tempfile
 import time
 from datetime import datetime
@@ -15,6 +17,28 @@ from openta.testing.testenv import TestEnvironmentAccess
 
 from ..common import utils  # noqa: TID252
 from . import constants
+
+# Global variable to track active captures
+active_captures = []
+
+def signal_handler(signum, frame):
+    """Handle system signals to ensure graceful cleanup of captures."""
+    signal_name = signal.Signals(signum).name
+    print(f"\nReceived signal {signal_name}. Cleaning up captures...")
+    
+    for capture in active_captures:
+        try:
+            if capture.is_running():
+                capture.stop()
+            print(f"Successfully stopped capture")
+        except Exception as e:
+            print(f"Error stopping capture: {e}")
+    
+    sys.exit(1)
+
+# Register signal handlers
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 # ruff: noqa: E501, ANN201
 
@@ -114,20 +138,19 @@ def test_turnlamp_synchronflash(ta: TestEnvironmentAccess, battery_voltage: floa
     # #####################################
     # Act
     # #####################################
-    with (
-        allure.step("Act: Start capture and test"),
-        Capturing(
-            [
-                ta.vars.BatteryVoltage,
-                ta.vars.TurnSignalLever,
-                ta.vars.TurnSignalFrontRight,
-                ta.vars.TurnSignalFrontLeft,
-                ta.vars.TurnSignalRearRight,
-                ta.vars.TurnSignalRearLeft,
-            ],
-            raster_name="Periodic Task 1",
-        ) as capture,
-    ):
+    capture = Capturing(
+        [
+            ta.vars.BatteryVoltage,
+            ta.vars.TurnSignalLever,
+            ta.vars.TurnSignalFrontRight,
+            ta.vars.TurnSignalFrontLeft,
+            ta.vars.TurnSignalRearRight,
+            ta.vars.TurnSignalRearLeft,
+        ],
+        raster_name="Periodic Task 1",
+    )
+    active_captures.append(capture)
+    with allure.step("Act: Start capture and test"), capture:
         # Start blinking -> Turn right
         ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
         time.sleep(3)
@@ -158,20 +181,19 @@ def test_turnlamp_triggered_synchronflash(ta: TestEnvironmentAccess, battery_vol
     # #####################################
     # Act
     # #####################################
-    with (
-        allure.step("Act: Start capture and test"),
-        Capturing(
-            [
-                ta.vars.TurnSignalLever,
-                ta.vars.TurnSignalFrontRight,
-                ta.vars.TurnSignalFrontLeft,
-                ta.vars.TurnSignalRearRight,
-                ta.vars.TurnSignalRearLeft,
-            ],
-            start_trigger=("TurnSignalLever >= 1", -0.1),
-            stop_trigger=("TurnSignalLever <= 0", 0.1),
-        ) as capture,
-    ):
+    capture = Capturing(
+        [
+            ta.vars.TurnSignalLever,
+            ta.vars.TurnSignalFrontRight,
+            ta.vars.TurnSignalFrontLeft,
+            ta.vars.TurnSignalRearRight,
+            ta.vars.TurnSignalRearLeft,
+        ],
+        start_trigger=("TurnSignalLever >= 1", -0.1),
+        stop_trigger=("TurnSignalLever <= 0", 0.1),
+    )
+    active_captures.append(capture)
+    with allure.step("Act: Start capture and test"), capture:
         # Start blinking -> Turn right
         time.sleep(1)
         ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
@@ -212,21 +234,20 @@ def test_turnlamp_triggered_mf4file(ta: TestEnvironmentAccess, battery_voltage: 
     # Act
     # #####################################
 
-    with (
-        allure.step("Act: Start capture and test"),
-        Capturing(
-            [
-                ta.vars.TurnSignalLever,
-                ta.vars.TurnSignalFrontRight,
-                ta.vars.TurnSignalFrontLeft,
-                ta.vars.TurnSignalRearRight,
-                ta.vars.TurnSignalRearLeft,
-            ],
-            start_trigger=("TurnSignalLever >= 1", -0.25),
-            stop_trigger=("TurnSignalLever <= 0", 0.75),
-            datafile_path=mf4path,
-        ) as capture,
-    ):
+    capture = Capturing(
+        [
+            ta.vars.TurnSignalLever,
+            ta.vars.TurnSignalFrontRight,
+            ta.vars.TurnSignalFrontLeft,
+            ta.vars.TurnSignalRearRight,
+            ta.vars.TurnSignalRearLeft,
+        ],
+        start_trigger=("TurnSignalLever >= 1", -0.25),
+        stop_trigger=("TurnSignalLever <= 0", 0.75),
+        datafile_path=mf4path,
+    )
+    active_captures.append(capture)
+    with allure.step("Act: Start capture and test"), capture:
         # Start blinking -> Turn right
         time.sleep(1)
         ta.vars.TurnSignalLever.value = constants.TURNSIGNAL_LEVER.RIGHT
