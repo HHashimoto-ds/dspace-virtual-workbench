@@ -1,0 +1,1 @@
+[{"uid":"7f3fe7f6bcb961a1","name":"test_turnlamp_synchronflash[7]","time":{"start":1756373148116,"stop":1756373151204,"duration":3088},"status":"broken","severity":"normal"},{"uid":"fbcd45f6a10eca89","name":"test_turnlamp_synchronflash[6]","time":{"start":1756373144445,"stop":1756373148113,"duration":3668},"status":"passed","severity":"normal"}]
