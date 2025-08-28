@@ -141,7 +141,7 @@ jobs:
           # exit 1  # failed
           # exit 0  # success
 
-      - name: Cleanup on cancellation
+      - name: Cleanup on Cancellation
         if: cancelled()
         shell: bash
         run: |
