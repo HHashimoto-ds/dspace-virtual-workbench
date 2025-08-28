@@ -1,0 +1,52 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7427","test_turnlamp_synchronflash_alternative[9]","tests.turnlamp_allpass","Thu Aug 28 07:43:27 UTC 2025","passed","Thu Aug 28 07:43:34 UTC 2025","","test_synchron_flash","",""
+"","7576","test_turnlamp_triggered_mf4file[6]","tests.turnlamp_allpass","Thu Aug 28 07:41:58 UTC 2025","passed","Thu Aug 28 07:42:06 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7314","test_turnlamp_synchronflash_alternative[8]","tests.turnlamp_allpass","Thu Aug 28 07:43:19 UTC 2025","passed","Thu Aug 28 07:43:27 UTC 2025","","test_synchron_flash","",""
+"","7342","test_turnlamp_triggered_mf4file[13]","tests.turnlamp_allpass","Thu Aug 28 07:42:50 UTC 2025","passed","Thu Aug 28 07:42:58 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7293","test_turnlamp_synchronflash_alternative[10]","tests.turnlamp_allpass","Thu Aug 28 07:43:34 UTC 2025","passed","Thu Aug 28 07:43:42 UTC 2025","","test_synchron_flash","",""
+"","7497","test_turnlamp_triggered_mf4file[11]","tests.turnlamp_allpass","Thu Aug 28 07:42:35 UTC 2025","passed","Thu Aug 28 07:42:43 UTC 2025","","test_synchron_flash","",""
+"","7397","test_turnlamp_triggered_synchronflash[6]","tests.turnlamp_allpass","Thu Aug 28 07:40:52 UTC 2025","passed","Thu Aug 28 07:40:59 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7315","test_turnlamp_synchronflash_alternative[13]","tests.turnlamp_allpass","Thu Aug 28 07:43:56 UTC 2025","passed","Thu Aug 28 07:44:03 UTC 2025","","test_synchron_flash","",""
+"","7349","test_turnlamp_triggered_mf4file[9]","tests.turnlamp_allpass","Thu Aug 28 07:42:21 UTC 2025","passed","Thu Aug 28 07:42:28 UTC 2025","","test_synchron_flash","",""
+"","7331","test_turnlamp_triggered_synchronflash[8]","tests.turnlamp_allpass","Thu Aug 28 07:41:07 UTC 2025","passed","Thu Aug 28 07:41:14 UTC 2025","","test_synchron_flash","",""
+"","7303","test_turnlamp_triggered_synchronflash[10]","tests.turnlamp_allpass","Thu Aug 28 07:41:22 UTC 2025","passed","Thu Aug 28 07:41:29 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7324","test_turnlamp_synchronflash_alternative[14]","tests.turnlamp_allpass","Thu Aug 28 07:44:03 UTC 2025","passed","Thu Aug 28 07:44:11 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7305","test_turnlamp_synchronflash_alternative[12]","tests.turnlamp_allpass","Thu Aug 28 07:43:49 UTC 2025","passed","Thu Aug 28 07:43:56 UTC 2025","","test_synchron_flash","",""
+"","3426","test_turnlamp_synchronflash[10]","tests.turnlamp_allpass","Thu Aug 28 07:40:45 UTC 2025","passed","Thu Aug 28 07:40:49 UTC 2025","","test_synchron_flash","",""
+"","7350","test_turnlamp_triggered_mf4file[10]","tests.turnlamp_allpass","Thu Aug 28 07:42:28 UTC 2025","passed","Thu Aug 28 07:42:35 UTC 2025","","test_synchron_flash","",""
+"","7461","test_turnlamp_triggered_synchronflash[12]","tests.turnlamp_allpass","Thu Aug 28 07:41:36 UTC 2025","passed","Thu Aug 28 07:41:44 UTC 2025","","test_synchron_flash","",""
+"","7358","test_turnlamp_triggered_synchronflash[11]","tests.turnlamp_allpass","Thu Aug 28 07:41:29 UTC 2025","passed","Thu Aug 28 07:41:36 UTC 2025","","test_synchron_flash","",""
+"","7340","test_turnlamp_triggered_mf4file[12]","tests.turnlamp_allpass","Thu Aug 28 07:42:43 UTC 2025","passed","Thu Aug 28 07:42:50 UTC 2025","","test_synchron_flash","",""
+"","7377","test_turnlamp_triggered_mf4file[8]","tests.turnlamp_allpass","Thu Aug 28 07:42:13 UTC 2025","passed","Thu Aug 28 07:42:21 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7298","test_turnlamp_synchronflash_alternative[11]","tests.turnlamp_allpass","Thu Aug 28 07:43:42 UTC 2025","passed","Thu Aug 28 07:43:49 UTC 2025","","test_synchron_flash","",""
+"","7348","test_turnlamp_triggered_synchronflash[14]","tests.turnlamp_allpass","Thu Aug 28 07:41:51 UTC 2025","passed","Thu Aug 28 07:41:58 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7297","test_turnlamp_synchronflash_alternative[7]","tests.turnlamp_allpass","Thu Aug 28 07:43:12 UTC 2025","passed","Thu Aug 28 07:43:19 UTC 2025","","test_synchron_flash","",""
+"","7354","test_turnlamp_triggered_mf4file[14]","tests.turnlamp_allpass","Thu Aug 28 07:42:58 UTC 2025","passed","Thu Aug 28 07:43:05 UTC 2025","","test_synchron_flash","",""
+"","7323","test_turnlamp_triggered_synchronflash[13]","tests.turnlamp_allpass","Thu Aug 28 07:41:44 UTC 2025","passed","Thu Aug 28 07:41:51 UTC 2025","","test_synchron_flash","",""
+"","7368","test_turnlamp_triggered_synchronflash[9]","tests.turnlamp_allpass","Thu Aug 28 07:41:14 UTC 2025","passed","Thu Aug 28 07:41:22 UTC 2025","","test_synchron_flash","",""
+"","7338","test_turnlamp_triggered_mf4file[7]","tests.turnlamp_allpass","Thu Aug 28 07:42:06 UTC 2025","passed","Thu Aug 28 07:42:13 UTC 2025","","test_synchron_flash","",""
+"","3350","test_turnlamp_synchronflash[9]","tests.turnlamp_allpass","Thu Aug 28 07:40:42 UTC 2025","passed","Thu Aug 28 07:40:45 UTC 2025","","test_synchron_flash","",""
+"","3324","test_turnlamp_synchronflash[7]","tests.turnlamp_allpass","Thu Aug 28 07:40:35 UTC 2025","passed","Thu Aug 28 07:40:39 UTC 2025","","test_synchron_flash","",""
+"","3315","test_turnlamp_synchronflash[11]","tests.turnlamp_allpass","Thu Aug 28 07:40:49 UTC 2025","passed","Thu Aug 28 07:40:52 UTC 2025","","test_synchron_flash","",""
+"","7347","test_turnlamp_triggered_synchronflash[7]","tests.turnlamp_allpass","Thu Aug 28 07:40:59 UTC 2025","passed","Thu Aug 28 07:41:07 UTC 2025","","test_synchron_flash","",""
+"","3691","test_turnlamp_synchronflash[6]","tests.turnlamp_allpass","Thu Aug 28 07:40:32 UTC 2025","passed","Thu Aug 28 07:40:35 UTC 2025","","test_synchron_flash","",""
+"","3374","test_turnlamp_synchronflash[8]","tests.turnlamp_allpass","Thu Aug 28 07:40:39 UTC 2025","passed","Thu Aug 28 07:40:42 UTC 2025","","test_synchron_flash","",""
+"
+    Direct usage of capture instance instead of using it as contextmanager using 'with' statement.
+    ","7286","test_turnlamp_synchronflash_alternative[6]","tests.turnlamp_allpass","Thu Aug 28 07:43:05 UTC 2025","passed","Thu Aug 28 07:43:12 UTC 2025","","test_synchron_flash","",""
