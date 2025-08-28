@@ -1,5 +1,8 @@
 import signal
 import sys
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 # github workfloww キャンセル時のシグナル送信の順序：
 #  ランナーはまず Ctrl-C（Linuxでは SIGINT）を送信。
@@ -10,15 +13,13 @@ import sys
 
 def handle_sigint(signum, frame):
     """Handle SIGINT (Ctrl+C) signal."""
-    sys.stderr.write("SIGINT received. Cleaning up before exit...\n")
-    sys.stderr.flush()
+    LOGGER.error("SIGINT received. Cleaning up before exit...")
     # 必要なクリーンアップ処理をここに書く
     sys.exit(1)  # pytest を終了させる
     
 def handle_sigterm(signum, frame):
     """Handle SIGTERM signal."""
-    sys.stderr.write("SIGTERM received. Cleaning up before exit...\n")
-    sys.stderr.flush()
+    LOGGER.error("SIGTERM received. Cleaning up before exit...")
     # 必要なクリーンアップ処理をここに書く
     sys.exit(1)  # pytest を終了させる
 
