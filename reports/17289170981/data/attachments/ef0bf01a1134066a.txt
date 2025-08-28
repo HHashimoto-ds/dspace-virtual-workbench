@@ -1,0 +1,14 @@
+08:04:28.192000 INFO    : openta.common.config.testenv_reader :: Load test environment configuration: 'testdata/testenv_veos_linux.yaml'
+08:04:28.203000 INFO    : openta.common.config.testenv_reader :: Analyze ports ...
+08:04:28.203000 INFO    : openta.common.config.testenv_reader :: Register 'Model' XIL API MAPort port.
+08:04:28.204000 INFO    : openta.common.config.testenv_reader :: Analyze mappings ...
+08:04:28.206000 INFO    : openta.common.config.testenv_reader :: Process XIL API Mapping file 'VEOS_Linux/TurnLampMapping.xml' .
+08:04:28.281000 INFO    : openta.testing.testenv :: Setup Ports
+08:04:28.281000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Create
+08:04:28.281000 INFO    : openta.ports.xilapi_modelaccess :: create 'Model' XilModelAccessPort
+08:04:28.281000 INFO    : openta.ports.xilapi_base :: load ASAM testbench factory assemblies for XIL version: 2.2.0
+08:04:36.545000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Connect/Configure
+08:04:36.546000 INFO    : openta.ports.xilapi_modelaccess :: connect 'Model' XilModelAccessPort
+08:04:41.658000 INFO    : openta.testing.testenv :: Setup [1] 'Model' XilModelAccessPort: Start
+08:04:41.658000 INFO    : openta.ports.xilapi_modelaccess :: start 'Model' XilModelAccessPort: Start Simulation
+08:04:41.883000 WARNING : openta.ports.xilapi_base :: start XilModelAccessCapture: The corresponding 'Model' XilModelAccessPort is not started, but in STARTED state
