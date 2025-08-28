@@ -142,6 +142,18 @@ jobs:
           # exit 1  # failed
           # exit 0  # success
 
+      - name: Cleanup on Cancellation
+        if: cancelled()
+        shell: bash
+        run: |
+          echo "Performing cleanup after cancellation..."
+          
+          # Stop VEOS
+          echo "Stopping VEOS..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -stop || true
+          
+          echo "Cleanup completed."
+
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -261,6 +273,18 @@ jobs:
           uv run pytest ./tests --openta-testenv-config="${{ env.JOB_2_OPENTA_TESTENV_CONFIG }}" --alluredir=./allure-results
           # exit 1  # failed
           # exit 0  # success
+
+      - name: Cleanup on Cancellation
+        if: cancelled()
+        shell: bash
+        run: |
+          echo "Performing cleanup after cancellation..."
+          
+          # Stop VEOS
+          echo "Stopping VEOS..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -stop || true
+          
+          echo "Cleanup completed."
 
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
@@ -382,6 +406,18 @@ jobs:
           # exit 1  # failed
           # exit 0  # success
 
+      - name: Cleanup on Cancellation
+        if: cancelled()
+        shell: bash
+        run: |
+          echo "Performing cleanup after cancellation..."
+          
+          # Stop VEOS
+          echo "Stopping VEOS..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -stop || true
+          
+          echo "Cleanup completed."
+
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -502,6 +538,18 @@ jobs:
           # exit 1  # failed
           # exit 0  # success
 
+      - name: Cleanup on Cancellation
+        if: cancelled()
+        shell: bash
+        run: |
+          echo "Performing cleanup after cancellation..."
+          
+          # Stop VEOS
+          echo "Stopping VEOS..."
+          /opt/dspace/xilapi2024a/MAPort/Main/bin/CmdLoader -rnc 127.0.0.1 -t VEOS -af 0 -stop || true
+          
+          echo "Cleanup completed."
+          
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
         if: always()
