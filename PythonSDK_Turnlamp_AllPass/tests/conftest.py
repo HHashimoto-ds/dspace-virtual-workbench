@@ -8,3 +8,5 @@ def handle_sigterm(signum, frame):
 
 def pytest_sessionstart(session):
     signal.signal(signal.SIGTERM, handle_sigterm)
+    print("Registered SIGTERM handlder.")
+    
