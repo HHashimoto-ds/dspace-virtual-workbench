@@ -10,13 +10,15 @@ import sys
 
 def handle_sigint(signum, frame):
     """Handle SIGINT (Ctrl+C) signal."""
-    print("SIGINT received. Cleaning up before exit...")
+    sys.stderr.write("SIGINT received. Cleaning up before exit...\n")
+    sys.stderr.flush()
     # 必要なクリーンアップ処理をここに書く
     sys.exit(1)  # pytest を終了させる
     
 def handle_sigterm(signum, frame):
     """Handle SIGTERM signal."""
-    print("SIGTERM received. Cleaning up before exit...")
+    sys.stderr.write("SIGTERM received. Cleaning up before exit...\n")
+    sys.stderr.flush()
     # 必要なクリーンアップ処理をここに書く
     sys.exit(1)  # pytest を終了させる
 
